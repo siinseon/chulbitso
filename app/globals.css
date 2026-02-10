@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --point-color: #11593F;
+  --bg-color: #F2F2F2;
+  --card-bg: #FFFFFF;
+}
+
+body {
+  font-family: var(--font-nanum-myeongjo), "Nanum Myeongjo", serif;
+  background: var(--bg-color);
+  color: #333;
+  padding-bottom: 90px;
+  -webkit-font-smoothing: antialiased;
+}
+
+@media (min-width: 768px) {
+  body {
+    padding-bottom: 100px;
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    padding-bottom: 110px;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* 영수증 지그재그 찢어진 종이 */
+.receipt-zigzag-top {
+  flex-shrink: 0;
+}
+.receipt-zigzag-bottom {
+  flex-shrink: 0;
+}
+.receipt-modal-paper {
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* LP 턴테이블 느낌 느린 회전 */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
