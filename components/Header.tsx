@@ -8,14 +8,14 @@ interface HeaderProps {
 
 export default function Header({ onOpenSettings }: HeaderProps) {
   return (
-    <header className="flex items-center justify-between px-4 py-4 md:py-5">
-      <h1 className="text-[20px] md:text-[22px] font-bold text-[#11593F]">
+    <header className="relative flex items-center justify-between px-4 sm:px-6 py-4 md:py-5 min-h-[56px]">
+      <h1 className="absolute left-0 right-0 text-center text-[24px] sm:text-[26px] font-extrabold text-[#11593F] pointer-events-none">
         출빛소
       </h1>
       <button
         type="button"
         onClick={onOpenSettings}
-        className="p-2 rounded-full hover:bg-[#e8f5e9] text-[#11593F] transition-colors"
+        className="relative z-10 p-3 -m-1 rounded-full hover:bg-[#e8f5e9] active:bg-[#e8f5e9] text-[#11593F] transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center ml-auto"
         aria-label="설정"
       >
         <Settings size={24} strokeWidth={2} />

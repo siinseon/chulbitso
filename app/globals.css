@@ -4,27 +4,39 @@
 
 :root {
   --point-color: #11593F;
+  --accent-color: #A68B5B;
   --bg-color: #F2F2F2;
   --card-bg: #FFFFFF;
+  /* 모바일 가독용 기본 글자 크기 */
+  font-size: 16px;
+}
+
+@media (min-width: 768px) {
+  :root {
+    font-size: 16px;
+  }
 }
 
 body {
   font-family: var(--font-nanum-myeongjo), "Nanum Myeongjo", serif;
   background: var(--bg-color);
   color: #333;
-  padding-bottom: 90px;
+  padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
   -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
 }
 
 @media (min-width: 768px) {
   body {
-    padding-bottom: 100px;
+    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
   }
 }
 
 @media (min-width: 1024px) {
   body {
-    padding-bottom: 110px;
+    padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -61,3 +73,4 @@ body {
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
 }
+

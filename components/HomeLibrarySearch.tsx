@@ -38,14 +38,14 @@ export default function HomeLibrarySearch({ books }: HomeLibrarySearchProps) {
 
   return (
     <div className="space-y-2 mb-5">
-      <div className="bg-[#FFFFFF] rounded-xl px-4 py-3 flex items-center gap-3 shadow-card">
-        <Search size={20} stroke="#11593F" />
+      <div className="bg-[#FFFFFF] rounded-xl px-4 py-3 min-h-[48px] flex items-center gap-3 shadow-card border border-accent/10">
+        <Search size={20} stroke="#A68B5B" className="flex-shrink-0" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="가진 책 검색 (제목, 저자)"
-          className="flex-1 outline-none text-[14px] placeholder:text-gray-400"
+          className="flex-1 min-w-0 outline-none text-[15px] placeholder:text-gray-400"
         />
       </div>
 
@@ -60,10 +60,10 @@ export default function HomeLibrarySearch({ books }: HomeLibrarySearchProps) {
                   key={book.id}
                   className="py-2 border-b border-gray-100 last:border-0"
                 >
-                  <div className="font-bold text-[14px] text-[#11593F]">
+                  <div className="font-bold text-[15px] text-[#11593F]">
                     {book.title}
                   </div>
-                  <div className="text-[12px] text-gray-600 flex items-center gap-2">
+                  <div className="text-[13px] text-gray-600 flex items-center gap-2">
                     {book.author}
                     <span className="text-gray-400">·</span>
                     <span className="text-[#11593F] text-[11px]">

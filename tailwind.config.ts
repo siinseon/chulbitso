@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         point: "#11593F",
+        accent: "#A68B5B",
         "chulbit-bg": "#F2F2F2",
         "chulbit-card": "#FFFFFF",
       },

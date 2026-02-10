@@ -45,13 +45,13 @@ export default function CategoryScreen({
 
   return (
     <div className="space-y-4 animate-fadeIn">
-      <div className="flex gap-2 p-1.5 bg-[#FFFFFF] rounded-xl shadow-card">
+      <div className="flex gap-2 p-1.5 sm:p-2 bg-[#FFFFFF] rounded-xl shadow-card border border-accent/10">
         {TABS.map(({ id, label }) => (
           <button
             key={id}
             type="button"
             onClick={() => setActiveTab(id)}
-            className={`flex-1 py-3 rounded-lg text-[14px] font-bold transition-colors ${
+            className={`flex-1 py-3.5 sm:py-3 rounded-lg text-[15px] font-bold transition-colors min-h-[48px] active:opacity-90 ${
               activeTab === id
                 ? "bg-[#11593F] text-white"
                 : "bg-gray-100 text-gray-600"
@@ -62,7 +62,7 @@ export default function CategoryScreen({
         ))}
       </div>
 
-      <h2 className="text-[15px] font-bold text-[#11593F]">
+      <h2 className="text-[16px] sm:text-[17px] font-bold text-[#11593F]">
         {TABS.find((t) => t.id === activeTab)?.label}
       </h2>
 

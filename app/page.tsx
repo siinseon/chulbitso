@@ -76,10 +76,10 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F2F2F2] pb-24">
+    <div className="min-h-screen min-h-[100dvh] bg-[#F2F2F2] pb-24">
       <Header onOpenSettings={() => setSettingsOpen(true)} />
 
-      <main className="px-4 py-6 max-w-[480px] mx-auto">
+      <main className="px-4 sm:px-6 py-5 sm:py-6 max-w-[480px] mx-auto pt-[env(safe-area-inset-top,0px)]">
         {activeTab === "home" && (
           <section className="space-y-6 animate-fadeIn">
             <HomeLibrarySearch books={books} />
@@ -88,17 +88,17 @@ export default function Home() {
               totalCount={totalCount}
               giftCount={giftCount}
             />
-            <div className="rounded-2xl p-5 bg-white shadow-card">
-              <h3 className="text-[14px] font-bold text-[#11593F] mb-2">
+            <div className="rounded-2xl p-5 sm:p-6 bg-white shadow-card border border-accent/15">
+              <h3 className="text-[16px] sm:text-[17px] font-bold text-[#11593F] mb-2">
                 가쪽비 계산하기
               </h3>
-              <p className="text-[13px] text-gray-600">
+              <p className="text-[14px] sm:text-[15px] text-gray-600">
                 페이지와 가격으로 환산한 지식의 가치
               </p>
               <button
                 type="button"
                 onClick={() => setReceiptOpen(true)}
-                className="mt-4 w-full py-3 rounded-xl bg-[#11593F] text-white font-bold text-[14px] hover:bg-[#0d4630] transition-colors"
+                className="mt-4 w-full py-3.5 min-h-[48px] rounded-xl bg-[#11593F] text-white font-bold text-[14px] hover:bg-[#0d4630] active:opacity-95 transition-opacity"
               >
                 가쪽비 영수증 발급기
               </button>

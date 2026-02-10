@@ -83,7 +83,7 @@ export default function ReceiptModal({
   useEffect(() => {
     if (isOpen) {
       setStep("select");
-      setSelectedIds(new Set(books.map((b) => b.id)));
+      setSelectedIds(new Set());
       setSearchQuery("");
     }
   }, [isOpen, books.length]);
@@ -161,24 +161,24 @@ export default function ReceiptModal({
 
   const modal = (
     <div
-      className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-[3000] flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="receipt-modal-title"
     >
       <div
-        className="w-full max-w-[400px] max-h-[90vh] flex flex-col bg-[#F2F2F2] rounded-2xl overflow-hidden"
+        className="w-full max-w-[400px] max-h-[90dvh] sm:max-h-[90vh] flex flex-col bg-[#F2F2F2] rounded-t-2xl sm:rounded-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between p-4 bg-white border-b border-gray-100">
+        <div className="flex items-center justify-between p-4 bg-white border-b border-gray-100 min-h-[52px]">
           <h2 id="receipt-modal-title" className="text-[16px] font-bold text-[#11593F]">
             {step === "select" ? "영수증에 넣을 도서 선택" : "가성비 독서 영수증"}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
+            className="p-2 -m-1 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 text-gray-600"
             aria-label="닫기"
           >
             <X size={24} />
@@ -218,7 +218,7 @@ export default function ReceiptModal({
                 선택 해제
               </button>
             </div>
-            <div className="flex-1 overflow-y-auto px-4 pb-4 max-h-[40vh]">
+            <div className="flex-1 overflow-y-auto px-4 pb-4 max-h-[45dvh] sm:max-h-[40vh]">
               {availableBooks.length === 0 ? (
                 <p className="text-[13px] text-gray-500 py-6 text-center">
                   담긴 도서가 없습니다.
@@ -240,7 +240,7 @@ export default function ReceiptModal({
                         <button
                           type="button"
                           onClick={() => toggle(b.id)}
-                          className="w-full flex items-center gap-3 p-3 rounded-xl bg-white shadow-card text-left hover:bg-gray-50"
+                          className="w-full flex items-center gap-3 p-3 min-h-[52px] rounded-xl bg-white shadow-card text-left hover:bg-gray-50 active:bg-gray-50"
                         >
                           {checked ? (
                             <CheckSquare size={22} className="text-[#11593F] flex-shrink-0" />
@@ -280,8 +280,8 @@ export default function ReceiptModal({
 
         {step === "receipt" && (
           <>
-            <div className="flex-1 overflow-y-auto p-4">
-              <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col items-center receipt-modal-paper">
+            <div className="flex-1 overflow-y-auto overflow-x-hidden p-4">
+              <div className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col items-center receipt-modal-paper w-full max-w-[350px] mx-auto">
                 <div
                   className="w-full h-2 receipt-zigzag-top"
                   style={{
@@ -295,8 +295,7 @@ export default function ReceiptModal({
 
                 <div
                   ref={receiptRef}
-                  className="w-full min-w-[350px] max-w-[350px] bg-white font-mono text-[11px] text-black px-4 py-3 receipt-content"
-                  style={{ minWidth: 350 }}
+                  className="w-full max-w-full bg-white font-mono text-[11px] text-black px-4 py-3 receipt-content box-border"
                 >
                   <div className="text-center border-b border-dashed border-gray-400 pb-2 mb-2">
                     <p className="font-bold text-[13px] tracking-widest">
@@ -356,7 +355,7 @@ export default function ReceiptModal({
                 </div>
 
 <div
-                className="w-full max-w-[350px] min-w-[350px] h-2 receipt-zigzag-bottom"
+                className="w-full h-2 receipt-zigzag-bottom"
                   style={{
                     background:
                       "linear-gradient(315deg, #fff 50%, transparent 50%), linear-gradient(45deg, #fff 50%, transparent 50%)",

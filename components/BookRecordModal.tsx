@@ -242,11 +242,11 @@ export default function BookRecordModal({
               key={id}
               type="button"
               onClick={() => setTab(id)}
-              className={`flex-1 min-w-[80px] py-3 flex items-center justify-center gap-1.5 text-[13px] font-bold transition-colors ${
+              className={`flex-1 min-w-0 py-4 px-3 flex items-center justify-center gap-2 text-[14px] font-bold transition-colors whitespace-nowrap ${
                 tab === id ? "text-[#11593F] border-b-2 border-[#11593F]" : "text-gray-500"
               }`}
             >
-              <Icon size={16} />
+              <Icon size={18} />
               {label}
             </button>
           ))}

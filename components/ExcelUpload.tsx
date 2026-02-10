@@ -168,17 +168,17 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="w-full border-2 border-dashed border-[#11593F] rounded-xl py-5 flex flex-col items-center gap-2 bg-[#F2F0D8]/50 hover:bg-[#F2F0D8] transition-colors disabled:opacity-60"
+        className="w-full border-2 border-dashed border-[#11593F] rounded-xl py-5 min-h-[52px] flex flex-col items-center gap-2 bg-[#F5F0E6] hover:bg-[#F0EAD8] active:bg-[#F0EAD8] transition-colors disabled:opacity-60"
       >
         {uploading ? (
           <Loader2 size={32} stroke="#11593F" className="animate-spin" />
         ) : (
           <Upload size={32} stroke="#11593F" strokeWidth={2} />
         )}
-        <span className="text-[14px] font-bold text-[#11593F]">
+        <span className="text-[15px] font-bold text-[#11593F]">
           {uploading ? progress || "업로드 중..." : "알라딘 구매내역 엑셀 업로드"}
         </span>
-        <span className="text-[12px] text-gray-500">
+        <span className="text-[13px] text-gray-500">
           .xlsx, .xls · ISBN 있으면 표지 자동 조회
         </span>
       </button>

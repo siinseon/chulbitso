@@ -28,8 +28,8 @@ export default function BottomNav({ activeTab, onTabChange, onFabClick }: Bottom
           key={id}
           type="button"
           onClick={() => onTabChange(id)}
-          className={`flex flex-col items-center gap-1 py-2 px-3 flex-1 text-[11px] transition-colors ${
-            activeTab === id ? "text-[#11593F] font-bold" : "text-[#999]"
+          className={`flex flex-col items-center justify-center gap-1 py-3 px-2 flex-1 min-h-[48px] text-[12px] sm:text-[13px] transition-colors active:opacity-80 ${
+            activeTab === id ? "text-[#11593F] font-bold" : "text-gray-500"
           }`}
           aria-current={activeTab === id ? "page" : undefined}
         >
@@ -41,7 +41,7 @@ export default function BottomNav({ activeTab, onTabChange, onFabClick }: Bottom
       <button
         type="button"
         onClick={onFabClick}
-        className="relative -mt-6 w-14 h-14 rounded-full bg-[#11593F] flex items-center justify-center shadow-[0_4px_12px_rgba(17,89,63,0.3)] border-4 border-white hover:bg-[#0d4630] transition-colors"
+        className="relative -mt-6 w-14 h-14 min-w-[56px] min-h-[56px] rounded-full bg-[#11593F] flex items-center justify-center shadow-[0_4px_12px_rgba(17,89,63,0.3)] border-4 border-white hover:bg-[#0d4630] active:scale-95 transition-transform"
         aria-label="도서 추가"
       >
         <Plus size={28} strokeWidth={3} className="text-white" />
@@ -52,8 +52,8 @@ export default function BottomNav({ activeTab, onTabChange, onFabClick }: Bottom
           key={id}
           type="button"
           onClick={() => onTabChange(id)}
-          className={`flex flex-col items-center gap-1 py-2 px-3 flex-1 text-[11px] transition-colors ${
-            activeTab === id ? "text-[#11593F] font-bold" : "text-[#999]"
+          className={`flex flex-col items-center justify-center gap-1 py-3 px-2 flex-1 min-h-[48px] text-[12px] sm:text-[13px] transition-colors active:opacity-80 ${
+            activeTab === id ? "text-[#11593F] font-bold" : "text-gray-500"
           }`}
           aria-current={activeTab === id ? "page" : undefined}
         >

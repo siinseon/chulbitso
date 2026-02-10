@@ -55,9 +55,9 @@ interface BookDetailModalProps {
 function Row({ label, value }: { label: string; value: string | number | undefined }) {
   if (value === undefined || value === null || String(value).trim() === "") return null;
   return (
-    <div className="flex border-b border-gray-100 py-3">
-      <span className="w-24 flex-shrink-0 text-[13px] text-gray-500">{label}</span>
-      <span className="text-[14px] text-gray-800 break-words">{String(value)}</span>
+    <div className="flex border-b border-gray-100 py-3.5">
+      <span className="w-24 flex-shrink-0 text-[14px] text-gray-500">{label}</span>
+      <span className="text-[15px] text-gray-800 break-words">{String(value)}</span>
     </div>
   );
 }
@@ -107,14 +107,14 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
 
   const modal = (
     <div
-      className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-[3000] flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
       onClick={onClose}
       role="dialog"
       aria-modal="true"
       aria-labelledby="book-detail-title"
     >
       <div
-        className="w-full max-w-[480px] max-h-[85vh] bg-[#FFFFFF] rounded-2xl overflow-hidden flex flex-col shadow-xl"
+        className="w-full max-w-[480px] max-h-[90dvh] sm:max-h-[85vh] bg-[#FFFFFF] rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-4 p-4 border-b border-gray-100">
@@ -135,11 +135,11 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <h2 id="book-detail-title" className="text-[18px] font-bold text-[#11593F] leading-snug">
+            <h2 id="book-detail-title" className="text-[19px] sm:text-[20px] font-bold text-[#11593F] leading-snug">
               {book.title}
             </h2>
             {book.author && (
-              <p className="text-[14px] text-gray-600 mt-1">{book.author}</p>
+              <p className="text-[15px] sm:text-[16px] text-gray-600 mt-1">{book.author}</p>
             )}
           </div>
           <button
@@ -162,8 +162,8 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
           <Row label="분야" value={book.category} />
           <Row label="정가" value={book.retailPrice != null ? `₩${Number(book.retailPrice).toLocaleString()}` : undefined} />
           <Row label="ISBN" value={book.isbn} />
-          <div className="flex border-b border-gray-100 py-3 items-center gap-2">
-            <span className="w-24 flex-shrink-0 text-[13px] text-gray-500">출판 국가</span>
+          <div className="flex border-b border-gray-100 py-3.5 items-center gap-2">
+            <span className="w-24 flex-shrink-0 text-[14px] text-gray-500">출판 국가</span>
             <div className="flex-1 min-w-0">
               {onUpdateCountry ? (
                 <select
@@ -172,7 +172,7 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
                     const v = e.target.value.trim().toUpperCase().slice(0, 2);
                     onUpdateCountry(book.id, v);
                   }}
-                  className="w-full max-w-[200px] text-[14px] text-gray-800 border border-gray-200 rounded-lg px-3 py-2 bg-white"
+                  className="w-full max-w-[200px] text-[15px] text-gray-800 border border-gray-200 rounded-lg px-3 py-2.5 bg-white min-h-[44px]"
                 >
                   {COUNTRY_OPTIONS.map(({ code, name }) => (
                     <option key={code || "empty"} value={code}>
@@ -181,7 +181,7 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
                   ))}
                 </select>
               ) : (
-                <span className="text-[14px] text-gray-800">
+                <span className="text-[15px] text-gray-800">
                   {book.country
                     ? `${COUNTRY_OPTIONS.find((c) => c.code === book.country)?.name ?? book.country} (${book.country})`
                     : "미입력"}
@@ -192,32 +192,28 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
           <Row label="소유형태" value={ownershipLabel} />
           <Row label="독서상태" value={readingLabel} />
 
-          {/* 감성 기록: LP 뮤직 카드 */}
-          <div className="rounded-xl bg-[#f9f9f9] border border-[#eee] p-4 my-4">
-            <p className="text-[12px] font-bold text-[#11593F] mb-3">감성 기록</p>
+          {/* 감성 기록 */}
+          <div className="rounded-xl bg-gray-50 border border-accent/20 p-4 my-4">
+            <p className="text-[13px] font-bold text-[#11593F] mb-3">감성 기록</p>
             <div className="flex items-center gap-4">
-              <div className="flex-shrink-0 text-[#11593F]">
-                <Disc className="w-24 h-24 animate-spin-slow" strokeWidth={1.5} />
-              </div>
+              <Disc className="w-10 h-10 text-accent flex-shrink-0 animate-spin-slow" strokeWidth={1.5} />
               <div className="flex-1 min-w-0">
                 {book.bgmTitle || book.bgmArtist ? (
-                  <p className="text-[14px] text-gray-800 font-medium">
+                  <p className="text-[15px] text-gray-800">
                     🎵 {[book.bgmTitle, book.bgmArtist].filter(Boolean).join(" - ")}
                   </p>
                 ) : (
-                  <p className="text-[13px] text-gray-500 italic">이 책의 BGM을 기록해주세요</p>
+                  <p className="text-[14px] text-gray-500">이 책의 BGM을 기록해주세요</p>
                 )}
-                <div className="flex items-center gap-3 mt-2 text-gray-600">
+                <div className="flex items-center gap-3 mt-1.5 text-[13px] text-gray-500">
                   {book.weather && (
-                    <span className="flex items-center gap-1.5 text-[12px]">
-                      <WeatherIcon name={book.weather} className="w-4 h-4" />
+                    <span className="flex items-center gap-1">
+                      <WeatherIcon name={book.weather} className="w-3.5 h-3.5" />
                       {book.weather.replace(/^[^\s]+\s/, "")}
                     </span>
                   )}
                   {(book.readDates?.[0]?.start || book.pubDate) && (
-                    <span className="text-[12px]">
-                      {formatMemoryDate(book.readDates?.[0]?.start ?? book.pubDate ?? "")}
-                    </span>
+                    <span>{formatMemoryDate(book.readDates?.[0]?.start ?? book.pubDate ?? "")}</span>
                   )}
                 </div>
               </div>
@@ -232,7 +228,7 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
                   onEdit(book);
                   onClose();
                 }}
-                className="w-full py-3 rounded-xl border-2 border-[#11593F] text-[#11593F] font-bold text-[14px] hover:bg-[#11593F] hover:text-white transition-colors"
+                className="w-full py-3.5 min-h-[48px] rounded-xl border-2 border-[#11593F] text-[#11593F] font-bold text-[15px] hover:bg-[#11593F] hover:text-white active:opacity-90 transition-colors"
               >
                 상세 기록 수정
               </button>
