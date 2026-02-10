@@ -88,7 +88,7 @@ export default function Home() {
               totalCount={totalCount}
               giftCount={giftCount}
             />
-            <div className="rounded-2xl p-5 sm:p-6 bg-white shadow-card border border-accent/15">
+            <div className="rounded-2xl p-5 sm:p-6 bg-white shadow-card border border-ivory-border">
               <h3 className="text-[16px] sm:text-[17px] font-bold text-[#11593F] mb-2">
                 가쪽비 계산하기
               </h3>

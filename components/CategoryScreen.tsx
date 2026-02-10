@@ -45,7 +45,7 @@ export default function CategoryScreen({
 
   return (
     <div className="space-y-4 animate-fadeIn">
-      <div className="flex gap-2 p-1.5 sm:p-2 bg-[#FFFFFF] rounded-xl shadow-card border border-accent/10">
+      <div className="flex gap-2 p-1.5 sm:p-2 bg-[#FFFFFF] rounded-xl shadow-card border border-ivory-border">
         {TABS.map(({ id, label }) => (
           <button
             key={id}

@@ -80,7 +80,7 @@ export default function BookCard({
             {(book.series || book.publisher || book.category) && (
               <div className="flex flex-wrap gap-2 text-[13px] text-gray-500 mt-2">
                 {book.series && (
-                  <span className="text-accent font-medium">📚 {book.series}</span>
+                  <span className="text-[#11593F] font-medium">📚 {book.series}</span>
                 )}
                 {book.publisher && <span>🏢 {book.publisher}</span>}
                 {book.category && <span>📖 {book.category}</span>}

@@ -168,7 +168,7 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="w-full border-2 border-dashed border-[#11593F] rounded-xl py-5 min-h-[52px] flex flex-col items-center gap-2 bg-[#F5F0E6] hover:bg-[#F0EAD8] active:bg-[#F0EAD8] transition-colors disabled:opacity-60"
+        className="w-full border-2 border-dashed border-[#11593F] rounded-xl py-5 min-h-[52px] flex flex-col items-center gap-2 bg-[#FAFAF8] hover:bg-[#F5F5F2] active:bg-[#F5F5F2] transition-colors disabled:opacity-60"
       >
         {uploading ? (
           <Loader2 size={32} stroke="#11593F" className="animate-spin" />

@@ -38,8 +38,8 @@ export default function HomeLibrarySearch({ books }: HomeLibrarySearchProps) {
 
   return (
     <div className="space-y-2 mb-5">
-      <div className="bg-[#FFFFFF] rounded-xl px-4 py-3 min-h-[48px] flex items-center gap-3 shadow-card border border-accent/10">
-        <Search size={20} stroke="#A68B5B" className="flex-shrink-0" />
+      <div className="bg-[#FFFFFF] rounded-xl px-4 py-3 min-h-[48px] flex items-center gap-3 shadow-card border border-ivory-border">
+        <Search size={20} stroke="#11593F" className="flex-shrink-0" />
         <input
           type="text"
           value={query}

@@ -10,9 +10,10 @@ const config: Config = {
     extend: {
       colors: {
         point: "#11593F",
-        accent: "#A68B5B",
         "chulbit-bg": "#F2F2F2",
         "chulbit-card": "#FFFFFF",
+        ivory: "#FAFAF8",
+        "ivory-border": "#EDE9E3",
       },
       fontFamily: {
         "nanum-myeongjo": ["var(--font-nanum-myeongjo)", "serif"],

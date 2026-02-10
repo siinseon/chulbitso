@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, Disc, Sun, Cloud, CloudRain, CloudSnow, CloudFog, Moon } from "lucide-react";
+import { X, Sun, Cloud, CloudRain, CloudSnow, CloudFog, Moon } from "lucide-react";
 import type { Book } from "@/lib/useBooks";
 import { OWNERSHIP_LABELS, READING_STATUS_LABELS } from "@/lib/supabase/types";
 
@@ -192,11 +192,13 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
           <Row label="소유형태" value={ownershipLabel} />
           <Row label="독서상태" value={readingLabel} />
 
-          {/* 감성 기록 */}
-          <div className="rounded-xl bg-gray-50 border border-accent/20 p-4 my-4">
+          {/* 감성 기록 - CD 모양 (인스타 노래 추가 스타일) */}
+          <div className="rounded-xl bg-[#FAFAF8] border border-ivory-border p-4 my-4">
             <p className="text-[13px] font-bold text-[#11593F] mb-3">감성 기록</p>
             <div className="flex items-center gap-4">
-              <Disc className="w-10 h-10 text-accent flex-shrink-0 animate-spin-slow" strokeWidth={1.5} />
+              <div className="flex-shrink-0 w-14 h-14 rounded-full bg-[#11593F] flex items-center justify-center animate-spin-slow shadow-md">
+                <div className="w-4 h-4 rounded-full bg-[#FAFAF8] ring-2 ring-[#11593F]" />
+              </div>
               <div className="flex-1 min-w-0">
                 {book.bgmTitle || book.bgmArtist ? (
                   <p className="text-[15px] text-gray-800">

@@ -59,7 +59,7 @@ export default function BookList({
 
   return (
     <div className="space-y-4">
-      <div className="bg-[#FFFFFF] rounded-xl px-4 py-3 flex items-center gap-3 shadow-card">
+      <div className="bg-[#FFFFFF] rounded-xl px-4 py-3 flex items-center gap-3 shadow-card border border-ivory-border">
         <Search size={20} stroke="#11593F" />
         <input
           type="text"
@@ -70,21 +70,23 @@ export default function BookList({
         />
       </div>
 
-      <div className="flex flex-wrap gap-2 p-1.5 bg-[#FFFFFF] rounded-xl shadow-card justify-center">
-        {FILTER_OPTIONS.map((opt) => (
-          <button
-            key={opt.value}
-            type="button"
-            onClick={() => setFilter(opt.value)}
-            className={`px-4 py-2.5 rounded-lg text-[13px] font-bold whitespace-nowrap transition-colors ${
-              filter === opt.value
-                ? "bg-[#11593F] text-white"
-                : "bg-gray-100 text-gray-600"
-            }`}
-          >
-            {opt.label}
-          </button>
-        ))}
+      <div className="overflow-x-auto scrollbar-hide -mx-0.5 px-0.5">
+        <div className="flex gap-2 p-1.5 bg-[#FFFFFF] rounded-xl shadow-card border border-ivory-border w-max min-w-full justify-start sm:justify-center">
+          {FILTER_OPTIONS.map((opt) => (
+            <button
+              key={opt.value}
+              type="button"
+              onClick={() => setFilter(opt.value)}
+              className={`px-3 py-2 rounded-lg text-[12px] sm:text-[13px] font-bold whitespace-nowrap transition-colors flex-shrink-0 ${
+                filter === opt.value
+                  ? "bg-[#11593F] text-white"
+                  : "bg-gray-100 text-gray-600"
+              }`}
+            >
+              {opt.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="text-right text-[13px] text-gray-600">

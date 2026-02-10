@@ -8,7 +8,7 @@ interface HeaderProps {
 
 export default function Header({ onOpenSettings }: HeaderProps) {
   return (
-    <header className="relative flex items-center justify-between px-4 sm:px-6 py-4 md:py-5 min-h-[56px]">
+    <header className="relative flex items-center justify-between px-4 sm:px-6 py-4 md:py-5 min-h-[56px] bg-[#FAFAF8] border-b border-[#11593F]/10">
       <h1 className="absolute left-0 right-0 text-center text-[24px] sm:text-[26px] font-extrabold text-[#11593F] pointer-events-none">
         출빛소
       </h1>

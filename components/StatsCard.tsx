@@ -15,7 +15,7 @@ export default function StatsCard({
     <div
       className="rounded-2xl p-5 sm:p-7 mb-5 text-white shadow-asset-card"
       style={{
-        background: "linear-gradient(135deg, #11593F 0%, #1a7a57 70%, #A68B5B 100%)",
+        background: "linear-gradient(135deg, #11593F 0%, #1a7a57 100%)",
       }}
     >
       <h2 className="text-[14px] sm:text-[15px] opacity-90 mb-2">누적 투자 금액 (정가 합계)</h2>

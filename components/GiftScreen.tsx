@@ -14,7 +14,7 @@ const STORE_LINKS: { name: string; url: string }[] = [
 export default function GiftScreen() {
   return (
     <section className="animate-fadeIn">
-      <div className="rounded-2xl p-5 bg-white shadow-card border border-accent/20">
+      <div className="rounded-2xl p-5 bg-white shadow-card border border-ivory-border">
         <h2 className="text-[17px] sm:text-[18px] font-bold text-[#11593F] mb-1">인터넷 서점 사은품</h2>
         <p className="text-[14px] text-gray-500 mb-4">
           서점을 누르면 해당 사은품/이벤트 페이지로 이동해요.
@@ -29,7 +29,7 @@ export default function GiftScreen() {
                 className="flex items-center justify-between gap-3 p-4 min-h-[52px] rounded-xl bg-gray-50 hover:bg-[#11593F]/10 active:bg-[#11593F]/15 text-gray-800 font-medium text-[15px] transition-colors"
               >
                 <span>{name}</span>
-                <ExternalLink size={18} className="text-accent flex-shrink-0" />
+                <ExternalLink size={18} className="text-[#11593F] flex-shrink-0" />
               </a>
             </li>
           ))}
