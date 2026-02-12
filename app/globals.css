@@ -3,29 +3,44 @@
 @tailwind utilities;
 
 :root {
-  --point-color: #11593F;
-  --bg-color: #F2F2F2;
-  --card-bg: #FFFFFF;
-  --ivory: #FAFAF8;
-  /* 모바일 가독용 기본 글자 크기 */
+  --vintage-bg: #F2E6D0;
+  --primary: #4A5E42;
+  --secondary: #8C9E83;
+  --accent-warm: #C98C6E;
+  --accent-cool: #6A8B9A;
+  --text-main: #3A3128;
+  --text-muted: #8C7B6B;
   font-size: 16px;
 }
 
-@media (min-width: 768px) {
-  :root {
-    font-size: 16px;
-  }
-}
-
 body {
-  font-family: var(--font-nanum-myeongjo), "Nanum Myeongjo", serif;
-  background: var(--bg-color);
-  color: #333;
+  font-family: var(--font-serif-myeongjo), "Noto Serif KR", serif;
+  font-weight: 400;
+  background: var(--vintage-bg);
+  color: var(--text-main);
   padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+/* 노이즈 질감 - 낡은 종이 느낌 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 버튼 - 살짝 둥글게(rounded-md), 종이 위에 얹혀진 그림자 */
+button:not([class*="rounded-"]) {
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px rgba(58, 49, 40, 0.08);
 }
 
 @media (min-width: 768px) {
@@ -53,18 +68,16 @@ body {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* 영수증 지그재그 찢어진 종이 */
-.receipt-zigzag-top {
-  flex-shrink: 0;
-}
+/* 영수증 지그재그 */
+.receipt-zigzag-top,
 .receipt-zigzag-bottom {
   flex-shrink: 0;
 }
 .receipt-modal-paper {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(58, 49, 40, 0.1);
 }
 
-/* LP 턴테이블 느낌 느린 회전 */
+/* LP / CD 느린 회전 */
 @keyframes spin-slow {
   to {
     transform: rotate(360deg);
@@ -74,11 +87,202 @@ body {
   animation: spin-slow 8s linear infinite;
 }
 
-/* 가로 스크롤 시 스크롤바 숨김 (분류 필터 등) */
 .scrollbar-hide {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* 빈티지 티켓 - 절취선 & 펀치 구멍 (아이보리) */
+.vintage-ticket {
+  position: relative;
+  background: #FFF8F0;
+  border: 1px solid #8C9E83;
+  border-right-style: dashed;
+  border-right-width: 2px;
+}
+.vintage-ticket::before,
+.vintage-ticket::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--vintage-bg);
+  border: 1px solid #8C9E83;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+.vintage-ticket::before {
+  left: -6px;
+}
+.vintage-ticket::after {
+  right: -6px;
+}
+
+/* 도서 대출 카드 - 갈색 주머니(겉) */
+.checkout-pocket {
+  background: linear-gradient(90deg, #b8a898 0%, #a89888 30%, #988870 100%);
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.06);
+  border: 1px solid #8a7a6a;
+}
+
+/* 대출 카드 - 누렇고 낡은 종이(카드 본문) */
+.checkout-card-bg {
+  background: linear-gradient(180deg, #F5EEDE 0%, #E8DCC8 40%, #DFD0B8 100%);
+  box-shadow: inset 0 0 80px rgba(139, 123, 107, 0.06);
+}
+
+/* 대출 카드 - 선 하나만 (스크롤해도 배경 고정 이슈 없음) */
+.checkout-card-line {
+  border-bottom: 1px solid rgba(120, 100, 80, 0.2);
+}
+
+/* 완독 도장 애니메이션 */
+@keyframes stamp-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(-12deg);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15) rotate(-8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(-8deg);
+  }
+}
+.animate-stamp-in {
+  animation: stamp-in 0.4s ease-out forwards;
+}
+
+/* 하늘 닿는 사다리 - 리본 흔들림 */
+@keyframes ribbon-sway {
+  0%, 100% { transform: translateX(-50%) translateY(50%) rotate(-2deg); }
+  50% { transform: translateX(-50%) translateY(50%) rotate(2deg); }
+}
+.animate-ribbon-sway {
+  animation: ribbon-sway 3s ease-in-out infinite;
+}
+@keyframes ribbon-sway-simple {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+.animate-ribbon-sway-simple {
+  animation: ribbon-sway-simple 3s ease-in-out infinite;
+}
+
+/* 시대 주파수 라디오 - 바늘 찾기 */
+@keyframes needle-tune {
+  0% { transform: rotate(-60deg); }
+  30% { transform: rotate(20deg); }
+  60% { transform: rotate(-10deg); }
+  100% { transform: var(--needle-final); }
+}
+
+/* 명예의 전당 그네 - 흔들림 */
+@keyframes swing-1 { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@keyframes swing-2 { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes swing-3 { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+.animate-swing-1 { animation: swing-1 2.5s ease-in-out infinite; }
+.animate-swing-2 { animation: swing-2 3s ease-in-out infinite; }
+.animate-swing-3 { animation: swing-3 2.2s ease-in-out infinite; }
+@keyframes swing-push {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-28deg); }
+  75% { transform: rotate(28deg); }
+  100% { transform: rotate(0deg); }
+}
+.animate-swing-push {
+  animation: swing-push 0.9s ease-in-out;
+}
+
+/* 보물찾기 이정표 - 판자 흔들림 (끼이익-) */
+@keyframes signpost-wobble {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(-3deg); }
+  30% { transform: rotate(2deg); }
+  45% { transform: rotate(-2deg); }
+  60% { transform: rotate(1.5deg); }
+  75% { transform: rotate(-1deg); }
+}
+.animate-signpost-wobble {
+  animation: signpost-wobble 0.5s ease-in-out;
+}
+
+/* 언어의 울림통 - 파이프 웅- 진동 */
+@keyframes pipe-whisper {
+  0%, 100% { transform: translateX(0) scale(1); }
+  15% { transform: translateX(-1px) scale(1.02); }
+  30% { transform: translateX(1px) scale(1); }
+  45% { transform: translateX(-1px) scale(1.01); }
+  60% { transform: translateX(1px) scale(1); }
+  75% { transform: translateX(-0.5px) scale(1.01); }
+}
+.animate-pipe-whisper {
+  animation: pipe-whisper 0.4s ease-in-out;
+}
+
+/* 독서 밸런스 시소 - 끼이익- 기울기 */
+@keyframes seesaw-creak {
+  0% { filter: none; }
+  20% { filter: drop-shadow(0 0 1px rgba(0,0,0,0.1)); }
+  40% { filter: none; }
+  60% { filter: drop-shadow(0 0 1px rgba(0,0,0,0.05)); }
+  100% { filter: none; }
+}
+.animate-seesaw-creak {
+  animation: seesaw-creak 0.8s ease-out;
+}
+
+/* 종이비행기 리뷰 - 접기 → 날기 → 페이드아웃 (한 번에) */
+@keyframes paper-fold-and-fly {
+  0% { transform: translateY(0) translateX(0) scale(1) rotate(-5deg); opacity: 1; }
+  25% { transform: translateY(0) translateX(0) scale(0.7) rotate(-25deg); opacity: 1; }
+  35% { transform: translateY(0) translateX(0) scale(0.5) rotate(-35deg); opacity: 1; }
+  50% { transform: translateY(-35vh) translateX(6px) scale(0.45) rotate(-20deg); opacity: 1; }
+  70% { transform: translateY(-65vh) translateX(-6px) scale(0.4) rotate(0deg); opacity: 0.9; }
+  85% { transform: translateY(-95vh) translateX(4px) scale(0.35) rotate(5deg); opacity: 0.4; }
+  100% { transform: translateY(-130vh) translateX(-8px) scale(0.3) rotate(8deg); opacity: 0; }
+}
+.animate-paper-fold-and-fly {
+  animation: paper-fold-and-fly 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* 취향의 모래성 - 터치 시 모래 살짝 흘러내림 + 깃발 팔락 */
+@keyframes sand-touch {
+  0%, 100% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(2px) scale(1.02); }
+  60% { transform: translateY(1px) scale(1.01); }
+}
+.animate-sand-touch {
+  animation: sand-touch 0.5s ease-out;
+}
+
+@keyframes flag-flutter {
+  0%, 100% { transform: rotate(-2deg); }
+  25% { transform: rotate(3deg); }
+  50% { transform: rotate(-1deg); }
+  75% { transform: rotate(2deg); }
+}
+.animate-flag-flutter {
+  animation: flag-flutter 0.6s ease-in-out infinite;
+}
+
+/* 운명의 미끄럼틀: 낙하 (ease-in-expo), 착지 바운스, 모래 먼지 */
+@keyframes destiny-slide-down {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(58vw, 68vh); }
+}
+@keyframes destiny-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+@keyframes destiny-dust {
+  0% { opacity: 0.9; transform: scale(0.3); }
+  100% { opacity: 0; transform: scale(2); }
 }

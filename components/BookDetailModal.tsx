@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { X, Sun, Cloud, CloudRain, CloudSnow, CloudFog, Moon } from "lucide-react";
+import { X, Sun, Cloud, CloudRain, CloudSnow, CloudFog, Moon, Search, Loader2 } from "lucide-react";
+import PaperAirplaneReviewModal from "./PaperAirplaneReviewModal";
 import type { Book } from "@/lib/useBooks";
 import { OWNERSHIP_LABELS, READING_STATUS_LABELS } from "@/lib/supabase/types";
 
@@ -50,14 +51,19 @@ interface BookDetailModalProps {
   onClose: () => void;
   onUpdateCountry?: (id: string, country: string) => void;
   onEdit?: (book: Book) => void;
+  onUpdateBook?: (book: Book) => void;
+  onSetReadingStatus?: (id: string, status: import("@/lib/supabase/types").ReadingStatus) => void;
 }
 
-function Row({ label, value }: { label: string; value: string | number | undefined }) {
+/** 대출 카드 한 줄: 라벨 | 값, 아래 실선 */
+function CardRow({ label, value }: { label: string; value: string | number | undefined }) {
   if (value === undefined || value === null || String(value).trim() === "") return null;
   return (
-    <div className="flex border-b border-gray-100 py-3.5">
-      <span className="w-24 flex-shrink-0 text-[14px] text-gray-500">{label}</span>
-      <span className="text-[15px] text-gray-800 break-words">{String(value)}</span>
+    <div className="flex items-baseline min-h-[2.25rem] border-b border-[#8a7a6a]/40 font-serif text-[13px] sm:text-[14px]">
+      <span className="w-20 flex-shrink-0 text-text-muted/90">{label}</span>
+      <span className="flex-1 min-w-0 text-text-main break-words pb-0.5">
+        {String(value)}
+      </span>
     </div>
   );
 }
@@ -86,7 +92,120 @@ function formatMemoryDate(value: string | undefined): string {
   }
 }
 
-export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit }: BookDetailModalProps) {
+interface SearchBookItem {
+  title: string;
+  author: string;
+  publisher?: string;
+  pubDate?: string;
+  cover?: string;
+  description?: string;
+  isbn?: string;
+  retailPrice?: number;
+  pageCount?: number;
+}
+
+interface AladinBookResponse {
+  title: string;
+  author: string;
+  publisher?: string;
+  pubDate?: string;
+  cover?: string;
+  description?: string;
+  isbn?: string;
+  retailPrice?: number;
+  pageCount?: number;
+  format?: string;
+  category?: string;
+  series?: string;
+}
+
+export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit, onUpdateBook }: BookDetailModalProps) {
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState<SearchBookItem[]>([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [selectLoading, setSelectLoading] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
+
+  const handleSearch = useCallback(async () => {
+    const q = searchQuery.trim();
+    if (!q) {
+      setSearchError("책 이름을 입력해주세요.");
+      return;
+    }
+    setSearchError(null);
+    setSearchLoading(true);
+    setSearchResults([]);
+    try {
+      const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+      const data = await res.json();
+      if (!res.ok) {
+        setSearchError((data.error as string) || "검색에 실패했습니다.");
+        return;
+      }
+      setSearchResults((data.books ?? []).map((b: Record<string, unknown>) => ({
+        title: (b.title as string) ?? "",
+        author: (b.author as string) ?? "",
+        publisher: b.publisher as string | undefined,
+        pubDate: b.pubDate as string | undefined,
+        cover: b.cover as string | undefined,
+        description: b.description as string | undefined,
+        isbn: (b.isbn as string) ?? undefined,
+        retailPrice: typeof b.retailPrice === "number" ? b.retailPrice : Number(b.retailPrice) || undefined,
+        pageCount: typeof b.pageCount === "number" ? b.pageCount : Number(b.pageCount) || undefined,
+      })));
+    } catch {
+      setSearchError("검색 중 오류가 발생했습니다.");
+    } finally {
+      setSearchLoading(false);
+    }
+  }, [searchQuery]);
+
+  const handleSelectResult = useCallback(async (item: SearchBookItem) => {
+    if (!onUpdateBook || !book || !item.isbn) return;
+    setSelectLoading(item.isbn);
+    setSearchError(null);
+    try {
+      const res = await fetch(`/api/book?isbn=${encodeURIComponent(item.isbn)}`);
+      const data = await res.json();
+      if (!res.ok) {
+        setSearchError((data.error as string) || "상세 조회에 실패했습니다.");
+        return;
+      }
+      const fetched = data as AladinBookResponse;
+      const updated: Book = {
+        ...book,
+        title: fetched.title || item.title || book.title,
+        author: fetched.author || item.author || book.author,
+        publisher: fetched.publisher ?? item.publisher ?? book.publisher,
+        pubDate: fetched.pubDate ?? item.pubDate ?? book.pubDate,
+        cover: fetched.cover ?? item.cover ?? book.cover,
+        description: fetched.description ?? item.description ?? book.description,
+        isbn: fetched.isbn ?? item.isbn ?? book.isbn,
+        retailPrice: fetched.retailPrice ?? item.retailPrice ?? book.retailPrice,
+        pageCount: fetched.pageCount ?? item.pageCount ?? book.pageCount,
+        format: fetched.format ?? book.format,
+        category: fetched.category ?? book.category,
+        series: fetched.series ?? book.series,
+      };
+      onUpdateBook(updated);
+      setSearchQuery("");
+      setSearchResults([]);
+    } catch {
+      setSearchError("조회 중 오류가 발생했습니다.");
+    } finally {
+      setSelectLoading(null);
+    }
+  }, [book, onUpdateBook]);
+
+  useEffect(() => {
+    if (book) {
+      setSearchQuery("");
+      setSearchResults([]);
+      setSearchError(null);
+    }
+  }, [book?.id]);
+
   useEffect(() => {
     if (!book) return;
     const handler = (e: KeyboardEvent) => {
@@ -105,6 +224,8 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
   const ownershipLabel = book.ownershipType ? OWNERSHIP_LABELS[book.ownershipType] : "쌓인 책";
   const readingLabel = book.readingStatus ? READING_STATUS_LABELS[book.readingStatus] : "-";
 
+  const regNo = book.id ? String(book.id).slice(-6) : "—";
+
   const modal = (
     <div
       className="fixed inset-0 z-[3000] flex items-end sm:items-center justify-center bg-black/50 p-0 sm:p-4 pt-[env(safe-area-inset-top)] pb-[env(safe-area-inset-bottom)]"
@@ -113,134 +234,304 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
       aria-modal="true"
       aria-labelledby="book-detail-title"
     >
+      {/* 갈색 주머니 + 크림색 대출 카드 */}
       <div
-        className="w-full max-w-[480px] max-h-[90dvh] sm:max-h-[85vh] bg-[#FFFFFF] rounded-t-2xl sm:rounded-2xl overflow-hidden flex flex-col shadow-xl"
+        className="w-full max-w-[480px] max-h-[90dvh] sm:max-h-[85vh] flex rounded-t-2xl sm:rounded-2xl overflow-hidden flex-col shadow-[0_8px_32px_rgba(58,49,40,0.25)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-start gap-4 p-4 border-b border-gray-100">
-          <div className="flex-shrink-0">
-            {book.cover ? (
-              <img
-                src={book.cover}
-                alt={book.title}
-                className="w-24 h-[132px] object-cover rounded-lg shadow-md"
-                referrerPolicy="no-referrer"
-              />
-            ) : (
-              <div className="w-24 h-[132px] rounded-lg bg-gray-200 flex items-center justify-center">
-                <span className="text-[11px] text-gray-500 text-center px-2 line-clamp-4 leading-tight">
-                  {book.title}
-                </span>
-              </div>
-            )}
+        {/* 왼쪽 갈색 주머니(띠) - 카드가 꽂혀 있는 느낌 */}
+        <div className="flex flex-1 min-h-0">
+          <div className="w-6 flex-shrink-0 checkout-pocket flex flex-col items-center justify-between py-2">
+            <p className="text-[8px] font-serif text-[#5a4a3a] text-center leading-tight px-0.5" style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}>
+              주 의
+            </p>
+            <p className="text-[8px] font-serif text-[#5a4a3a] tracking-widest" style={{ writingMode: "vertical-rl", textOrientation: "mixed" }}>
+              대출기록
+            </p>
           </div>
-          <div className="flex-1 min-w-0">
-            <h2 id="book-detail-title" className="text-[19px] sm:text-[20px] font-bold text-[#11593F] leading-snug">
-              {book.title}
-            </h2>
-            {book.author && (
-              <p className="text-[15px] sm:text-[16px] text-gray-600 mt-1">{book.author}</p>
-            )}
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-100 text-gray-600 flex-shrink-0"
-            aria-label="닫기"
-          >
-            <X size={24} strokeWidth={2} />
-          </button>
-        </div>
 
-        <div className="flex-1 overflow-y-auto px-4 py-3">
-          <Row label="작가" value={book.author} />
-          <Row label="공동저자" value={book.coAuthor} />
-          <Row label="출판사" value={book.publisher} />
-          <Row label="출간일" value={book.pubDate} />
-          <Row label="판형" value={book.format} />
-          <Row label="시리즈" value={book.series} />
-          <Row label="분야" value={book.category} />
-          <Row label="정가" value={book.retailPrice != null ? `₩${Number(book.retailPrice).toLocaleString()}` : undefined} />
-          <Row label="ISBN" value={book.isbn} />
-          <div className="flex border-b border-gray-100 py-3.5 items-center gap-2">
-            <span className="w-24 flex-shrink-0 text-[14px] text-gray-500">출판 국가</span>
-            <div className="flex-1 min-w-0">
-              {onUpdateCountry ? (
-                <select
-                  value={book.country?.toUpperCase() ?? ""}
-                  onChange={(e) => {
-                    const v = e.target.value.trim().toUpperCase().slice(0, 2);
-                    onUpdateCountry(book.id, v);
-                  }}
-                  className="w-full max-w-[200px] text-[15px] text-gray-800 border border-gray-200 rounded-lg px-3 py-2.5 bg-white min-h-[44px]"
-                >
-                  {COUNTRY_OPTIONS.map(({ code, name }) => (
-                    <option key={code || "empty"} value={code}>
-                      {code ? `${name} (${code})` : name}
-                    </option>
-                  ))}
-                </select>
-              ) : (
-                <span className="text-[15px] text-gray-800">
-                  {book.country
-                    ? `${COUNTRY_OPTIONS.find((c) => c.code === book.country)?.name ?? book.country} (${book.country})`
-                    : "미입력"}
-                </span>
-              )}
+          {/* 흰/크림색 카드 본문 */}
+          <div className="flex-1 min-w-0 flex flex-col checkout-card-bg border border-[#c4b090] border-l-0 rounded-tr-2xl">
+            {/* 맨 윗 칸: 도서 대출 카드 타이틀 (타자기/명조) */}
+            <div className="px-4 pt-3 pb-2 border-b border-[#8a7a6a]/40 text-center">
+              <p
+                className="font-serif text-[15px] sm:text-[16px] font-bold text-[#3A3128] tracking-[0.35em]"
+                style={{ letterSpacing: "0.35em" }}
+              >
+                도 서 대 출 카 드
+              </p>
             </div>
-          </div>
-          <Row label="소유형태" value={ownershipLabel} />
-          <Row label="독서상태" value={readingLabel} />
-
-          {/* 감성 기록 - CD 모양 (인스타 노래 추가 스타일) */}
-          <div className="rounded-xl bg-[#FAFAF8] border border-ivory-border p-4 my-4">
-            <p className="text-[13px] font-bold text-[#11593F] mb-3">감성 기록</p>
-            <div className="flex items-center gap-4">
-              <div className="flex-shrink-0 w-14 h-14 rounded-full bg-[#11593F] flex items-center justify-center animate-spin-slow shadow-md">
-                <div className="w-4 h-4 rounded-full bg-[#FAFAF8] ring-2 ring-[#11593F]" />
-              </div>
-              <div className="flex-1 min-w-0">
-                {book.bgmTitle || book.bgmArtist ? (
-                  <p className="text-[15px] text-gray-800">
-                    🎵 {[book.bgmTitle, book.bgmArtist].filter(Boolean).join(" - ")}
-                  </p>
-                ) : (
-                  <p className="text-[14px] text-gray-500">이 책의 BGM을 기록해주세요</p>
+            {/* 카드 상단: 닫기 버튼 + 등록번호·저자명·서명 (실제 대출 카드 레이아웃) */}
+            <div className="relative px-4 pt-3 pb-2 border-b border-[#8a7a6a]/50">
+              <button
+                type="button"
+                onClick={onClose}
+                className="absolute top-2 right-2 p-1.5 rounded-full hover:bg-black/5 text-text-muted transition-colors"
+                aria-label="닫기"
+              >
+                <X size={20} strokeWidth={2} />
+              </button>
+              <div className="font-serif text-[12px] text-text-muted/80 mb-1">등록번호</div>
+              <div className="font-serif text-[13px] text-text-main mb-2 pb-1 border-b border-[#8a7a6a]/40">{regNo}</div>
+              <div className="flex gap-3 mt-2">
+                {book.cover && (
+                  <img
+                    src={book.cover}
+                    alt=""
+                    className="w-14 h-[72px] object-cover rounded border border-[#8a7a6a]/40 flex-shrink-0"
+                    referrerPolicy="no-referrer"
+                  />
                 )}
-                <div className="flex items-center gap-3 mt-1.5 text-[13px] text-gray-500">
-                  {book.weather && (
-                    <span className="flex items-center gap-1">
-                      <WeatherIcon name={book.weather} className="w-3.5 h-3.5" />
-                      {book.weather.replace(/^[^\s]+\s/, "")}
-                    </span>
-                  )}
-                  {(book.readDates?.[0]?.start || book.pubDate) && (
-                    <span>{formatMemoryDate(book.readDates?.[0]?.start ?? book.pubDate ?? "")}</span>
-                  )}
+                <div className="flex-1 min-w-0">
+                  <div className="font-serif text-[11px] text-text-muted/80 mb-0.5">저자명</div>
+                  <div className="font-serif text-[13px] text-text-main border-b border-[#8a7a6a]/40 pb-0.5">{book.author || "—"}</div>
+                  <div className="font-serif text-[11px] text-text-muted/80 mt-2 mb-0.5">서명</div>
+                  <h2 id="book-detail-title" className="font-serif text-[13px] sm:text-[14px] font-semibold text-primary border-b border-[#8a7a6a]/40 pb-0.5">
+                    {book.title}
+                  </h2>
                 </div>
               </div>
             </div>
+
+            {/* 카드 본문: 타자기 테이블 (선 하나만) */}
+            <div className="flex-1 overflow-y-auto px-4 py-2 checkout-card-line">
+              {!book.cover && onUpdateBook && (
+                <div className="mb-4 p-3 rounded-lg border border-[#8a7a6a]/50 bg-white/50">
+                  <p className="text-[12px] font-serif text-primary mb-2">표지가 없어요. 책 이름을 검색하면 알라딘에서 표지와 정보를 가져옵니다.</p>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={searchQuery}
+                      onChange={(e) => {
+                        setSearchQuery(e.target.value);
+                        setSearchError(null);
+                      }}
+                      onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                      placeholder="책 이름 입력"
+                      className="flex-1 min-w-0 px-3 py-2 rounded border border-[#8a7a6a]/50 text-[13px] outline-none focus:border-primary"
+                      disabled={searchLoading}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSearch}
+                      disabled={searchLoading}
+                      className="flex-shrink-0 px-4 py-2 rounded border-2 border-primary text-primary font-serif font-semibold text-[13px] hover:bg-primary hover:text-white active:opacity-90 transition-colors disabled:opacity-60 disabled:cursor-not-allowed flex items-center gap-2"
+                    >
+                      {searchLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+                      {searchLoading ? "검색 중" : "검색"}
+                    </button>
+                  </div>
+                  {searchError && <p className="mt-2 text-[12px] text-red-600 font-serif">{searchError}</p>}
+                  {searchResults.length > 0 && (
+                    <div className="mt-3 max-h-[140px] overflow-y-auto space-y-1">
+                      {searchResults.map((item, i) => (
+                        <button
+                          key={item.isbn ?? i}
+                          type="button"
+                          onClick={() => handleSelectResult(item)}
+                          disabled={!!selectLoading}
+                          className="w-full flex gap-2 p-2 rounded border border-[#8a7a6a]/30 hover:border-primary/50 hover:bg-primary/5 text-left transition-colors disabled:opacity-60"
+                        >
+                          {item.cover ? (
+                            <img src={item.cover} alt="" className="w-8 h-11 object-cover rounded flex-shrink-0" referrerPolicy="no-referrer" />
+                          ) : (
+                            <div className="w-8 h-11 rounded flex-shrink-0 bg-secondary/30 flex items-center justify-center text-[9px] text-text-muted">표지</div>
+                          )}
+                          <div className="flex-1 min-w-0">
+                            <p className="text-[12px] font-medium text-primary truncate">{item.title}</p>
+                            <p className="text-[11px] text-text-muted truncate">{item.author}</p>
+                          </div>
+                          {selectLoading === item.isbn ? (
+                            <Loader2 className="w-4 h-4 animate-spin flex-shrink-0 text-primary" />
+                          ) : null}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              <CardRow label="공동저자" value={book.coAuthor} />
+              <CardRow label="출판사" value={book.publisher} />
+              <CardRow label="출간일" value={book.pubDate} />
+              <CardRow label="판형" value={book.format} />
+              <CardRow label="시리즈" value={book.series} />
+              <CardRow label="분야" value={book.category} />
+              <CardRow label="정가" value={book.retailPrice != null ? `₩${Number(book.retailPrice).toLocaleString()}` : undefined} />
+              <CardRow label="ISBN" value={book.isbn} />
+              <div className="flex items-baseline min-h-[2.25rem] border-b border-[#8a7a6a]/40 font-serif text-[13px] sm:text-[14px]">
+                <span className="w-20 flex-shrink-0 text-text-muted/90">출판국가</span>
+                <div className="flex-1 min-w-0 pb-0.5">
+                  {onUpdateCountry ? (
+                    <select
+                      value={book.country?.toUpperCase() ?? ""}
+                      onChange={(e) => {
+                        const v = e.target.value.trim().toUpperCase().slice(0, 2);
+                        onUpdateCountry(book.id, v);
+                      }}
+                      className="w-full max-w-[180px] text-[13px] text-text-main border-0 bg-transparent p-0 font-serif focus:ring-0"
+                    >
+                      {COUNTRY_OPTIONS.map(({ code, name }) => (
+                        <option key={code || "empty"} value={code}>
+                          {code ? `${name} (${code})` : name}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span className="text-text-main">
+                      {book.country
+                        ? `${COUNTRY_OPTIONS.find((c) => c.code === book.country)?.name ?? book.country} (${book.country})`
+                        : "미입력"}
+                    </span>
+                  )}
+                </div>
+              </div>
+              <CardRow label="소유형태" value={ownershipLabel} />
+              <CardRow label="독서상태" value={readingLabel} />
+
+          {/* 감성 기록 - C-90 스타일 (흰 메모 + 빨간 밴드 + 흰 허브 릴) */}
+          <div className="my-4">
+            <p className="text-[11px] text-text-muted font-serif uppercase tracking-widest mb-2">감성 기록</p>
+            <div
+              className="relative w-full max-w-[320px] mx-auto overflow-hidden rounded-md"
+              style={{
+                aspectRatio: "1.95/1",
+                background: "#2a2a2a",
+                boxShadow: "0 4px 16px rgba(0,0,0,0.35), inset 0 0 0 1px #1a1a1a",
+              }}
+            >
+              {/* 라벨: 상단 흰색(메모) + 하단 빨간 밴드 */}
+              <div className="absolute inset-2 flex flex-col rounded-sm overflow-hidden">
+                {/* 상단 흰색 영역: BGM 위 → 릴 정가운데 → A/IN/OUT 등 */}
+                <div className="flex-1 min-h-0 bg-white flex flex-col px-2 pt-1.5 pb-0">
+                  {/* BGM (맨 위) */}
+                  <div className="flex-shrink-0 py-1 border-b border-black/20">
+                    {book.bgmTitle || book.bgmArtist ? (
+                      <p className="text-[9px] font-mono text-black/80 truncate w-full text-center">
+                        {book.bgmArtist && book.bgmTitle ? `${book.bgmArtist} / ${book.bgmTitle}` : (book.bgmTitle || book.bgmArtist || "—")}
+                      </p>
+                    ) : (
+                      <p className="text-[8px] font-mono text-black/50 text-center">이 책의 BGM을 기록해주세요</p>
+                    )}
+                  </div>
+                  {/* 원형 릴 창 2개: 정가운데 배치 */}
+                  <div className="flex-1 min-h-0 flex items-center justify-center gap-4 py-2 flex-shrink-0">
+                    <div className="relative w-14 h-14 rounded-full flex items-center justify-center border-2 border-black overflow-hidden" style={{ background: "linear-gradient(135deg, #5c4a3a 0%, #4a3d32 30%, #3d3328 70%, #2a2218 100%)" }}>
+                      <div className="absolute inset-1 rounded-full bg-white border-2 border-black" />
+                      <div className="absolute inset-2 rounded-full" style={{ background: "radial-gradient(circle at 30% 30%, #6b5a4a, #3d3328 50%, #2a2218)" }} />
+                    </div>
+                    <div className="relative w-14 h-14 rounded-full flex items-center justify-center border-2 border-black overflow-hidden" style={{ background: "linear-gradient(135deg, #5c4a3a 0%, #4a3d32 30%, #3d3328 70%, #2a2218 100%)" }}>
+                      <div className="absolute inset-1 rounded-full bg-white border-2 border-black" />
+                      <div className="absolute inset-2 rounded-full" style={{ background: "radial-gradient(circle at 30% 30%, #6b5a4a, #3d3328 50%, #2a2218)" }} />
+                    </div>
+                  </div>
+                  {/* 하단: A 박스 + IN/OUT + Compact Cassette */}
+                  <div className="flex justify-between items-start flex-shrink-0 pt-1 border-t border-black/20">
+                    <div className="flex items-center gap-1">
+                      <div className="w-4 h-4 flex items-center justify-center bg-black rounded-sm">
+                        <span className="text-[10px] font-bold text-white">A</span>
+                      </div>
+                      <div className="flex flex-col gap-0.5">
+                        <label className="flex items-center gap-1 text-[8px] text-black">
+                          <span className="w-2.5 h-2.5 border border-black rounded-none" /> IN
+                        </label>
+                        <label className="flex items-center gap-1 text-[8px] text-black">
+                          <span className="w-2.5 h-2.5 border border-black rounded-none" /> OUT
+                        </label>
+                      </div>
+                    </div>
+                    <p className="text-[7px] text-black/80 font-mono">-Compact Cassette-</p>
+                  </div>
+                </div>
+                {/* 하단 빨간 밴드 */}
+                <div className="h-6 flex flex-col items-center justify-center flex-shrink-0 border-t border-black/30" style={{ background: "#c41e3a" }}>
+                  <span className="text-[11px] font-bold text-white tracking-wide">SIINSEON</span>
+                  <span className="text-[7px] text-white/95 font-mono">LOW NOISE CASSETTE TAPE</span>
+                </div>
+              </div>
+
+              {/* 나사 4개: 네 모서리 */}
+              <div className="absolute top-1 left-1 w-1.5 h-1.5 rounded-full bg-black z-10" />
+              <div className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-black z-10" />
+              <div className="absolute bottom-1 left-1 w-1.5 h-1.5 rounded-full bg-black z-10" />
+              <div className="absolute bottom-1 right-1 w-1.5 h-1.5 rounded-full bg-black z-10" />
+
+              {/* 하단 구멍: 왼쪽 원, 중앙 흰 원+사각, 오른쪽 원 */}
+              <div className="absolute bottom-0.5 left-1/4 w-1.5 h-1.5 rounded-full bg-black/80 -translate-x-1/2 z-10" />
+              <div className="absolute bottom-0.5 left-1/2 flex items-center justify-center gap-0.5 -translate-x-1/2 z-10">
+                <div className="w-1 h-1 rounded-full bg-white/90" />
+                <div className="w-2 h-1.5 rounded-none bg-black/60" />
+                <div className="w-1 h-1 rounded-full bg-white/90" />
+              </div>
+              <div className="absolute bottom-0.5 right-1/4 w-1.5 h-1.5 rounded-full bg-black/80 translate-x-1/2 z-10" />
+            </div>
+            {(book.weather || book.readDates?.[0]?.start || book.pubDate) && (
+              <div className="flex items-center justify-center gap-3 mt-2 text-[11px] text-text-muted font-serif">
+                {book.weather && (
+                  <span className="flex items-center gap-1">
+                    <WeatherIcon name={book.weather} className="w-3.5 h-3.5" />
+                    {book.weather.replace(/^[^\s]+\s/, "")}
+                  </span>
+                )}
+                {(book.readDates?.[0]?.start || book.pubDate) && (
+                  <span>{formatMemoryDate(book.readDates?.[0]?.start ?? book.pubDate ?? "")}</span>
+                )}
+              </div>
+            )}
           </div>
 
-          {onEdit && (
-            <div className="pt-4 pb-2">
-              <button
-                type="button"
-                onClick={() => {
-                  onEdit(book);
-                  onClose();
-                }}
-                className="w-full py-3.5 min-h-[48px] rounded-xl border-2 border-[#11593F] text-[#11593F] font-bold text-[15px] hover:bg-[#11593F] hover:text-white active:opacity-90 transition-colors"
-              >
-                상세 기록 수정
-              </button>
+          <div className="pt-4 pb-2 flex flex-col gap-2">
+              {onUpdateBook && (
+                <button
+                  type="button"
+                  onClick={() => setReviewModalOpen(true)}
+                  className="w-full py-3 min-h-[44px] rounded border-2 border-[#6a7c5a] font-serif font-semibold text-[14px] flex items-center justify-center gap-2 transition-colors"
+                  style={{ color: "#5a6c4a", backgroundColor: "rgba(106, 124, 90, 0.12)" }}
+                >
+                  ✈️ 종이비행기 리뷰
+                </button>
+              )}
+              {onEdit && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    onEdit(book);
+                    onClose();
+                  }}
+                  className="w-full py-3 min-h-[44px] rounded border-2 border-primary text-primary font-serif font-semibold text-[14px] hover:bg-primary hover:text-white active:opacity-90 transition-colors"
+                >
+                  상세 기록 수정
+                </button>
+              )}
             </div>
-          )}
+            </div>
+
+            {/* 카드 하단: 출빛소 (제조사명 느낌) */}
+            <div className="px-4 py-2 border-t border-[#8a7a6a]/30 text-center flex-shrink-0">
+              <p className="text-[9px] font-serif text-text-muted/70 uppercase tracking-widest">출빛소</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   );
 
   if (typeof document === "undefined") return null;
-  return createPortal(modal, document.body);
+  return createPortal(
+    <>
+      {modal}
+      {book && (
+        <PaperAirplaneReviewModal
+          isOpen={reviewModalOpen}
+          onClose={() => setReviewModalOpen(false)}
+          bookTitle={book.title}
+          initialReview={book.review}
+          onSave={(reviewText) => {
+            onUpdateBook?.({ ...book, review: reviewText });
+            setReviewModalOpen(false);
+          }}
+        />
+      )}
+    </>,
+    document.body
+  );
 }

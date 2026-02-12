@@ -15,7 +15,7 @@ export default function Dashboard({
     <div
       className="rounded-2xl p-7 mb-5 text-white shadow-asset-card"
       style={{
-        background: "linear-gradient(135deg, #11593F 0%, #1a7a57 100%)",
+        background: "linear-gradient(135deg, #4A5E42 0%, #6A8B9A 100%)",
       }}
     >
       <h2 className="text-[13px] opacity-90 mb-2">독서 현황</h2>

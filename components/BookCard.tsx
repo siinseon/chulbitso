@@ -30,14 +30,14 @@ export default function BookCard({
   onSetReadingStatus,
 }: BookCardProps) {
   return (
-    <article className="relative bg-[#FFFFFF] rounded-xl p-4 sm:p-5 shadow-card hover:shadow-card-lg transition-all">
+    <article className="vintage-ticket relative rounded-xl p-4 sm:p-5 shadow-card hover:shadow-asset-card transition-all overflow-visible">
       <button
         type="button"
         onClick={(e) => {
           e.stopPropagation();
           onDelete(book.id);
         }}
-        className="absolute top-3 right-3 w-10 h-10 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-gray-400 hover:bg-red-50 hover:text-red-600 active:bg-red-100 transition-colors z-10"
+        className="absolute top-3 right-3 w-10 h-10 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-text-muted hover:bg-red-50 hover:text-red-600 active:bg-red-100 transition-colors z-10"
         aria-label="삭제"
       >
         <Trash2 size={18} strokeWidth={2.5} />
@@ -60,34 +60,34 @@ export default function BookCard({
             <img
               src={book.cover}
               alt={book.title}
-              className="w-20 h-[112px] object-cover rounded-lg flex-shrink-0 shadow-sm bg-gray-100"
+              className="w-20 h-[112px] object-cover rounded-lg flex-shrink-0 shadow-sm bg-secondary/20"
               referrerPolicy="no-referrer"
             />
           ) : (
-            <div className="w-20 h-[112px] rounded-lg flex-shrink-0 bg-gray-200 flex items-end justify-center pb-2.5">
-              <span className="text-[10px] text-gray-500 text-center px-1 line-clamp-3 leading-tight w-full">
+            <div className="w-20 h-[112px] rounded-lg flex-shrink-0 bg-secondary/30 flex items-end justify-center pb-2.5">
+              <span className="text-[10px] text-text-muted text-center px-1 line-clamp-3 leading-tight w-full">
                 {book.title}
               </span>
             </div>
           )}
           <div className="flex-1 min-w-0">
-            <h3 className="text-[16px] sm:text-[17px] font-bold text-[#11593F] leading-snug line-clamp-2">
+            <h3 className="text-[16px] sm:text-[17px] font-bold text-primary font-serif leading-snug line-clamp-2">
               {book.title}
             </h3>
             {book.author && (
-              <p className="text-[14px] text-gray-600 mt-1">{book.author}</p>
+              <p className="text-[14px] text-text-muted mt-1">{book.author}</p>
             )}
             {(book.series || book.publisher || book.category) && (
-              <div className="flex flex-wrap gap-2 text-[13px] text-gray-500 mt-2">
+              <div className="flex flex-wrap gap-2 text-[13px] text-text-muted mt-2">
                 {book.series && (
-                  <span className="text-[#11593F] font-medium">📚 {book.series}</span>
+                  <span className="text-accent-cool font-medium">📚 {book.series}</span>
                 )}
                 {book.publisher && <span>🏢 {book.publisher}</span>}
                 {book.category && <span>📖 {book.category}</span>}
               </div>
             )}
             {book.retailPrice && book.retailPrice > 0 && (
-              <p className="text-[13px] text-gray-500 mt-1">
+              <p className="text-[13px] text-text-muted mt-1">
                 ₩{book.retailPrice.toLocaleString()}
               </p>
             )}
@@ -104,10 +104,10 @@ export default function BookCard({
                   e.stopPropagation();
                   onSetReadingStatus(book.id, status);
                 }}
-                className={`px-3 py-2 min-h-[40px] rounded-lg text-[12px] font-bold transition-colors ${
+                className={`px-3 py-2 min-h-[40px] rounded-lg text-[12px] font-bold transition-colors shadow-sm ${
                   book.readingStatus === status
-                    ? "bg-[#11593F] text-white"
-                    : "bg-gray-100 text-gray-500"
+                    ? "bg-primary text-white shadow-[0_2px_8px_rgba(74,94,66,0.3)]"
+                    : "bg-secondary/20 text-text-muted"
                 }`}
               >
                 {READING_STATUS_LABELS[status]}

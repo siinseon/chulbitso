@@ -23,7 +23,7 @@ export default function SearchBar({
 
   return (
     <form onSubmit={handleSubmit} className="search-bar">
-      <Search size={20} stroke="#11593F" />
+      <Search size={20} stroke="var(--primary)" />
       <input
         type="text"
         value={query}
@@ -37,7 +37,7 @@ export default function SearchBar({
         disabled={disabled}
         style={{
           padding: "10px 20px",
-          background: "var(--point-color)",
+          background: "var(--accent-warm)",
           color: "white",
           border: "none",
           borderRadius: "8px",

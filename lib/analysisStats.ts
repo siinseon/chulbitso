@@ -57,6 +57,43 @@ export interface KnowledgeThickness {
   icon: string;
 }
 
+/** 문학(감성) vs 비문학(이성) */
+export interface LiteratureBalance {
+  literature: number;
+  nonLiterature: number;
+}
+
+/** Hall of Fame: Top 장르/작가 */
+export interface HallOfFameItem {
+  label: string;
+  value: string;
+}
+
+export interface TranslatorStat {
+  name: string;
+  count: number;
+}
+
+export interface AuthorStat {
+  name: string;
+  count: number;
+}
+
+export interface SeriesStat {
+  name: string;
+  count: number;
+}
+
+export interface GenreStat {
+  name: string;
+  count: number;
+}
+
+export interface PublisherStat {
+  name: string;
+  count: number;
+}
+
 export interface AnalysisSummary {
   totalCount: number;
   totalValue: number;
@@ -67,6 +104,13 @@ export interface AnalysisSummary {
   byCountry: CountryStat[];
   countWithCountry: number;
   knowledgeThickness: KnowledgeThickness;
+  literatureBalance: LiteratureBalance;
+  avgPubYear: number | null;
+  topTranslators: TranslatorStat[];
+  topAuthors: AuthorStat[];
+  topSeries: SeriesStat[];
+  topGenres: GenreStat[];
+  topPublishers: PublisherStat[];
 }
 
 export function computeAnalysisSummary(books: BooksSnapshot): AnalysisSummary {
@@ -130,6 +174,74 @@ export function computeAnalysisSummary(books: BooksSnapshot): AnalysisSummary {
   const heightCm = heightMm / 10;
   const knowledgeThickness = getKnowledgeThickness(totalPages, heightCm);
 
+  // 문학(감성): 소설/시/희곡, 에세이, 만화. 비문학(이성): 그 외 전부(인문, 사회, 과학, 경제, 역사, 예술, 자기계발 등)
+  const LITERATURE_CATEGORIES = ["소설/시/희곡", "에세이", "만화", "시집", "소설"];
+  let literature = 0;
+  let nonLiterature = 0;
+  all.forEach((b) => {
+    const cat = (b.category ?? "").trim() || "기타";
+    if (LITERATURE_CATEGORIES.includes(cat)) literature += 1;
+    else nonLiterature += 1;
+  });
+  const literatureBalance: LiteratureBalance = { literature, nonLiterature };
+
+  const years: number[] = [];
+  all.forEach((b) => {
+    const d = b.pubDate?.trim();
+    if (!d) return;
+    const y = parseInt(d.slice(0, 4), 10);
+    if (y >= 1000 && y <= 2100) years.push(y);
+  });
+  const avgPubYear = years.length > 0
+    ? Math.round(years.reduce((a, b) => a + b, 0) / years.length)
+    : null;
+
+  const seriesCount: Record<string, number> = {};
+  all.forEach((b) => {
+    const s = (b.series ?? "").trim();
+    if (!s) return;
+    seriesCount[s] = (seriesCount[s] ?? 0) + 1;
+  });
+  const topSeries: SeriesStat[] = Object.entries(seriesCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([name, count]) => ({ name, count }));
+  const authorCount: Record<string, number> = {};
+  all.forEach((b) => {
+    const a = (b.author ?? "").trim() || "(미상)";
+    authorCount[a] = (authorCount[a] ?? 0) + 1;
+  });
+  const topAuthors: AuthorStat[] = Object.entries(authorCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([name, count]) => ({ name, count }));
+  const topGenres: GenreStat[] = [...category]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3)
+    .map((c) => ({ name: c.label, count: c.count }));
+
+  // Top 3 Translators: 번역가가 있는 모든 책에서 집계 (완독 여부 무관)
+  const translatorCount: Record<string, number> = {};
+  all.forEach((b) => {
+    const t = (b.translator ?? "").trim();
+    if (!t) return;
+    translatorCount[t] = (translatorCount[t] ?? 0) + 1;
+  });
+  const topTranslators: TranslatorStat[] = Object.entries(translatorCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([name, count]) => ({ name, count }));
+
+  const publisherCount: Record<string, number> = {};
+  all.forEach((b) => {
+    const p = (b.publisher ?? "").trim() || "(미상)";
+    publisherCount[p] = (publisherCount[p] ?? 0) + 1;
+  });
+  const topPublishers: PublisherStat[] = Object.entries(publisherCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([name, count]) => ({ name, count }));
+
   return {
     totalCount,
     totalValue,
@@ -140,6 +252,13 @@ export function computeAnalysisSummary(books: BooksSnapshot): AnalysisSummary {
     byCountry,
     countWithCountry,
     knowledgeThickness,
+    literatureBalance,
+    avgPubYear,
+    topTranslators,
+    topAuthors,
+    topSeries,
+    topGenres,
+    topPublishers,
   };
 }
 

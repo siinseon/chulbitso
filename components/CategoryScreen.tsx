@@ -45,16 +45,16 @@ export default function CategoryScreen({
 
   return (
     <div className="space-y-4 animate-fadeIn">
-      <div className="flex gap-2 p-1.5 sm:p-2 bg-[#FFFFFF] rounded-xl shadow-card border border-ivory-border">
+      <div className="flex gap-2 p-1.5 sm:p-2 bg-[#E8DCC8] rounded-xl shadow-card border border-secondary">
         {TABS.map(({ id, label }) => (
           <button
             key={id}
             type="button"
             onClick={() => setActiveTab(id)}
-            className={`flex-1 py-3.5 sm:py-3 rounded-lg text-[15px] font-bold transition-colors min-h-[48px] active:opacity-90 ${
+            className={`flex-1 py-3.5 sm:py-3 rounded-lg text-[15px] font-bold transition-colors min-h-[48px] active:opacity-90 shadow-sm ${
               activeTab === id
-                ? "bg-[#11593F] text-white"
-                : "bg-gray-100 text-gray-600"
+                ? "bg-primary text-white shadow-[0_2px_12px_rgba(74,94,66,0.35)]"
+                : "bg-secondary/20 text-text-muted"
             }`}
           >
             {label}
@@ -62,7 +62,7 @@ export default function CategoryScreen({
         ))}
       </div>
 
-      <h2 className="text-[16px] sm:text-[17px] font-bold text-[#11593F]">
+      <h2 className="text-[16px] sm:text-[17px] font-bold text-primary font-serif">
         {TABS.find((t) => t.id === activeTab)?.label}
       </h2>
 
@@ -79,6 +79,12 @@ export default function CategoryScreen({
         onClose={() => setSelectedBookId(null)}
         onUpdateCountry={onSetBookCountry}
         onEdit={onUpdateBook ? (b) => setEditingBook(b) : undefined}
+        onUpdateBook={onUpdateBook}
+        onSetReadingStatus={
+          selectedBookId
+            ? (id, status) => onSetReadingStatus(activeTab, id, status)
+            : undefined
+        }
       />
 
       <BookRecordModal

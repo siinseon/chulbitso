@@ -59,28 +59,28 @@ export default function BookList({
 
   return (
     <div className="space-y-4">
-      <div className="bg-[#FFFFFF] rounded-xl px-4 py-3 flex items-center gap-3 shadow-card border border-ivory-border">
-        <Search size={20} stroke="#11593F" />
+      <div className="bg-[#E8DCC8] rounded-xl px-4 py-3 flex items-center gap-3 shadow-card border border-secondary">
+        <Search size={20} stroke="#4A5E42" className="flex-shrink-0" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="도서 검색"
-          className="flex-1 outline-none text-[14px] placeholder:text-gray-400"
+          className="flex-1 min-w-0 outline-none text-[14px] placeholder:text-text-muted bg-transparent border-0 text-text-main"
         />
       </div>
 
       <div className="overflow-x-auto scrollbar-hide -mx-0.5 px-0.5">
-        <div className="flex gap-2 p-1.5 bg-[#FFFFFF] rounded-xl shadow-card border border-ivory-border w-max min-w-full justify-start sm:justify-center">
+        <div className="flex gap-2 p-1.5 bg-[#E8DCC8] rounded-xl shadow-card border border-secondary w-max min-w-full justify-start sm:justify-center">
           {FILTER_OPTIONS.map((opt) => (
             <button
               key={opt.value}
               type="button"
               onClick={() => setFilter(opt.value)}
-              className={`px-3 py-2 rounded-lg text-[12px] sm:text-[13px] font-bold whitespace-nowrap transition-colors flex-shrink-0 ${
+              className={`px-3 py-2 rounded-lg text-[12px] sm:text-[13px] font-bold whitespace-nowrap transition-colors flex-shrink-0 shadow-sm ${
                 filter === opt.value
-                  ? "bg-[#11593F] text-white"
-                  : "bg-gray-100 text-gray-600"
+                  ? "bg-primary text-white shadow-[0_2px_8px_rgba(74,94,66,0.3)]"
+                  : "bg-secondary/20 text-text-muted"
               }`}
             >
               {opt.label}
@@ -89,12 +89,12 @@ export default function BookList({
         </div>
       </div>
 
-      <div className="text-right text-[13px] text-gray-600">
-        총 <span className="font-bold text-[#11593F]">{filtered.length}</span>권
+      <div className="text-right text-[13px] text-text-muted">
+        총 <span className="font-bold text-accent-warm">{filtered.length}</span>권
       </div>
 
       {filtered.length === 0 ? (
-        <div className="py-16 text-center text-gray-500 font-bold">
+        <div className="py-16 text-center text-text-muted font-bold">
           도서 없음
         </div>
       ) : (

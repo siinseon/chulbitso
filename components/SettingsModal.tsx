@@ -36,17 +36,17 @@ export default function SettingsModal({
       aria-labelledby="settings-title"
     >
       <div
-        className="w-full max-w-[480px] bg-[#FFFFFF] rounded-t-2xl p-6 pb-[max(24px,env(safe-area-inset-bottom))] shadow-lg"
+        className="w-full max-w-[480px] bg-white rounded-t-2xl p-6 pb-[max(24px,env(safe-area-inset-bottom))] shadow-lg border-t border-x border-secondary"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 id="settings-title" className="text-[18px] font-bold text-[#11593F]">
+          <h2 id="settings-title" className="text-[18px] font-bold text-primary font-serif">
             설정
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
+            className="p-2 rounded-full hover:bg-secondary/20 text-text-muted"
             aria-label="닫기"
           >
             <X size={24} strokeWidth={2} />

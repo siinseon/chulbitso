@@ -8,19 +8,21 @@ const ALADIN_ITEM_LOOKUP = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const isbn = searchParams.get("isbn")?.trim();
+  const raw = searchParams.get("isbn")?.replace(/\D/g, "") ?? "";
 
-  if (!isbn) {
+  if (!raw) {
     return NextResponse.json(
       { error: "isbn 쿼리가 필요합니다." },
       { status: 400 }
     );
   }
 
+  const itemIdType = raw.length === 13 ? "ISBN13" : raw.length === 10 ? "ISBN" : "ISBN13";
+
   const params = new URLSearchParams({
     ttbkey: ALADIN_API_KEY,
-    ItemIdType: "ISBN13",
-    ItemId: isbn,
+    ItemIdType: itemIdType,
+    ItemId: raw,
     Output: "JS",
     Version: "20131101",
     OptResult: "ebookList,reviewList",

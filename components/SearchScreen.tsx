@@ -110,21 +110,21 @@ export default function SearchScreen({ onAddBook, onSelectBook, existingBooks }:
 
   return (
     <div className="space-y-4">
-      <div className="bg-[#FFFFFF] rounded-xl px-4 py-3 flex items-center gap-3 shadow-card">
-        <Search size={20} stroke="#11593F" />
+      <div className="bg-white rounded-xl px-4 py-3 flex items-center gap-3 shadow-card">
+        <Search size={20} stroke="var(--primary)" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onKeyDown={(e) => e.key === "Enter" && handleSearch()}
           placeholder="도서명 또는 ISBN 입력"
-          className="flex-1 outline-none text-[14px] placeholder:text-gray-400"
+          className="flex-1 outline-none text-[14px] placeholder:text-text-muted"
         />
         <button
           type="button"
           onClick={handleSearch}
           disabled={loading}
-          className="px-4 py-2 rounded-lg bg-[#11593F] text-white font-bold text-[14px] whitespace-nowrap flex items-center gap-2"
+          className="px-4 py-2 rounded-lg bg-primary text-white font-bold text-[14px] whitespace-nowrap flex items-center gap-2"
         >
           {loading ? (
             <Loader2 size={18} className="animate-spin" />
@@ -139,7 +139,7 @@ export default function SearchScreen({ onAddBook, onSelectBook, existingBooks }:
       )}
 
       {results.length > 0 && (
-        <div className="text-[13px] text-gray-600 mb-2">
+        <div className="text-[13px] text-text-muted mb-2">
           검색 결과 {results.length}건 · 탭하여 상세 기록하기
         </div>
       )}
@@ -151,8 +151,8 @@ export default function SearchScreen({ onAddBook, onSelectBook, existingBooks }:
             <article
               key={book.isbn || idx}
               onClick={() => !saved && handleSelect(book)}
-              className={`bg-[#FFFFFF] rounded-xl p-4 shadow-card flex gap-3 transition-all cursor-pointer border-2 ${
-                saved ? "border-gray-200 opacity-60 cursor-default" : "border-transparent hover:border-[#11593F]"
+              className={`bg-white rounded-xl p-4 shadow-card flex gap-3 transition-all cursor-pointer border-2 ${
+                saved ? "border-secondary opacity-60 cursor-default" : "border-transparent hover:border-primary"
               }`}
             >
               {book.cover ? (
@@ -162,27 +162,27 @@ export default function SearchScreen({ onAddBook, onSelectBook, existingBooks }:
                   className="w-[60px] h-[85px] object-cover rounded-lg flex-shrink-0"
                 />
               ) : (
-                <div className="w-[60px] h-[85px] rounded-lg flex-shrink-0 flex items-center justify-center bg-[#F2F0D8] text-[#11593F] font-bold text-[10px] text-center leading-tight px-1">
+                <div className="w-[60px] h-[85px] rounded-lg flex-shrink-0 flex items-center justify-center bg-secondary/10 text-primary font-bold text-[10px] text-center leading-tight px-1">
                   {book.title.slice(0, 8)}…
                 </div>
               )}
               <div className="flex-1 min-w-0">
-                <h3 className="text-[14px] font-bold text-[#11593F] leading-snug line-clamp-2">
+                <h3 className="text-[14px] font-bold text-primary leading-snug line-clamp-2">
                   {book.title}
                 </h3>
-                <p className="text-[13px] text-gray-600 mt-1">{book.author}</p>
+                <p className="text-[13px] text-text-muted mt-1">{book.author}</p>
                 {(book.publisher || book.pubDate) && (
-                  <p className="text-[12px] text-gray-500 mt-0.5">
+                  <p className="text-[12px] text-text-muted mt-0.5">
                     {[book.publisher, book.pubDate].filter(Boolean).join(" · ")}
                   </p>
                 )}
                 {saved ? (
-                  <span className="inline-flex items-center gap-1.5 mt-2 text-[12px] text-gray-500">
+                  <span className="inline-flex items-center gap-1.5 mt-2 text-[12px] text-text-muted">
                     <BookmarkPlus size={14} strokeWidth={2} />
                     이미 담김
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1.5 mt-2 text-[12px] text-[#11593F] font-bold">
+                  <span className="inline-flex items-center gap-1.5 mt-2 text-[12px] text-primary font-bold">
                     <BookmarkPlus size={14} strokeWidth={2} />
                     나의 책에 추가
                   </span>
@@ -194,7 +194,7 @@ export default function SearchScreen({ onAddBook, onSelectBook, existingBooks }:
       </div>
 
       {!loading && results.length === 0 && query.trim() && !error && (
-        <div className="py-12 text-center text-gray-500 font-bold">
+        <div className="py-12 text-center text-text-muted font-bold">
           검색 결과가 없습니다.
         </div>
       )}
