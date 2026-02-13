@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mapAladdinCategory } from "@/lib/categories";
+import { parseAuthorTranslator } from "@/lib/authorParser";
 
 const ALADIN_API_KEY = "ttbdkdnxoghk1245002";
 const ALADIN_API_URL = "http://www.aladin.co.kr/ttb/api/ItemSearch.aspx";
@@ -42,9 +44,17 @@ export async function GET(request: NextRequest) {
         typeof priceStandard === "number"
           ? priceStandard
           : parseInt(String(priceStandard || "0"), 10) || 0;
+      const categoryName = (item.categoryName as string) ?? "";
+      const rawAuthor = (item.author as string) ?? "";
+      const { author, translator } = parseAuthorTranslator(rawAuthor);
+
+      const seriesInfo = item.seriesInfo as { seriesName?: string } | undefined;
+      const series = seriesInfo?.seriesName ?? (item.seriesName as string) ?? undefined;
+
       return {
         title: item.title ?? "",
-        author: item.author ?? "",
+        author: author || rawAuthor,
+        translator: translator ?? undefined,
         publisher: item.publisher ?? "",
         pubDate: item.pubDate ?? "",
         cover: item.cover ?? "",
@@ -52,6 +62,8 @@ export async function GET(request: NextRequest) {
         isbn: item.isbn13 ?? item.isbn ?? "",
         retailPrice,
         pageCount: pageCount > 0 ? pageCount : undefined,
+        category: mapAladdinCategory(categoryName) ?? undefined,
+        series: series || undefined,
       };
     });
 

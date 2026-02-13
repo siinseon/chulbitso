@@ -13,6 +13,9 @@ interface AladdinBook {
   description?: string;
   isbn?: string;
   retailPrice?: number;
+  category?: string;
+  translator?: string;
+  series?: string;
 }
 
 export interface AddBookInput {
@@ -24,6 +27,9 @@ export interface AddBookInput {
   description?: string;
   isbn?: string;
   retailPrice?: number;
+  category?: string;
+  translator?: string;
+  series?: string;
   readStatus?: "읽음" | "미독";
 }
 
@@ -78,6 +84,9 @@ export default function SearchScreen({ onAddBook, onSelectBook, existingBooks }:
         description: b.description ?? "",
         isbn: b.isbn ?? "",
         retailPrice: typeof b.retailPrice === "number" ? b.retailPrice : parseInt(String(b.retailPrice || "0"), 10) || 0,
+        category: b.category as string | undefined,
+        translator: b.translator as string | undefined,
+        series: b.series as string | undefined,
       }));
 
       setResults(books);
@@ -99,6 +108,9 @@ export default function SearchScreen({ onAddBook, onSelectBook, existingBooks }:
       description: book.description,
       isbn: book.isbn,
       retailPrice: book.retailPrice ?? 0,
+      category: book.category ?? undefined,
+      translator: book.translator ?? undefined,
+      series: book.series ?? undefined,
       readStatus: "미독" as const,
     };
     if (onSelectBook) {

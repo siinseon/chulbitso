@@ -137,13 +137,14 @@ export default function PomodoroSpinnerSection() {
 
   return (
     <section
-      className="rounded-2xl p-5 border border-secondary overflow-hidden"
+      className="rounded-2xl p-5 border overflow-hidden"
       style={{
-        background: "linear-gradient(180deg, #F2E6D0 0%, #E8DCC8 100%)",
-        boxShadow: "0 4px 24px rgba(58, 49, 40, 0.1)",
+        background: "linear-gradient(180deg, #e8ddc8 0%, #ddd4bc 100%)",
+        borderColor: "rgba(100, 95, 85, 0.35)",
+        boxShadow: "0 4px 20px rgba(58, 49, 40, 0.18), inset 0 0 60px rgba(180, 165, 140, 0.08)",
       }}
     >
-      <h3 className="text-[15px] font-bold text-primary font-serif mb-4 flex items-center gap-2">
+      <h3 className="text-[15px] sm:text-[16px] font-bold text-primary font-serif mb-4 flex items-center gap-2">
         🎠 놀이터 회전무대
       </h3>
       <p className="text-[11px] text-text-muted font-sans mb-4">

@@ -6,6 +6,7 @@ import { X, Sun, Cloud, CloudRain, CloudSnow, CloudFog, Moon, Search, Loader2 } 
 import PaperAirplaneReviewModal from "./PaperAirplaneReviewModal";
 import type { Book } from "@/lib/useBooks";
 import { OWNERSHIP_LABELS, READING_STATUS_LABELS } from "@/lib/supabase/types";
+import { isPreservedCategory, KDC_OPTIONS } from "@/lib/categories";
 
 const COUNTRY_OPTIONS: { code: string; name: string }[] = [
   { code: "", name: "미입력 / 선택" },
@@ -117,6 +118,7 @@ interface AladinBookResponse {
   format?: string;
   category?: string;
   series?: string;
+  translator?: string;
 }
 
 export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit, onUpdateBook }: BookDetailModalProps) {
@@ -187,6 +189,7 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
         format: fetched.format ?? book.format,
         category: fetched.category ?? book.category,
         series: fetched.series ?? book.series,
+        translator: fetched.translator ?? book.translator,
       };
       onUpdateBook(updated);
       setSearchQuery("");
@@ -355,7 +358,29 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
               <CardRow label="출간일" value={book.pubDate} />
               <CardRow label="판형" value={book.format} />
               <CardRow label="시리즈" value={book.series} />
-              <CardRow label="분야" value={book.category} />
+              <div className="flex items-baseline min-h-[2.25rem] border-b border-[#8a7a6a]/40 font-serif text-[13px] sm:text-[14px]">
+                <span className="w-20 flex-shrink-0 text-text-muted/90">분야</span>
+                <div className="flex-1 min-w-0 pb-0.5">
+                  {onUpdateBook && !isPreservedCategory(book.category) ? (
+                    <select
+                      value={KDC_OPTIONS.includes(book.category as (typeof KDC_OPTIONS)[number]) ? book.category : "기타"}
+                      onChange={(e) => {
+                        const v = e.target.value as (typeof KDC_OPTIONS)[number];
+                        onUpdateBook({ ...book, category: v });
+                      }}
+                      className="w-full max-w-[140px] text-[13px] text-text-main border-0 bg-transparent p-0 font-serif focus:ring-0"
+                    >
+                      {KDC_OPTIONS.map((c) => (
+                        <option key={c} value={c}>
+                          {c}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <span className="text-text-main">{book.category ?? "—"}</span>
+                  )}
+                </div>
+              </div>
               <CardRow label="정가" value={book.retailPrice != null ? `₩${Number(book.retailPrice).toLocaleString()}` : undefined} />
               <CardRow label="ISBN" value={book.isbn} />
               <div className="flex items-baseline min-h-[2.25rem] border-b border-[#8a7a6a]/40 font-serif text-[13px] sm:text-[14px]">

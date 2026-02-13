@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, BookOpen, BookMarked, Cloud, Package, Plus, Trash2, Star } from "lucide-react";
 import type { Book, BookGroup } from "@/lib/useBooks";
+import { FULL_CATEGORY_OPTIONS } from "@/lib/categories";
 import type { RecordStatus } from "@/lib/supabase/types";
 import type { ReadingStatus } from "@/lib/supabase/types";
 import { OWNERSHIP_LABELS, RECORD_STATUS_DISPLAY } from "@/lib/supabase/types";
@@ -71,6 +72,11 @@ export default function BookRecordModal({
 
   const [source, setSource] = useState(initial.source ?? "");
   const [sourceDetail, setSourceDetail] = useState(initial.sourceDetail ?? "");
+  const [category, setCategory] = useState(
+    initial.category && FULL_CATEGORY_OPTIONS.includes(initial.category as (typeof FULL_CATEGORY_OPTIONS)[number])
+      ? (initial.category as (typeof FULL_CATEGORY_OPTIONS)[number])
+      : "기타"
+  );
   const [resale, setResale] = useState(initial.resale ?? false);
   const [spineColor, setSpineColor] = useState(initial.spineColor ?? "#4A5E42");
   const [spineFont, setSpineFont] = useState(initial.spineFont ?? "#FFFFFF");
@@ -96,6 +102,11 @@ export default function BookRecordModal({
     setWeather(initial.weather ?? "");
     setSource(initial.source ?? "");
     setSourceDetail(initial.sourceDetail ?? "");
+    setCategory(
+      initial.category && FULL_CATEGORY_OPTIONS.includes(initial.category as (typeof FULL_CATEGORY_OPTIONS)[number])
+        ? (initial.category as (typeof FULL_CATEGORY_OPTIONS)[number])
+        : "기타"
+    );
     setResale(initial.resale ?? false);
     setSpineColor(initial.spineColor ?? "#4A5E42");
     setSpineFont(initial.spineFont ?? "#FFFFFF");
@@ -157,7 +168,7 @@ export default function BookRecordModal({
       spineColor: spineColor || undefined,
       spineFont: spineFont || undefined,
       country: (initial as Book).country,
-      category: (initial as Book).category,
+      category: category || undefined,
       series: (initial as Book).series,
       description: (initial as Book).description,
       format: (initial as Book).format,
@@ -359,6 +370,20 @@ export default function BookRecordModal({
                     placeholder="2024-01-01"
                     className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                   />
+                </div>
+                <div>
+                  <label className="block text-[13px] font-bold text-primary mb-2">분야</label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value as (typeof FULL_CATEGORY_OPTIONS)[number])}
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
+                  >
+                    {FULL_CATEGORY_OPTIONS.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </>
             )}

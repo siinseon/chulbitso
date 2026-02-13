@@ -108,7 +108,7 @@ export default function ReadingJungleGym() {
           background: "radial-gradient(ellipse 80% 60% at 50% 30%, rgba(200, 188, 168, 0.12) 0%, transparent 70%)",
         }}
       />
-      <h3 className="text-[15px] font-bold font-serif mb-1 flex items-center gap-2 relative z-10" style={{ color: "#4a4538" }}>
+      <h3 className="text-[15px] sm:text-[16px] font-bold text-primary font-serif mb-1 flex items-center gap-2 relative z-10">
         🧗 독서 습관 정글짐
       </h3>
       <p className="text-[12px] font-serif mb-4 relative z-10" style={{ color: "#6a6355" }}>

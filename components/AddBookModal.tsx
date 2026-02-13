@@ -18,7 +18,7 @@ interface AddBookModalProps {
   existingBooks: Book[];
 }
 
-const CATEGORIES = ["시집", "소설", "에세이", "인문", "경제경영", "과학", "기타"] as const;
+import { FULL_CATEGORY_OPTIONS } from "@/lib/categories";
 
 export default function AddBookModal({
   isOpen,
@@ -61,6 +61,7 @@ export default function AddBookModal({
     setTitle("");
     setAuthor("");
     setPublisher("");
+    setCategory("기타");
     setRetailPrice("");
   };
 
@@ -188,7 +189,7 @@ export default function AddBookModal({
                   onChange={(e) => setCategory(e.target.value)}
                   className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                 >
-                  {CATEGORIES.map((c) => (
+                  {FULL_CATEGORY_OPTIONS.map((c) => (
                     <option key={c} value={c}>
                       {c}
                     </option>

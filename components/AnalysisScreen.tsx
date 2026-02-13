@@ -14,6 +14,7 @@ import GenreTripleSwingsSection from "./GenreTripleSwingsSection";
 import EchoPipesSection from "./EchoPipesSection";
 import CloudStorageSection from "./CloudStorageSection";
 import SandcastlesSection from "./SandcastlesSection";
+import ReceiptMachineSection from "./ReceiptMachineSection";
 import type { Book } from "@/lib/useBooks";
 
 interface AnalysisScreenProps {
@@ -41,22 +42,19 @@ export default function AnalysisScreen({ books, onOpenReceipt, onReadBook }: Ana
 
         {onOpenReceipt && (
           <div
-            className="rounded-2xl p-5 sm:p-6 shadow-card border border-secondary"
-            style={{ background: "#f8f6f2" }}
+            className="rounded-2xl p-5 sm:p-6 border border-secondary"
+            style={{
+              background: "linear-gradient(180deg, #F2E6D0 0%, #E8DCC8 100%)",
+              boxShadow: "0 4px 24px rgba(58, 49, 40, 0.1)",
+            }}
           >
-            <h3 className="text-[16px] sm:text-[17px] font-bold text-primary font-serif mb-2">
+            <h3 className="text-[16px] sm:text-[17px] font-bold text-primary font-serif mb-1">
               가쪽비 계산하기
             </h3>
-            <p className="text-[14px] sm:text-[15px] text-text-muted">
+            <p className="text-[12px] text-text-muted font-serif mb-4">
               페이지와 가격으로 환산한 지식의 가치
             </p>
-            <button
-              type="button"
-              onClick={onOpenReceipt}
-              className="mt-4 w-full py-3.5 min-h-[48px] rounded-xl bg-primary text-white font-bold text-[14px] hover:opacity-90 active:opacity-95 transition-opacity"
-            >
-              가쪽비 영수증 발급기
-            </button>
+            <ReceiptMachineSection onOpenReceipt={onOpenReceipt} />
           </div>
         )}
 

@@ -13,6 +13,7 @@ import CategoryScreen from "@/components/CategoryScreen";
 import AnalysisScreen from "@/components/AnalysisScreen";
 import AddBookModal from "@/components/AddBookModal";
 import ExcelUpload from "@/components/ExcelUpload";
+import SlideIllustration from "@/components/SlideIllustration";
 import SettingsModal from "@/components/SettingsModal";
 import ReceiptModal from "@/components/ReceiptModal";
 import GiftScreen from "@/components/GiftScreen";
@@ -101,21 +102,28 @@ export default function Home() {
             <div className="mt-8">
               <ReadingJungleGym />
             </div>
-            {/* 운명의 미끄럼틀: 독서습관 정글짐 밑 */}
+            {/* 운명의 미끄럼틀: 독서습관 정글짐 밑, 배경색 정글짐과 동일 */}
             <div
-              className="rounded-2xl p-5 sm:p-6 shadow-card border border-secondary cursor-pointer active:opacity-95 transition-opacity"
-              style={{ background: "linear-gradient(180deg, #f8f6f2 0%, #f0ebe0 100%)" }}
+              className="rounded-2xl p-5 sm:p-6 border cursor-pointer active:opacity-95 transition-opacity"
+              style={{
+                background: "linear-gradient(180deg, #e8ddc8 0%, #ddd4bc 100%)",
+                borderColor: "rgba(100, 95, 85, 0.35)",
+                boxShadow: "0 4px 20px rgba(58, 49, 40, 0.18), inset 0 0 60px rgba(180, 165, 140, 0.08)",
+              }}
               onClick={() => setDestinyOpen(true)}
               onKeyDown={(e) => e.key === "Enter" && setDestinyOpen(true)}
               role="button"
               tabIndex={0}
             >
-              <h3 className="text-[16px] sm:text-[17px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
+              <h3 className="text-[15px] sm:text-[16px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
                 🎢 운명의 미끄럼틀
               </h3>
-              <p className="text-[14px] text-text-muted">
+              <p className="text-[14px] text-text-muted mb-4">
                 읽을 책을 무작위로 골라줘요. 미끄럼틀을 타고 내려온 책이 오늘의 운명이에요.
               </p>
+              <div className="flex justify-center">
+                <SlideIllustration width={420} height={336} />
+              </div>
             </div>
             <ExcelUpload
               onAddBook={handleAddBook}
@@ -166,6 +174,8 @@ export default function Home() {
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         onReset={resetAll}
+        books={books}
+        onUpdateBook={updateBook}
       />
 
       <ReceiptModal

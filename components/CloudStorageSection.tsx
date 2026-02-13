@@ -24,12 +24,12 @@ function PaperPlaneIcon({ className, style }: { className?: string; style?: Reac
     <svg
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#7a8a7a"
-      strokeWidth="1.5"
+      stroke="#4a5a52"
+      strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
       className={className}
-      style={style}
+      style={{ ...style, filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.2))" }}
       aria-hidden
     >
       <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
@@ -60,18 +60,18 @@ export default function CloudStorageSection({ books }: CloudStorageSectionProps)
   const cloudShadow = "inset 0 4px 24px rgba(255,255,255,0.95), inset 0 -2px 12px rgba(180,200,195,0.35), 0 2px 12px rgba(100,120,115,0.08)";
 
   const CLOUD_PUFFS: { w: number; h: number; ml: number; mt: number }[] = [
-    { w: 115, h: 75, ml: -95, mt: 42 },   // 바닥 왼쪽 (양옆 넓게)
-    { w: 120, h: 78, ml: -15, mt: 45 },   // 바닥 중앙
-    { w: 115, h: 75, ml: 68, mt: 42 },    // 바닥 오른쪽
-    { w: 95, h: 70, ml: -72, mt: 15 },    // 중층 왼쪽
-    { w: 100, h: 72, ml: 0, mt: 12 },     // 중층 가운데
-    { w: 95, h: 70, ml: 68, mt: 15 },     // 중층 오른쪽
-    { w: 72, h: 58, ml: -48, mt: -25 },   // 위쪽 왼쪽
-    { w: 78, h: 62, ml: 5, mt: -30 },     // 위쪽 중앙
-    { w: 72, h: 58, ml: 52, mt: -25 },    // 위쪽 오른쪽
-    { w: 52, h: 48, ml: 0, mt: -58 },     // 꼭대기
-    { w: 46, h: 44, ml: -82, mt: 5 },     // 왼쪽 볼륨
-    { w: 46, h: 44, ml: 82, mt: 5 },      // 오른쪽 볼륨
+    { w: 115, h: 75, ml: -95, mt: 42 },
+    { w: 120, h: 78, ml: -15, mt: 45 },
+    { w: 115, h: 75, ml: 68, mt: 42 },
+    { w: 95, h: 70, ml: -72, mt: 15 },
+    { w: 100, h: 72, ml: 0, mt: 12 },
+    { w: 95, h: 70, ml: 68, mt: 15 },
+    { w: 72, h: 58, ml: -48, mt: -25 },
+    { w: 78, h: 62, ml: 5, mt: -30 },
+    { w: 72, h: 58, ml: 52, mt: -25 },
+    { w: 52, h: 48, ml: 0, mt: -58 },
+    { w: 46, h: 44, ml: -82, mt: 5 },
+    { w: 46, h: 44, ml: 82, mt: 5 },
   ];
 
   return (
@@ -90,14 +90,15 @@ export default function CloudStorageSection({ books }: CloudStorageSectionProps)
         {reviews.length === 0 ? "종이비행기로 날린 리뷰가 여기 쌓여요" : `종이비행기로 날린 리뷰 ${reviews.length}개`}
       </p>
       <div
-        className="relative rounded-xl w-full min-h-[220px] flex items-center justify-center py-4 px-2"
+        className="relative rounded-xl w-full min-h-[200px] sm:min-h-[220px] flex items-center justify-center py-4 px-3 sm:px-2 overflow-visible"
         style={{
           background: "linear-gradient(180deg, #E8DCC8 0%, #ddd4bc 100%)",
           boxShadow: "inset 0 2px 12px rgba(0,0,0,0.04)",
         }}
       >
-        <div className="relative w-full max-w-[380px] h-[200px] flex items-center justify-center mx-auto overflow-hidden rounded-lg">
-          {/* 뭉게뭉게 뭉게구름 - 여러 puffs가 겹쳐 fluffy한 형태 */}
+        <div className="relative w-full max-w-[380px] min-h-[180px] h-[200px] flex items-center justify-center mx-auto overflow-visible rounded-lg">
+          {/* 뭉게뭉게 뭉게구름 - 여러 puffs가 겹쳐 fluffy한 형태 (overflow로 잘리지 않게) */}
+          <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
           {CLOUD_PUFFS.map((p, i) => (
             <div
               key={i}
@@ -114,7 +115,8 @@ export default function CloudStorageSection({ books }: CloudStorageSectionProps)
               }}
             />
           ))}
-          {/* 종이비행기: 테두리만, 여백 없이 구름에 꽂힌 모양 */}
+          </div>
+          {/* 종이비행기: 구름에 꽂힌 모양 — 모바일에서 잘 보이게 크기·대비 확대 */}
           {reviews.slice(0, 8).map(({ book, review }, i) => {
             const slot = PLANE_SLOTS[i];
             if (!slot) return null;
@@ -123,18 +125,16 @@ export default function CloudStorageSection({ books }: CloudStorageSectionProps)
                 key={book.id}
                 type="button"
                 onClick={() => setSelected({ bookTitle: book.title, reviewText: review })}
-                className="absolute p-0 border-0 bg-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-0 rounded-none z-10 inline-flex items-center justify-center min-w-0 min-h-0 transition-transform hover:scale-110 active:scale-95"
+                className="absolute p-0 border-0 bg-transparent cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary/30 focus:ring-offset-1 rounded-full z-10 inline-flex items-center justify-center min-w-[44px] min-h-[44px] w-11 h-11 transition-transform hover:scale-110 active:scale-95 touch-manipulation"
                 style={{
                   left: slot.x,
                   top: slot.y,
-                  width: 28,
-                  height: 28,
                   transform: `translate(-50%, -50%) rotate(${slot.rotate}deg)`,
                 }}
                 aria-label={`${book.title} 리뷰 보기`}
                 title={book.title}
               >
-                <PaperPlaneIcon className="w-7 h-7" style={{ transform: "rotate(-45deg)", filter: "drop-shadow(0 1px 1px rgba(0,0,0,0.1))" }} />
+                <PaperPlaneIcon className="w-11 h-11 sm:w-9 sm:h-9" style={{ transform: "rotate(-45deg)" }} />
               </button>
             );
           })}

@@ -13,6 +13,13 @@
   font-size: 16px;
 }
 
+/* 모바일에서 가독 개선 (최소 14px) */
+@media (max-width: 480px) {
+  :root {
+    font-size: clamp(14px, 4.5vw, 16px);
+  }
+}
+
 body {
   font-family: var(--font-serif-myeongjo), "Noto Serif KR", serif;
   font-weight: 400;
@@ -239,15 +246,15 @@ button:not([class*="rounded-"]) {
   animation: seesaw-creak 0.8s ease-out;
 }
 
-/* 종이비행기 리뷰 - 접기 → 날기 → 페이드아웃 (한 번에) */
+/* 종이비행기 리뷰 - 접기 → 날기 → 페이드아웃 (모바일에서도 잘 보이게 scale 조정) */
 @keyframes paper-fold-and-fly {
   0% { transform: translateY(0) translateX(0) scale(1) rotate(-5deg); opacity: 1; }
-  25% { transform: translateY(0) translateX(0) scale(0.7) rotate(-25deg); opacity: 1; }
-  35% { transform: translateY(0) translateX(0) scale(0.5) rotate(-35deg); opacity: 1; }
-  50% { transform: translateY(-35vh) translateX(6px) scale(0.45) rotate(-20deg); opacity: 1; }
-  70% { transform: translateY(-65vh) translateX(-6px) scale(0.4) rotate(0deg); opacity: 0.9; }
-  85% { transform: translateY(-95vh) translateX(4px) scale(0.35) rotate(5deg); opacity: 0.4; }
-  100% { transform: translateY(-130vh) translateX(-8px) scale(0.3) rotate(8deg); opacity: 0; }
+  25% { transform: translateY(0) translateX(0) scale(0.8) rotate(-25deg); opacity: 1; }
+  35% { transform: translateY(0) translateX(0) scale(0.65) rotate(-35deg); opacity: 1; }
+  50% { transform: translateY(-35vh) translateX(6px) scale(0.55) rotate(-20deg); opacity: 1; }
+  70% { transform: translateY(-65vh) translateX(-6px) scale(0.48) rotate(0deg); opacity: 0.9; }
+  85% { transform: translateY(-95vh) translateX(4px) scale(0.42) rotate(5deg); opacity: 0.4; }
+  100% { transform: translateY(-130vh) translateX(-8px) scale(0.38) rotate(8deg); opacity: 0; }
 }
 .animate-paper-fold-and-fly {
   animation: paper-fold-and-fly 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
@@ -273,16 +280,13 @@ button:not([class*="rounded-"]) {
   animation: flag-flutter 0.6s ease-in-out infinite;
 }
 
-/* 운명의 미끄럼틀: 낙하 (ease-in-expo), 착지 바운스, 모래 먼지 */
+/* 운명의 미끄럼틀: 낙하 → 착지 후 앞으로 짠 */
 @keyframes destiny-slide-down {
   0% { transform: translate(0, 0); }
   100% { transform: translate(58vw, 68vh); }
 }
-@keyframes destiny-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-14px); }
-}
-@keyframes destiny-dust {
-  0% { opacity: 0.9; transform: scale(0.3); }
-  100% { opacity: 0; transform: scale(2); }
+@keyframes destiny-pop-forward {
+  0% { transform: translate(58vw, 68vh) scale(1); }
+  60% { transform: translate(58vw, 68vh) scale(1.35); }
+  100% { transform: translate(58vw, 68vh) scale(1.2); }
 }

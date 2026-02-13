@@ -10,7 +10,8 @@ const FRAME_OUTLINE = "#2a2622";
 const CHAIN_RUST = "#6b5a4a";
 const CHAIN_DARK = "#4a4036";
 
-const SEAT_COLORS = ["#8C9E83", "#6A8B9A", "#C98C6E"] as const;
+/* 독서 습관 정글짐 색상만 사용 */
+const SEAT_COLORS = ["#a89268", "#6a7a8a", "#9a6b58"] as const;
 
 /* 배치: 좌=2위, 중앙=1위, 우=3위 */
 const ORDER = [1, 0, 2] as const; // topGenres[index] → left, center, right
@@ -102,7 +103,7 @@ function SingleSwing({ genre, animClass, seatColor, onPush, isPushing }: SwingPr
             }}
           />
         </div>
-        {/* 의자 (세이지 그린 / 빈티지 블루 / 녹슨 오렌지) */}
+        {/* 의자 (정글짐 색상: 골드 / 블루그레이 / 러스트) */}
         <div
           className="w-full min-h-[28px] -mt-px px-2 py-1.5 text-center flex flex-col justify-center rounded-sm"
           style={{
@@ -156,14 +157,14 @@ export default function GenreTripleSwingsSection({ topGenres }: GenreTripleSwing
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-5">가장 많이 읽은 장르 TOP 3</p>
 
-      <div className="relative w-full max-w-[340px] mx-auto overflow-visible" style={{ height: 260 }}>
+      <div className="relative w-full max-w-[440px] mx-auto overflow-visible" style={{ height: 260 }}>
         {/* 꼭대기 가로 봉 (녹슨 금속) */}
         <div
           className="absolute left-1/2 -translate-x-1/2 rounded-sm"
           style={{
             top: 20,
-            width: "98%",
-            maxWidth: 320,
+            width: "110%",
+            minWidth: 420,
             height: 14,
             background: `linear-gradient(180deg, ${FRAME_LIGHT} 0%, ${FRAME_RUST} 40%, ${FRAME_DARK} 100%)`,
             boxShadow:

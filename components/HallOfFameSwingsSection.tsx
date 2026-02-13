@@ -9,11 +9,8 @@ const FRAME_OUTLINE = "#2a2622";
 const ROPE_RUST = "#6b5a4a";
 const ROPE_DARK = "#4a4036";
 
-const SEAT_COLORS = [
-  "#C98C6E",
-  "#6A8B9A",
-  "#8C9E83",
-] as const;
+/* 독서 습관 정글짐 색상만 사용 */
+const SEAT_COLORS = ["#a89268", "#6a7a8a", "#9a6b58"] as const;
 
 const SWING_ANIM = [
   "animate-swing-1",

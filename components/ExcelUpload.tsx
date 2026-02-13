@@ -32,7 +32,7 @@ function isDuplicate(
 /** ISBN으로 알라딘 API에서 표지·설명·쪽수·판형 등 보강 */
 async function fetchBookByIsbn(
   isbn: string
-): Promise<Partial<Pick<Book, "cover" | "description" | "pageCount" | "format" | "category" | "series" | "publisher" | "pubDate" | "retailPrice">> | null> {
+): Promise<Partial<Pick<Book, "cover" | "description" | "pageCount" | "format" | "category" | "series" | "publisher" | "pubDate" | "retailPrice" | "author" | "translator">> | null> {
   try {
     const res = await fetch(`/api/book?isbn=${encodeURIComponent(isbn)}`);
     if (!res.ok) return null;
@@ -47,6 +47,8 @@ async function fetchBookByIsbn(
       publisher: data.publisher,
       pubDate: data.pubDate,
       retailPrice: data.retailPrice,
+      author: data.author || undefined,
+      translator: data.translator || undefined,
     };
   } catch {
     return null;
@@ -117,6 +119,8 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
                 if (extra.format) finalBook.format = finalBook.format ?? extra.format;
                 if (extra.category) finalBook.category = finalBook.category ?? extra.category;
                 if (extra.series) finalBook.series = finalBook.series ?? extra.series;
+                if (extra.author) finalBook.author = finalBook.author ?? extra.author;
+                if (extra.translator) finalBook.translator = finalBook.translator ?? extra.translator;
                 if (extra.publisher) finalBook.publisher = finalBook.publisher ?? extra.publisher;
                 if (extra.pubDate) finalBook.pubDate = finalBook.pubDate ?? extra.pubDate;
                 if (extra.retailPrice != null) finalBook.retailPrice = finalBook.retailPrice ?? extra.retailPrice;
@@ -154,8 +158,18 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
     });
   };
 
+  const destinyBg = "linear-gradient(180deg, #e8ddc8 0%, #ddd4bc 100%)";
+  const destinyBoxShadow = "0 4px 20px rgba(58, 49, 40, 0.18), inset 0 0 60px rgba(180, 165, 140, 0.08)";
+
   return (
-    <div className="rounded-2xl p-5 shadow-card border border-secondary" style={{ background: "#f8f6f2" }}>
+    <div
+      className="rounded-2xl p-5"
+      style={{
+        background: destinyBg,
+        border: "1px solid rgba(100, 95, 85, 0.3)",
+        boxShadow: destinyBoxShadow,
+      }}
+    >
       <input
         ref={inputRef}
         type="file"
@@ -168,7 +182,11 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="w-full border-2 border-dashed border-primary rounded-xl py-5 min-h-[52px] flex flex-col items-center gap-2 bg-white/80 hover:bg-secondary/10 active:bg-secondary/10 transition-colors disabled:opacity-60"
+        className="w-full border-2 border-dashed border-primary rounded-xl py-5 min-h-[52px] flex flex-col items-center gap-2 transition-colors hover:opacity-95 active:opacity-90 disabled:opacity-60"
+        style={{
+          background: destinyBg,
+          boxShadow: "inset 0 0 60px rgba(180, 165, 140, 0.08)",
+        }}
       >
         {uploading ? (
           <Loader2 size={32} stroke="#4A5E42" className="animate-spin" />

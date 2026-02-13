@@ -10,7 +10,8 @@ const FRAME_OUTLINE = "#2a2622";
 const CHAIN_RUST = "#6b5a4a";
 const CHAIN_DARK = "#4a4036";
 
-const SEAT_COLORS = ["#8C9E83", "#6A8B9A", "#C98C6E"] as const;
+/* 독서 습관 정글짐 색상만 사용 */
+const SEAT_COLORS = ["#a89268", "#6a7a8a", "#9a6b58"] as const;
 
 /* 배치: 좌=2위, 중앙=1위, 우=3위 */
 const ORDER = [1, 0, 2] as const; // topSeries[index] → left, center, right
@@ -60,7 +61,7 @@ function SingleSwing({ series, animClass, seatColor, onPush, isPushing }: SwingP
       )}
 
       <div
-        className={`flex flex-col items-stretch flex-1 min-w-0 max-w-[80px] w-[76px] cursor-pointer select-none ${
+        className={`flex flex-col items-stretch flex-1 min-w-0 max-w-[88px] w-[80px] cursor-pointer select-none ${
           showTooltip || isPushing ? "" : animClass
         } ${isPushing ? "animate-swing-push" : ""}`}
         style={{ transformOrigin: "top center" }}
@@ -102,9 +103,9 @@ function SingleSwing({ series, animClass, seatColor, onPush, isPushing }: SwingP
             }}
           />
         </div>
-        {/* 의자 (세이지 그린 / 빈티지 블루 / 녹슨 오렌지) */}
+        {/* 의자 (정글짐 색상: 골드 / 블루그레이 / 러스트) */}
         <div
-          className="w-full min-h-[28px] -mt-px px-2 py-1.5 text-center flex flex-col justify-center rounded-sm"
+          className="w-full min-h-[38px] -mt-px px-1.5 py-1 text-center flex flex-col justify-center rounded-sm"
           style={{
             background: `linear-gradient(180deg, ${seatColor} 0%, ${seatColor} 70%, rgba(0,0,0,0.12) 100%)`,
             border: `2px solid ${FRAME_OUTLINE}`,
@@ -112,8 +113,15 @@ function SingleSwing({ series, animClass, seatColor, onPush, isPushing }: SwingP
           }}
         >
           <p
-            className="text-[10px] text-[#2a2622] font-jua leading-tight truncate w-full"
-            style={{ letterSpacing: "0.02em" }}
+            className="text-[9px] text-[#2a2622] font-jua leading-tight w-full text-center overflow-hidden"
+            style={{
+              letterSpacing: "0.02em",
+              display: "-webkit-box",
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: "vertical",
+              wordBreak: "break-all",
+              overflowWrap: "break-word",
+            }}
             title={displayName}
           >
             {displayName}
@@ -150,19 +158,19 @@ export default function SeriesTripleSwingsSection({ topSeries }: SeriesTripleSwi
         boxShadow: "0 4px 24px rgba(58, 49, 40, 0.1)",
       }}
     >
-      <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
+      <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2 flex-wrap break-words">
         🏆 시리즈 명예의 전당: 3인용 그네
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-5">가장 많이 읽은 시리즈 TOP 3</p>
 
-      <div className="relative w-full max-w-[340px] mx-auto overflow-visible" style={{ height: 260 }}>
+      <div className="relative w-full max-w-[440px] mx-auto overflow-visible" style={{ height: 280 }}>
         {/* 꼭대기 가로 봉 (녹슨 금속) */}
         <div
           className="absolute left-1/2 -translate-x-1/2 rounded-sm"
           style={{
             top: 20,
-            width: "98%",
-            maxWidth: 320,
+            width: "110%",
+            minWidth: 420,
             height: 14,
             background: `linear-gradient(180deg, ${FRAME_LIGHT} 0%, ${FRAME_RUST} 40%, ${FRAME_DARK} 100%)`,
             boxShadow:

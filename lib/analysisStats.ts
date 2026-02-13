@@ -1,6 +1,7 @@
 import type { Book } from "@/lib/useBooks";
 import type { OwnershipType, ReadingStatus } from "@/lib/supabase/types";
 import { OWNERSHIP_LABELS, READING_STATUS_LABELS } from "@/lib/supabase/types";
+import { FULL_CATEGORY_OPTIONS, normalizeToKdcCategory } from "@/lib/categories";
 
 export interface BooksSnapshot {
   my: Book[];
@@ -8,13 +9,10 @@ export interface BooksSnapshot {
   ebook: Book[];
 }
 
-const CATEGORY_ORDER = ["시집", "소설", "에세이", "인문"] as const;
-const CATEGORY_LABEL: Record<string, string> = {
-  시집: "시집",
-  소설: "소설",
-  에세이: "에세이",
-  인문: "인문",
-};
+const CATEGORY_ORDER = [...FULL_CATEGORY_OPTIONS] as const;
+const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
+  FULL_CATEGORY_OPTIONS.map((c) => [c, c])
+);
 
 function allBooks(books: BooksSnapshot): Book[] {
   return [...books.my, ...books.read, ...books.ebook];
@@ -140,8 +138,7 @@ export function computeAnalysisSummary(books: BooksSnapshot): AnalysisSummary {
 
   const categoryCount: Record<string, number> = {};
   all.forEach((b) => {
-    const raw = b.category?.trim();
-    const cat = raw && CATEGORY_ORDER.includes(raw as (typeof CATEGORY_ORDER)[number]) ? raw : "기타";
+    const cat = normalizeToKdcCategory(b.category);
     categoryCount[cat] = (categoryCount[cat] ?? 0) + 1;
   });
   const orderedCats = [...CATEGORY_ORDER];
@@ -174,12 +171,12 @@ export function computeAnalysisSummary(books: BooksSnapshot): AnalysisSummary {
   const heightCm = heightMm / 10;
   const knowledgeThickness = getKnowledgeThickness(totalPages, heightCm);
 
-  // 문학(감성): 소설/시/희곡, 에세이, 만화. 비문학(이성): 그 외 전부(인문, 사회, 과학, 경제, 역사, 예술, 자기계발 등)
-  const LITERATURE_CATEGORIES = ["소설/시/희곡", "에세이", "만화", "시집", "소설"];
+  // 문학(감성): 시집, 소설, 문학(KDC 800). 비문학(이성): 그 외 (분류 기준 통일)
+  const LITERATURE_CATEGORIES = ["시집", "소설", "문학"];
   let literature = 0;
   let nonLiterature = 0;
   all.forEach((b) => {
-    const cat = (b.category ?? "").trim() || "기타";
+    const cat = normalizeToKdcCategory(b.category);
     if (LITERATURE_CATEGORIES.includes(cat)) literature += 1;
     else nonLiterature += 1;
   });
@@ -196,9 +193,23 @@ export function computeAnalysisSummary(books: BooksSnapshot): AnalysisSummary {
     ? Math.round(years.reduce((a, b) => a + b, 0) / years.length)
     : null;
 
+  /** 시리즈명 정규화: trim, 연속 공백 하나로, 끝 권수 제거 (민음사 세계문학전집 476 → 민음사 세계문학전집) */
+  const normalizeSeries = (raw: string): string => {
+    let s = raw.replace(/\s+/g, " ").trim();
+    if (!s) return "";
+    s = s.replace(/\s*[-·(\s]*\d+[\s권)]*$/g, "").trim();
+    return s || raw.replace(/\s+/g, " ").trim();
+  };
+  /** series 비었을 때 제목에서 시리즈 추출: "파우스트 (민음사 세계문학전집 123)" → "민음사 세계문학전집" */
+  const extractSeriesFromTitle = (title: string): string => {
+    const m = title.match(/[(\[（【]([^)\]}】]+)\s*\d*\s*[)\]）】]?$/);
+    if (!m) return "";
+    return normalizeSeries(m[1]);
+  };
   const seriesCount: Record<string, number> = {};
   all.forEach((b) => {
-    const s = (b.series ?? "").trim();
+    let s = normalizeSeries(b.series ?? "");
+    if (!s && b.title) s = extractSeriesFromTitle(b.title);
     if (!s) return;
     seriesCount[s] = (seriesCount[s] ?? 0) + 1;
   });

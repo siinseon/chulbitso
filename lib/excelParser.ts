@@ -1,4 +1,6 @@
 import * as XLSX from "xlsx";
+import { parseAuthorTranslator } from "@/lib/authorParser";
+import { normalizeToKdcCategory } from "@/lib/categories";
 
 export type OwnershipFromExcel = "my" | "ebook";
 
@@ -7,6 +9,7 @@ export interface ParsedBookRow {
   book: {
     title: string;
     author: string;
+    translator?: string;
     publisher?: string;
     pubDate?: string;
     isbn?: string;
@@ -47,23 +50,9 @@ function findHeaderRow(sheet: XLSX.WorkSheet): number {
   return -1;
 }
 
-function cleanAuthor(author: string): string {
-  return author
-    .replace(/\s*지음$/i, "")
-    .replace(/\s*옮김$/i, "")
-    .replace(/\s*\(.*?\)/g, "")
-    .trim();
-}
-
+/** 엑셀 분야/카테고리/장르 → KDC 분류 기준으로 정규화 */
 function parseCategory(field: string): string {
-  if (!field) return "기타";
-  if (field.includes("시")) return "시집";
-  if (field.includes("소설")) return "소설";
-  if (field.includes("에세이")) return "에세이";
-  if (field.includes("인문")) return "인문";
-  if (field.includes("경제") || field.includes("경영")) return "경제경영";
-  if (field.includes("과학")) return "과학";
-  return "기타";
+  return normalizeToKdcCategory(field);
 }
 
 /** 출간일/출판일 셀 값을 YYYY-MM-DD 형태로 */
@@ -123,7 +112,7 @@ export function parseAladdinExcel(arrayBuffer: ArrayBuffer): ParsedBookRow[] {
 
     const title = pick<string>(row, "상품명", "제목", "도서명", "title");
     const authorRaw = pick<string>(row, "저자/아티스트", "저자", "작가", "아티스트", "author");
-    const author = cleanAuthor(authorRaw);
+    const { author, translator } = parseAuthorTranslator(authorRaw);
 
     if (!title || !author) continue;
 
@@ -149,6 +138,7 @@ export function parseAladdinExcel(arrayBuffer: ArrayBuffer): ParsedBookRow[] {
       book: {
         title,
         author,
+        translator: translator || undefined,
         publisher: publisher || undefined,
         pubDate: pubDate || undefined,
         isbn: isbn13 || undefined,
