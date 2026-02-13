@@ -103,13 +103,14 @@ export default function DestinySlideModal({
         <span className="text-xl leading-none">×</span>
       </button>
 
-      {/* 미끄럼틀 무대 */}
-      <div className="flex-1 relative overflow-hidden min-h-[56vh]">
-        {/* 미끄럼틀: 책이 움직이는 직선 경로(12%,10% → +58vw,+68vh)를 그대로 따라 그림. viewBox 0 0 100 100 + none으로 퍼센트와 1:1 대응 */}
+      {/* 미끄럼틀 무대 — 픽셀 선명도를 위해 GPU 레이어·정밀 렌더링 */}
+      <div className="flex-1 relative overflow-hidden min-h-[56vh]" style={{ transform: "translateZ(0)", backfaceVisibility: "hidden" }}>
+        {/* 미끄럼틀 SVG: shape-rendering으로 스케일 시 선명도 유지 */}
         <svg
           className="absolute pointer-events-none inset-0 w-full h-full"
           viewBox="0 0 100 100"
           preserveAspectRatio="none"
+          shapeRendering="geometricPrecision"
         >
           <defs>
             <linearGradient id="slide-surface" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -143,24 +144,24 @@ export default function DestinySlideModal({
               <stop offset="100%" stopColor="#c03c2a" />
             </linearGradient>
             <filter id="slide-shadow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="2" stdDeviation="2" floodColor="rgba(0,0,0,0.35)" />
+              <feDropShadow dx="0" dy="1" stdDeviation="1" floodColor="rgba(0,0,0,0.3)" />
             </filter>
           </defs>
 
-          {/* 땅(바닥) — 계단 쪽은 두껍게 받침 */}
-          <line x1="0" y1="98" x2="100" y2="98" stroke="#7a6348" strokeWidth="2" strokeLinecap="round" />
-          <rect x="-14" y="96" width="28" height="4" fill="#6a5340" stroke="#5a4838" strokeWidth="0.4" rx="0.5" />
+          {/* 땅(바닥) — 계단 쪽 두껍게, stroke 정수로 선명도 확보 */}
+          <line x1="0" y1="98" x2="100" y2="98" stroke="#7a6348" strokeWidth="1.5" strokeLinecap="round" />
+          <rect x="-14" y="96" width="28" height="4" fill="#6a5340" stroke="#5a4838" strokeWidth="0.5" rx="0.5" />
 
           {/* 세로 기둥: 플랫폼 받침 — 왼쪽 기둥과 동일 색(은색) 세트 */}
-          <rect x="14" y="16" width="2.8" height="82" fill="url(#post-metal)" stroke="#4a4a4a" strokeWidth="0.4" rx="0.5" />
+          <rect x="14" y="16" width="2.8" height="82" fill="url(#post-metal)" stroke="#4a4a4a" strokeWidth="0.5" rx="0.5" />
 
           {/* 계단 받침: 스트링어(대각 보) 두 개 + 사이 채움 — 맨 위 y=10에 맞춤 */}
-          <path d="M -13 98 L 9.5 11.6 L 12 11.6 L -10.5 98 Z" fill="#505860" stroke="#4a4a4a" strokeWidth="0.5" />
-          <path d="M -13 98 L 9.5 11.6" fill="none" stroke="#6a7078" strokeWidth="1.2" strokeLinecap="round" />
-          <path d="M -10.5 98 L 12 11.6" fill="none" stroke="#6a7078" strokeWidth="1.2" strokeLinecap="round" />
+          <path d="M -13 98 L 10 12 L 12 12 L -10.5 98 Z" fill="#505860" stroke="#4a4a4a" strokeWidth="0.6" />
+          <path d="M -13 98 L 10 12" fill="none" stroke="#6a7078" strokeWidth="1" strokeLinecap="round" />
+          <path d="M -10.5 98 L 12 12" fill="none" stroke="#6a7078" strokeWidth="1" strokeLinecap="round" />
 
           {/* 계단: 맨 위 단이 플랫폼(미끄럼틀 시작) x=12, 높이 y=10에 맞닿음 */}
-          <g fill="url(#step-tread)" stroke="#a03020" strokeWidth="0.35">
+          <g fill="url(#step-tread)" stroke="#a03020" strokeWidth="0.5">
             {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map((i) => {
               const run = 2.5;
               const rise = 7.8;
@@ -180,44 +181,44 @@ export default function DestinySlideModal({
             })}
           </g>
           {/* 계단 난간 (빨간색) — 맨 위 y=10에서 플랫폼 x=12에 연결 */}
-          <path d="M -10.5 96.2 L -8 86.6 L -5.5 77 L -3 67.4 L -0.5 58 L 2 49.4 L 4.5 39.8 L 7 30.2 L 9.5 20.6 L 12 9.8" fill="none" stroke="url(#railing-red)" strokeWidth="0.7" strokeLinecap="round" strokeLinejoin="round" />
-          <path d="M -8.7 96.2 L -6.2 86.6 L -3.7 77 L -1.2 67.4 L 1.3 58 L 3.8 49.4 L 6.3 39.8 L 8.8 30.2 L 11.3 20.6 L 13.8 9.8" fill="none" stroke="url(#railing-red)" strokeWidth="0.7" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M -10.5 96 L -8 87 L -5.5 77 L -3 67 L -0.5 58 L 2 49 L 4.5 40 L 7 30 L 9.5 21 L 12 10" fill="none" stroke="url(#railing-red)" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
+          <path d="M -8.7 96 L -6.2 87 L -3.7 77 L -1.2 67 L 1.3 58 L 3.8 49 L 6.3 40 L 8.8 30 L 11.3 21 L 13.8 10" fill="none" stroke="url(#railing-red)" strokeWidth="0.8" strokeLinecap="round" strokeLinejoin="round" />
 
           {/* 맨 위 플랫폼 (미끄럼틀 타기 전 발 디딤) */}
           <path
             d="M 12 10 L 20 10 L 20 16 L 12 16 Z"
             fill="url(#platform-wood)"
             stroke="#8b6914"
-            strokeWidth="0.5"
+            strokeWidth="0.6"
           />
-          {/* 플랫폼 빨간 난간 (사진처럼 가로 봉) */}
+          {/* 플랫폼 빨간 난간 */}
           <line x1="12" y1="10" x2="12" y2="16" stroke="url(#railing-red)" strokeWidth="0.8" strokeLinecap="round" />
-          <line x1="12" y1="13" x2="18" y2="13" stroke="url(#railing-red)" strokeWidth="0.6" strokeLinecap="round" />
-          <line x1="18" y1="10" x2="18" y2="16" stroke="url(#railing-red)" strokeWidth="0.6" strokeLinecap="round" />
+          <line x1="12" y1="13" x2="18" y2="13" stroke="url(#railing-red)" strokeWidth="0.7" strokeLinecap="round" />
+          <line x1="18" y1="10" x2="18" y2="16" stroke="url(#railing-red)" strokeWidth="0.7" strokeLinecap="round" />
 
           {/* 은색 기둥: 트러프 시작 부근에서 땅까지 */}
-          <rect x="8.5" y="14" width="2.5" height="84" fill="url(#post-metal)" stroke="#4a4a4a" strokeWidth="0.4" rx="0.5" />
+          <rect x="8.5" y="14" width="2.5" height="84" fill="url(#post-metal)" stroke="#4a4a4a" strokeWidth="0.5" rx="0.5" />
           {/* 기둥: 아래쪽 */}
-          <rect x="67" y="82" width="3" height="16" fill="url(#post-metal)" stroke="#4a4a4a" strokeWidth="0.4" rx="0.5" />
+          <rect x="67" y="82" width="3" height="16" fill="url(#post-metal)" stroke="#4a4a4a" strokeWidth="0.5" rx="0.5" />
 
           {/* 미끄럼틀 몸통: 트러프 아래·옆면 — 최상단 y=10 (계단·플랫폼과 동일) */}
           <path
             d="M 10 16 L 66 84 L 76 84 L 14 10 Z"
             fill="url(#slide-under)"
             stroke="#3d3d3d"
-            strokeWidth="0.5"
+            strokeWidth="0.6"
           />
           <path
             d="M 10 10 L 10 16 L 66 84 L 66 80 Z"
             fill="#707070"
             stroke="#4a4a4a"
-            strokeWidth="0.4"
+            strokeWidth="0.5"
           />
           <path
             d="M 14 10 L 14 14 L 76 84 L 76 80 Z"
             fill="#606060"
             stroke="#4a4a4a"
-            strokeWidth="0.4"
+            strokeWidth="0.5"
           />
 
           {/* 트러프 위쪽(미끄는 면): 끝이 퍼진 미끄럼틀 출구 */}
@@ -233,17 +234,17 @@ export default function DestinySlideModal({
             d="M 9 10 L 65 81 L 65 82 L 9 12 Z"
             fill="#9ca4ac"
             stroke="#5a6068"
-            strokeWidth="0.4"
+            strokeWidth="0.5"
           />
           <path
             d="M 15 10 L 15 11 L 77 80 L 77 79 Z"
             fill="#8c949c"
             stroke="#5a6068"
-            strokeWidth="0.4"
+            strokeWidth="0.5"
           />
           {/* 난간 (테두리 위에) */}
-          <path d="M 10 10 L 66 80" fill="none" stroke="#5a5a5a" strokeWidth="0.9" strokeLinecap="round" />
-          <path d="M 14 10 L 76 80" fill="none" stroke="#5a5a5a" strokeWidth="0.9" strokeLinecap="round" />
+          <path d="M 10 10 L 66 80" fill="none" stroke="#5a5a5a" strokeWidth="1" strokeLinecap="round" />
+          <path d="M 14 10 L 76 80" fill="none" stroke="#5a5a5a" strokeWidth="1" strokeLinecap="round" />
         </svg>
         {/* 착지장: 줄여서 땅에 붙인 작은 모래 패치 */}
         <div
