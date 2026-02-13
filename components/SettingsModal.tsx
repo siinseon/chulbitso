@@ -22,7 +22,7 @@ export default function SettingsModal({
   const [enriching, setEnriching] = useState(false);
   const [enrichProgress, setEnrichProgress] = useState("");
   const allBooks = [...books.my, ...books.read, ...books.ebook];
-  const booksWithIsbn = allBooks.filter((b) => b.isbn?.replace(/\D/g, "").length >= 10);
+  const booksWithIsbn = allBooks.filter((b) => (b.isbn || "").replace(/\D/g, "").length >= 10);
 
   const handleBulkEnrich = async () => {
     if (!onUpdateBook) return;
