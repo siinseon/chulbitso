@@ -45,14 +45,14 @@ export default function SkyLadderSection({ totalPages, heightCm }: SkyLadderSect
       }}
     >
       <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
-        🪜 하늘사다리
+        하늘사다리
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-4 leading-relaxed">
         지식의 높이!
         <br />
         읽은 페이지만큼 한 칸씩 올라가요
         <br />
-        <span className="text-[11px] opacity-90">(총 쪽수 × 0.1mm (종이 두께), 10cm = 1칸)</span>
+        <span className="text-[12px] opacity-90">(총 쪽수 × 0.1mm (종이 두께), 10cm = 1칸)</span>
       </p>
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-center gap-6">
         <div

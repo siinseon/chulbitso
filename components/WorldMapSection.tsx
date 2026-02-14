@@ -60,7 +60,7 @@ export default function WorldMapSection({
       }}
     >
       <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
-        🗺️ 독서 세계지도
+        독서 세계지도
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-4">읽은 책의 출판국가를 지도 위에 표시해요</p>
 

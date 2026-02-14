@@ -73,7 +73,7 @@ export default function ReadingBalanceSeesawSection({ books }: ReadingBalanceSee
       }}
     >
       <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2 relative z-10">
-        ⚖️ 독서 밸런스 시소
+        독서 밸런스 시소
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-4">문학과 비문학, 독서 비율 알아보기</p>
 

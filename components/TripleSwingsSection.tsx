@@ -152,9 +152,9 @@ export default function TripleSwingsSection({ topAuthors }: TripleSwingsSectionP
       }}
     >
       <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
-        🏆 작가 명예의 전당: 3인용 그네
+        작가 명예의 전당: 3인용 그네
       </h3>
-      <p className="text-[12px] text-text-muted font-serif mb-5">가장 많이 읽은 작가 TOP 3</p>
+      <p className="text-[12px] text-text-muted font-serif mb-4">가장 많이 읽은 작가 TOP 3</p>
 
       {/* A형 철제 프레임 */}
       <div className="relative w-full max-w-[440px] mx-auto overflow-hidden" style={{ height: 260 }}>

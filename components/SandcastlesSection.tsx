@@ -31,7 +31,7 @@ export default function SandcastlesSection({
       }}
     >
       <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
-        🏖️ 취향의 모래성
+        취향의 모래성
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-4">출판사 TOP 3</p>
 
@@ -128,7 +128,7 @@ export default function SandcastlesSection({
         </div>
       </div>
 
-      <p className="text-[11px] text-text-muted font-serif text-center mt-3 italic">
+      <p className="text-[12px] text-text-muted font-serif text-center mt-3">
         모래사장에 쌓인 출판사의 성
       </p>
     </section>

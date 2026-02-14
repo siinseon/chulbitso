@@ -48,9 +48,9 @@ export default function TimeRadioSection({ avgPubYear }: TimeRadioSectionProps) 
       }}
     >
       <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
-        📻 시대 주파수 튜너
+        시대 주파수 튜너
       </h3>
-      <p className="text-[11px] text-text-muted font-sans mb-4">
+      <p className="text-[12px] text-text-muted font-serif mb-4">
         읽은 책들의 평균 출간연도를 주파수처럼 맞춰봤어요
       </p>
 

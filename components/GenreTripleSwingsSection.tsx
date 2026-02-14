@@ -153,9 +153,9 @@ export default function GenreTripleSwingsSection({ topGenres }: GenreTripleSwing
       }}
     >
       <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
-        🏆 장르 명예의 전당: 3인용 그네
+        장르 명예의 전당: 3인용 그네
       </h3>
-      <p className="text-[12px] text-text-muted font-serif mb-5">가장 많이 읽은 장르 TOP 3</p>
+      <p className="text-[12px] text-text-muted font-serif mb-4">가장 많이 읽은 장르 TOP 3</p>
 
       <div className="relative w-full max-w-[440px] mx-auto overflow-hidden" style={{ height: 260 }}>
         {/* 꼭대기 가로 봉 (녹슨 금속) */}

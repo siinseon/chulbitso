@@ -97,7 +97,7 @@ export default function CloudStorageSection({ books }: CloudStorageSectionProps)
       }}
     >
       <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
-        ☁️ 구름 보관소
+        구름 보관소
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-4">
         {reviews.length === 0 ? "종이비행기로 날린 리뷰가 여기 쌓여요" : `종이비행기로 날린 리뷰 ${reviews.length}개`}

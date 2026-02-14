@@ -129,7 +129,7 @@ export default function EchoPipesSection({
       }}
     >
       <h3 className="text-[15px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
-        🔊 언어의 울림통
+        언어의 울림통
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-4">번역서 역자 TOP 3</p>
 
