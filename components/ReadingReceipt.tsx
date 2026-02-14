@@ -39,7 +39,7 @@ export default function ReadingReceipt({ books }: ReadingReceiptProps) {
   if (items.length === 0) {
     return (
       <section className="rounded-2xl p-5 bg-white shadow-card">
-        <h3 className="text-[14px] font-bold text-[#11593F] mb-3">
+        <h3 className="text-[14px] font-bold text-primary mb-3">
           가성비 독서 영수증
         </h3>
         <p className="text-[13px] text-gray-500">
@@ -55,7 +55,7 @@ export default function ReadingReceipt({ books }: ReadingReceiptProps) {
 
   return (
     <section className="rounded-2xl p-5 bg-white shadow-card">
-      <h3 className="text-[14px] font-bold text-[#11593F] mb-2">
+      <h3 className="text-[14px] font-bold text-primary mb-2">
         가성비 독서 영수증
       </h3>
       <p className="text-[12px] text-gray-500 mb-4">
@@ -71,7 +71,7 @@ export default function ReadingReceipt({ books }: ReadingReceiptProps) {
         >
           <div className="px-4 pt-5 pb-2 font-mono text-[12px] text-gray-800 space-y-1">
             <div className="text-center border-b border-dashed border-gray-300 pb-3 mb-3">
-              <p className="font-bold text-[13px] text-[#11593F] tracking-wider">
+              <p className="font-bold text-[13px] text-primary tracking-wider">
                 ★ 가성비 독서 영수증 ★
               </p>
               <p className="text-[10px] text-gray-500 mt-1">
@@ -90,7 +90,7 @@ export default function ReadingReceipt({ books }: ReadingReceiptProps) {
                 <p className="text-[11px] mt-1">
                   ₩{item.price.toLocaleString()} / {item.pages}쪽
                 </p>
-                <p className="text-[11px] font-bold text-[#11593F] mt-0.5">
+                <p className="text-[11px] font-bold text-primary mt-0.5">
                   → {item.ment}
                 </p>
               </div>
@@ -100,7 +100,7 @@ export default function ReadingReceipt({ books }: ReadingReceiptProps) {
               <p className="text-[11px] text-gray-600">
                 총 {items.length}권 · ₩{totalPrice.toLocaleString()} · {totalPages.toLocaleString()}쪽
               </p>
-              <p className="text-[12px] font-bold text-[#11593F] mt-1">
+              <p className="text-[12px] font-bold text-primary mt-1">
                 평균 1페이지당 약 {avgPerPage}원
               </p>
             </div>

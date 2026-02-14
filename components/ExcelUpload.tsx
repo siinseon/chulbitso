@@ -155,7 +155,7 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
   };
 
   return (
-    <div className="bg-[#FFFFFF] rounded-2xl p-5 shadow-card">
+    <div className="bg-chulbit-card rounded-2xl p-5 shadow-card">
       <input
         ref={inputRef}
         type="file"
@@ -168,17 +168,17 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-        className="w-full border-2 border-dashed border-[#11593F] rounded-xl py-5 min-h-[52px] flex flex-col items-center gap-2 bg-[#FAFAF8] hover:bg-[#F5F5F2] active:bg-[#F5F5F2] transition-colors disabled:opacity-60"
+        className="w-full border-2 border-dashed border-primary rounded-xl py-5 min-h-[52px] flex flex-col items-center gap-2 bg-ivory hover:bg-ivory-border/50 active:bg-ivory-border/50 transition-colors disabled:opacity-60"
       >
         {uploading ? (
-          <Loader2 size={32} stroke="#11593F" className="animate-spin" />
+          <Loader2 size={32} stroke="var(--point-color)" className="animate-spin" />
         ) : (
-          <Upload size={32} stroke="#11593F" strokeWidth={2} />
+          <Upload size={32} stroke="var(--point-color)" strokeWidth={2} />
         )}
-        <span className="text-[15px] font-bold text-[#11593F]">
+        <span className="text-[15px] font-bold text-primary">
           {uploading ? progress || "업로드 중..." : "알라딘 구매내역 엑셀 업로드"}
         </span>
-        <span className="text-[13px] text-gray-500">
+        <span className="text-[13px] text-muted">
           .xlsx, .xls · ISBN 있으면 표지 자동 조회
         </span>
       </button>

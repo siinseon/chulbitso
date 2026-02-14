@@ -168,11 +168,11 @@ export default function ReceiptModal({
       aria-labelledby="receipt-modal-title"
     >
       <div
-        className="w-full max-w-[400px] max-h-[90dvh] sm:max-h-[90vh] flex flex-col bg-[#F2F2F2] rounded-t-2xl sm:rounded-2xl overflow-hidden"
+        className="w-full max-w-[400px] max-h-[90dvh] sm:max-h-[90vh] flex flex-col bg-background rounded-t-2xl sm:rounded-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 bg-white border-b border-gray-100 min-h-[52px]">
-          <h2 id="receipt-modal-title" className="text-[16px] font-bold text-[#11593F]">
+          <h2 id="receipt-modal-title" className="text-[16px] font-bold text-primary">
             {step === "select" ? "영수증에 넣을 도서 선택" : "가성비 독서 영수증"}
           </h2>
           <button
@@ -195,7 +195,7 @@ export default function ReceiptModal({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="제목 또는 저자로 검색"
-                  className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-[14px] outline-none focus:border-[#11593F]"
+                  className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-[14px] outline-none focus:border-primary"
                 />
                 <span className="flex items-center px-3 py-2 text-gray-400" aria-hidden>
                   <Search size={18} />
@@ -206,7 +206,7 @@ export default function ReceiptModal({
               <button
                 type="button"
                 onClick={selectAll}
-                className="text-[12px] font-bold text-[#11593F]"
+                className="text-[12px] font-bold text-primary"
               >
                 전체 선택
               </button>
@@ -243,7 +243,7 @@ export default function ReceiptModal({
                           className="w-full flex items-center gap-3 p-3 min-h-[52px] rounded-xl bg-white shadow-card text-left hover:bg-gray-50 active:bg-gray-50"
                         >
                           {checked ? (
-                            <CheckSquare size={22} className="text-[#11593F] flex-shrink-0" />
+                            <CheckSquare size={22} className="text-primary flex-shrink-0" />
                           ) : (
                             <Square size={22} className="text-gray-300 flex-shrink-0" />
                           )}
@@ -269,7 +269,7 @@ export default function ReceiptModal({
                 type="button"
                 onClick={() => setStep("receipt")}
                 disabled={selectedIds.size === 0}
-                className="w-full py-3 rounded-xl bg-[#11593F] text-white font-bold text-[14px] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full py-3 rounded-xl bg-primary text-white font-bold text-[14px] flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 영수증 보기 ({selectedIds.size}권)
                 <ChevronRight size={20} />
@@ -378,7 +378,7 @@ export default function ReceiptModal({
               <button
                 type="button"
                 onClick={handleSaveImage}
-                className="flex-1 py-3 rounded-xl bg-[#11593F] text-white font-bold text-[14px] flex items-center justify-center gap-2"
+                className="flex-1 py-3 rounded-xl bg-primary text-white font-bold text-[14px] flex items-center justify-center gap-2"
               >
                 <Download size={18} />
                 이미지 저장

@@ -2,12 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ========== 빈티지 놀이터 디자인 시스템 ========== */
 :root {
-  --point-color: #11593F;
-  --bg-color: #F2F2F2;
-  --card-bg: #FFFFFF;
-  --ivory: #FAFAF8;
-  /* 모바일 가독용 기본 글자 크기 */
+  --point-color: #4A5E42;
+  --bg-color: #F2E6D0;
+  --card-bg: #FAF6EF;
+  --ivory: #FAF6EF;
+  --text-main: #3A3128;
+  --primary: #4A5E42;
+  --secondary: #8C9E83;
+  --accent: #C98C6E;
+  /* 노이즈 질감용 (낡은 종이) */
+  --noise-url: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   font-size: 16px;
 }
 
@@ -17,15 +23,65 @@
   }
 }
 
+/* body: 빛바랜 베이지 배경 + 노이즈 질감(낡은 종이) + 명조체 */
 body {
-  font-family: var(--font-nanum-myeongjo), "Nanum Myeongjo", serif;
+  font-family: var(--font-noto-serif-kr), "Noto Serif KR", serif;
   background: var(--bg-color);
-  color: #333;
+  color: var(--text-main);
   padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
   padding-left: env(safe-area-inset-left, 0px);
   padding-right: env(safe-area-inset-right, 0px);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+/* 노이즈 텍스처 오버레이 - 낡은 종이 느낌 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: var(--noise-url);
+  background-repeat: repeat;
+  opacity: 0.035;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* 종이 위에 얹혀진 느낌: 둥근 모서리 + 부드러운 그림자 */
+@layer components {
+  .vintage-card {
+    @apply rounded-md shadow-sm border border-ivory-border;
+    box-shadow: 0 1px 3px rgba(58, 49, 40, 0.06);
+  }
+  .vintage-btn {
+    @apply rounded-md shadow-sm;
+  }
+  /* 도서관 대출 카드: 아이보리 + 종이 질감 */
+  .library-card {
+    background-color: #FFF8E7;
+    position: relative;
+  }
+  .library-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: var(--noise-url);
+    background-repeat: repeat;
+    opacity: 0.04;
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 0;
+  }
+  .library-card > * {
+    position: relative;
+    z-index: 1;
+  }
+  /* 섹션 제목: 책장 구분선 느낌 */
+  .section-title {
+    @apply font-serif font-bold text-primary;
+    letter-spacing: 0.02em;
+  }
 }
 
 @media (min-width: 768px) {
@@ -61,7 +117,7 @@ body {
   flex-shrink: 0;
 }
 .receipt-modal-paper {
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 10px 40px rgba(58, 49, 40, 0.15);
 }
 
 /* LP 턴테이블 느낌 느린 회전 */
@@ -73,6 +129,34 @@ body {
 .animate-spin-slow {
   animation: spin-slow 8s linear infinite;
 }
+@keyframes spin-merry {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-merry {
+  animation: spin-merry 20s linear infinite;
+}
+
+/* 놀이터 배경: 모래/등고선 희미한 패턴 */
+.playground-bg {
+  position: relative;
+}
+.playground-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    /* 등고선: 수평 물결 */
+    url("data:image/svg+xml,%3Csvg width='60' height='60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 15 Q15 10 30 15 T60 15' stroke='%233A3128' fill='none' stroke-width='0.4' opacity='0.06'/%3E%3Cpath d='M0 30 Q15 25 30 30 T60 30' stroke='%233A3128' fill='none' stroke-width='0.4' opacity='0.06'/%3E%3Cpath d='M0 45 Q15 40 30 45 T60 45' stroke='%233A3128' fill='none' stroke-width='0.4' opacity='0.06'/%3E%3C/svg%3E"),
+    /* 모래 질감: 미세 점 */
+    radial-gradient(circle at 25% 25%, rgba(58, 49, 40, 0.03) 1px, transparent 1px),
+    radial-gradient(circle at 75% 75%, rgba(58, 49, 40, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px, 4px 4px, 4px 4px;
+  background-position: 0 0, 0 0, 2px 2px;
+  pointer-events: none;
+  z-index: 0;
+}
 
 /* 가로 스크롤 시 스크롤바 숨김 (분류 필터 등) */
 .scrollbar-hide {
@@ -81,4 +165,154 @@ body {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* ========== 책 상세: 빈티지 대출 카드 ========== */
+.loan-card {
+  background-color: #FFF9E5;
+  position: relative;
+  overflow: hidden;
+}
+.loan-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    transparent,
+    transparent 27px,
+    rgba(58, 49, 40, 0.06) 27px,
+    rgba(58, 49, 40, 0.06) 28px
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+.loan-card > * { position: relative; z-index: 1; }
+
+/* 완독 도장: 번짐 + 비스듬히 */
+.stamp-completed {
+  color: #b91c1c;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-weight: 700;
+  font-size: 14px;
+  letter-spacing: 0.08em;
+  opacity: 0.88;
+  transform: rotate(12deg);
+  mix-blend-mode: multiply;
+  text-shadow: 0 0 1px rgba(185, 28, 28, 0.4);
+  filter: blur(0.3px);
+  padding: 4px 10px;
+  border: 2px solid #b91c1c;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+/* 삭제 시 카드 종이 찢기 애니메이션 */
+@keyframes tear-open {
+  0% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); opacity: 1; }
+  35% { clip-path: polygon(0 0, 100% 0, 98% 100%, 2% 100%); opacity: 1; }
+  60% { clip-path: polygon(0 0, 95% 0, 90% 50%, 100% 100%, 0 100%); opacity: 0.95; }
+  100% { clip-path: polygon(0 0, 70% 0, 60% 30%, 80% 100%, 0 100%); opacity: 0; }
+}
+.loan-card.tear-off-active {
+  animation: tear-open 0.48s ease-in forwards;
+}
+.post-it-note {
+  background: linear-gradient(135deg, #fef9c3 0%, #fde68a 50%, #fcd34d 100%);
+  box-shadow: 2px 2px 8px rgba(58, 49, 40, 0.15), inset 0 1px 0 rgba(255,255,255,0.4);
+  border-left: 3px solid #e4c04a;
+  transform: rotate(-0.5deg);
+}
+
+/* 고독한 목마: 낙엽 낙하 (바닥으로) */
+@keyframes fall-leaf {
+  0% {
+    transform: translate(-50%, -100%) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 0) rotate(220deg);
+    opacity: 0.9;
+  }
+}
+.animate-fall-leaf {
+  animation: fall-leaf 1.6s ease-in forwards;
+}
+
+/* 탐험: 모래성 호버 시 모래 흘러내림 */
+.sandcastle-block::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 8px;
+  background: linear-gradient(180deg, transparent, rgba(212,196,160,0.8));
+  border-radius: 0 0 50% 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.sandcastle-block.sandcastle-drip::after {
+  opacity: 1;
+}
+
+/* 탐험: 울림통 말풍선 퐁 */
+@keyframes bubble {
+  0% { transform: translate(-50%, 4px) scale(0.6); opacity: 0; }
+  60% { transform: translate(-50%, -2px) scale(1.05); opacity: 1; }
+  100% { transform: translate(-50%, -8px) scale(1); opacity: 1; }
+}
+.animate-bubble {
+  animation: bubble 0.25s ease-out forwards;
+}
+
+/* 종이비행기 리뷰: 누런 갱지 */
+.lined-paper {
+  background-color: #F5F0D8;
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 25px,
+    rgba(58, 49, 40, 0.08) 25px,
+    rgba(58, 49, 40, 0.08) 26px
+  );
+  border: 1px solid #E5DCC8;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.4);
+}
+
+/* 종이 3단 접기 → 비행기 */
+@keyframes paper-fold {
+  0% { transform: scaleY(1); }
+  33% { transform: scaleY(0.33); }
+  66% { transform: scaleY(0.33) scaleX(0.6); }
+  100% { transform: scaleY(0.2) scaleX(0.5) rotateZ(-35deg); }
+}
+.paper-fold-active {
+  animation: paper-fold 1s ease-in-out forwards;
+  transform-origin: center bottom;
+}
+
+/* 비행기 슈우웅 날아감 */
+@keyframes plane-fly {
+  0% { transform: translateY(0) rotateZ(-35deg) scale(0.5); opacity: 1; }
+  100% { transform: translateY(-120vh) rotateZ(-25deg) scale(0.4); opacity: 0; }
+}
+.paper-fly-active {
+  animation: plane-fly 1.2s ease-in forwards;
+}
+
+/* 종이 파사삭 펼쳐짐 (모달) */
+.paper-unfold-initial {
+  transform: scale(0.3) rotateZ(-20deg);
+  opacity: 0;
+}
+@keyframes paper-unfold {
+  0% { transform: scale(0.3) rotateZ(-20deg); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: scale(1) rotateZ(0); opacity: 1; }
+}
+.paper-unfold-active {
+  animation: paper-unfold 0.5s ease-out forwards;
 }

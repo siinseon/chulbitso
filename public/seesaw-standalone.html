@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>시소 CSS 구현</title>
+  <style>
+    /* ===== 시소 디자인 (프로젝트와 동일) ===== */
+    :root {
+      --tilt-deg: 7; /* 기울기 각도: -14 ~ 14 (문학 쪽 음수, 비문학 쪽 양수) */
+      --primary: #4A5E42;
+      --muted: #6B5B4F;
+    }
+
+    .seesaw-wrap {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      height: 110px;
+      overflow: visible;
+      perspective: 200px;
+      margin: 0 auto;
+    }
+
+    /* 기둥 */
+    .seesaw-pillar {
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 20px;
+      height: 56px;
+      border-radius: 0 0 6px 6px;
+      background: linear-gradient(90deg, #4A3520 0%, #5C4033 30%, #6B5344 50%, #5C4033 70%, #4A3520 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 2px 6px rgba(58,49,40,0.3);
+      border: 1px solid #3A2820;
+      z-index: 0;
+    }
+
+    /* 피벗 (기둥 위) */
+    .seesaw-pivot {
+      position: absolute;
+      left: 50%;
+      bottom: 54px;
+      transform: translateX(-50%);
+      width: 24px;
+      height: 8px;
+      border-radius: 2px;
+      background: linear-gradient(180deg, #4A3520 0%, #3A2820 100%);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+      z-index: 5;
+    }
+
+    /* 시소 판 (기울기 적용) */
+    .seesaw-board {
+      position: absolute;
+      left: 50%;
+      top: 56px;
+      width: 98%;
+      max-width: 340px;
+      transform: translate(-50%, -50%) rotate(var(--tilt-deg, 0)deg);
+      transform-origin: center center;
+      transition: transform 0.7s ease-out;
+      z-index: 10;
+    }
+
+    /* 판 위쪽면 (나무) */
+    .seesaw-board-top {
+      width: 100%;
+      height: 20px;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(90deg, #6B5344 0%, #7B6344 14%, #9B8265 30%, #8B7355 70%, #7B6344 86%, #6B5344 100%);
+      box-shadow: inset 0 2px 0 rgba(255,255,255,0.2), inset 0 -1px 0 rgba(0,0,0,0.1), 0 3px 10px rgba(58,49,40,0.2);
+      border: 1px solid #4A3520;
+    }
+
+    .seesaw-board-top::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.25;
+      pointer-events: none;
+      background-image: repeating-linear-gradient(90deg, transparent 0 2px, rgba(58,49,40,0.2) 3px 4px);
+    }
+
+    /* 손잡이 */
+    .seesaw-grip-left,
+    .seesaw-grip-right {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2px;
+      height: 12px;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--primary) 50%, transparent);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.15);
+    }
+    .seesaw-grip-left { left: 10%; }
+    .seesaw-grip-right { right: 10%; }
+
+    /* 판 두께 (앞쪽 립) */
+    .seesaw-board-lip {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 100%;
+      width: 100%;
+      height: 6px;
+      margin-top: -1px;
+      border-radius: 0 0 4px 4px;
+      background: linear-gradient(180deg, #5C4033 0%, #4A3520 100%);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    /* 라벨 — 왼쪽 끝 위 */
+    .seesaw-label-left {
+      position: absolute;
+      left: 0;
+      bottom: 100%;
+      padding-bottom: 6px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    .seesaw-label-left .label-cat { display: block; font-size: 11px; color: var(--muted); font-family: monospace; }
+    .seesaw-label-left .label-num { display: block; font-size: 14px; font-weight: 700; color: var(--primary); font-family: serif; }
+
+    /* 라벨 — 오른쪽 끝 위 */
+    .seesaw-label-right {
+      position: absolute;
+      right: 0;
+      bottom: 100%;
+      padding-bottom: 6px;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .seesaw-label-right .label-cat { display: block; font-size: 11px; color: var(--muted); font-family: monospace; }
+    .seesaw-label-right .label-num { display: block; font-size: 14px; font-weight: 700; color: var(--primary); font-family: serif; }
+  </style>
+</head>
+<body style="padding: 24px; background: #F2E6D0; font-family: sans-serif;">
+  <div class="seesaw-wrap" style="--tilt-deg: 7;">
+    <div class="seesaw-pillar"></div>
+    <div class="seesaw-pivot"></div>
+    <div class="seesaw-board">
+      <div class="seesaw-board-top">
+        <span class="seesaw-grip-left"></span>
+        <span class="seesaw-grip-right"></span>
+      </div>
+      <div class="seesaw-board-lip"></div>
+      <div class="seesaw-label-left">
+        <span class="label-cat">문학</span>
+        <span class="label-num">3권</span>
+      </div>
+      <div class="seesaw-label-right">
+        <span class="label-cat">비문학</span>
+        <span class="label-num">5권</span>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top: 12px; font-size: 11px; color: var(--muted); text-align: center;">
+    기울기 바꾸기: .seesaw-wrap에 style="--tilt-deg: -14" ~ 14 (숫자만 바꾸면 됨)
+  </p>
+</body>
+</html>

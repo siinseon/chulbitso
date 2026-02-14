@@ -23,7 +23,7 @@ function getFill(
   const id = String(geoId);
   const count = countByNumeric[id] ?? countByNumeric[id.padStart(3, "0")] ?? 0;
   if (count <= 0) return "#E5E7EB";
-  if (maxCount <= 0) return "#11593F";
+  if (maxCount <= 0) return "#4A5E42";
   const t = count / maxCount;
   const r = Math.round(200 - (200 - 17) * t);
   const g = Math.round(230 - (230 - 89) * t);
@@ -54,13 +54,13 @@ export default function WorldMapSection({
   const noCountryInfo = totalCount > 0 && countWithCountry === 0;
 
   return (
-    <section className="rounded-2xl p-5 bg-white shadow-card">
-      <h3 className="text-[14px] font-bold text-[#11593F] mb-4 flex items-center gap-2">
+    <section className="rounded-2xl p-5 bg-chulbit-card shadow-card border border-ivory-border">
+      <h3 className="text-[14px] font-bold text-primary mb-4 flex items-center gap-2 font-serif">
         <Globe size={18} />
         출판 국가별
       </h3>
 
-      <div className="relative w-full aspect-[1.6] max-h-[280px] rounded-xl overflow-hidden bg-gray-100">
+      <div className="relative w-full max-w-full aspect-[1.6] max-h-[280px] rounded-xl overflow-hidden bg-ivory-border/60">
         <ComposableMap
           projection="geoMercator"
           projectionConfig={{
@@ -94,23 +94,23 @@ export default function WorldMapSection({
 
       <div className="mt-4 space-y-2">
         {noData && (
-          <p className="text-[13px] text-gray-500">
+          <p className="text-[13px] text-muted">
             등록된 도서가 없습니다.
           </p>
         )}
         {noCountryInfo && (
-          <p className="text-[13px] text-amber-700">
+          <p className="text-[13px] text-primary">
             도서 카드를 눌러 출판 국가를 입력하면 지도에 반영됩니다.
           </p>
         )}
         {countWithCountry > 0 && (
           <>
-            <p className="text-[14px] font-bold text-[#11593F]">
+            <p className="text-[14px] font-bold text-primary">
               당신이 읽은 책 중 출판 국가가 있는 도서는 {countWithCountry}권입니다.
             </p>
             {byCountry.slice(0, 8).map((c) => (
-              <p key={c.code} className="text-[13px] text-gray-700">
-                <span className="font-bold text-[#11593F]">{c.name}</span>에서 나온 책이{" "}
+              <p key={c.code} className="text-[13px] text-text-main">
+                <span className="font-bold text-primary">{c.name}</span>에서 나온 책이{" "}
                 <span className="font-bold">{c.percent}%</span>를 차지합니다.
               </p>
             ))}

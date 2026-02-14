@@ -38,42 +38,42 @@ export default function HomeLibrarySearch({ books }: HomeLibrarySearchProps) {
 
   return (
     <div className="space-y-2 mb-5">
-      <div className="bg-[#FFFFFF] rounded-xl px-4 py-3 min-h-[48px] flex items-center gap-3 shadow-card border border-ivory-border">
-        <Search size={20} stroke="#11593F" className="flex-shrink-0" />
+      <div className="bg-chulbit-card rounded-xl px-4 py-3 min-h-[48px] flex items-center gap-3 shadow-card border border-ivory-border">
+        <Search size={20} stroke="var(--point-color)" className="flex-shrink-0" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="가진 책 검색 (제목, 저자)"
-          className="flex-1 min-w-0 outline-none text-[15px] placeholder:text-gray-400"
+          className="flex-1 min-w-0 outline-none text-[15px] placeholder:text-muted"
         />
       </div>
 
       {hasQuery && (
-        <div className="bg-[#FFFFFF] rounded-xl p-4 shadow-card max-h-[240px] overflow-y-auto">
+        <div className="bg-chulbit-card rounded-xl p-4 shadow-card max-h-[240px] overflow-y-auto">
           {matches.length === 0 ? (
-            <div className="text-[#11593F] font-bold py-2">✓ 미보유 도서</div>
+            <div className="text-primary font-bold py-2">✓ 미보유 도서</div>
           ) : (
             <div className="space-y-2">
               {matches.slice(0, 20).map((book) => (
                 <div
                   key={book.id}
-                  className="py-2 border-b border-gray-100 last:border-0"
+                  className="py-2 border-b border-ivory-border last:border-0"
                 >
-                  <div className="font-bold text-[15px] text-[#11593F]">
+                  <div className="font-bold text-[15px] text-primary">
                     {book.title}
                   </div>
-                  <div className="text-[13px] text-gray-600 flex items-center gap-2">
+                  <div className="text-[13px] text-muted flex items-center gap-2">
                     {book.author}
                     <span className="text-gray-400">·</span>
-                    <span className="text-[#11593F] text-[11px]">
+                    <span className="text-primary text-[11px]">
                       {getGroupLabel(book, books)}
                     </span>
                   </div>
                 </div>
               ))}
               {matches.length > 20 && (
-                <div className="text-[12px] text-gray-500 pt-2">
+                <div className="text-[12px] text-muted pt-2">
                   외 {matches.length - 20}권 더 있음
                 </div>
               )}

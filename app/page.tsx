@@ -123,7 +123,7 @@ export default function Home() {
         )}
 
         {activeTab === "analysis" && (
-          <section className="animate-fadeIn">
+          <section className="animate-fadeIn overflow-x-hidden min-w-0">
             <AnalysisScreen books={books} />
           </section>
         )}

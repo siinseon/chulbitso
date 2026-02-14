@@ -36,17 +36,17 @@ export default function SettingsModal({
       aria-labelledby="settings-title"
     >
       <div
-        className="w-full max-w-[480px] bg-[#FFFFFF] rounded-t-2xl p-6 pb-[max(24px,env(safe-area-inset-bottom))] shadow-lg"
+        className="w-full max-w-[480px] bg-chulbit-card rounded-t-2xl p-6 pb-[max(24px,env(safe-area-inset-bottom))] shadow-lg"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between mb-6">
-          <h2 id="settings-title" className="text-[18px] font-bold text-[#11593F]">
+          <h2 id="settings-title" className="text-[18px] font-bold text-primary">
             설정
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
+            className="p-2 rounded-full hover:bg-ivory-border/80 text-text-main"
             aria-label="닫기"
           >
             <X size={24} strokeWidth={2} />
@@ -56,7 +56,7 @@ export default function SettingsModal({
         <button
           type="button"
           onClick={handleReset}
-          className="w-full py-4 rounded-xl border-2 border-red-200 text-red-600 font-bold text-[15px] hover:bg-red-50 transition-colors flex items-center justify-center gap-2"
+          className="w-full py-4 rounded-xl border-2 border-accent/50 text-accent font-bold text-[15px] hover:bg-accent/10 transition-colors flex items-center justify-center gap-2"
         >
           🗑️ 모든 데이터 초기화
         </button>

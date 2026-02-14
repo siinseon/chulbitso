@@ -23,7 +23,7 @@ export default function SearchBar({
 
   return (
     <form onSubmit={handleSubmit} className="search-bar">
-      <Search size={20} stroke="#11593F" />
+      <Search size={20} stroke="var(--point-color)" />
       <input
         type="text"
         value={query}
