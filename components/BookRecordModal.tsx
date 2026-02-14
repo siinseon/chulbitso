@@ -4,12 +4,10 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, BookOpen, BookMarked, Cloud, Package, Plus, Trash2, Star } from "lucide-react";
 import type { Book, BookGroup } from "@/lib/useBooks";
-import { FULL_CATEGORY_OPTIONS } from "@/lib/categories";
+import { FULL_CATEGORY_OPTIONS, isPoetrySeriesOrPublisher } from "@/lib/categories";
 import type { RecordStatus } from "@/lib/supabase/types";
 import type { ReadingStatus } from "@/lib/supabase/types";
-import { OWNERSHIP_LABELS, RECORD_STATUS_DISPLAY } from "@/lib/supabase/types";
-
-const RECORD_STATUS_OPTIONS: RecordStatus[] = ["읽는 중", "완독", "멈춤", "소장중"];
+import { OWNERSHIP_LABELS } from "@/lib/supabase/types";
 
 /** 독서상태에 맞춰 기록 칸 기본값 (끝냄→완독, 펼침→읽는 중, 멈춤→멈춤) */
 function defaultRecordStatus(readingStatus: ReadingStatus | undefined): RecordStatus {
@@ -18,7 +16,7 @@ function defaultRecordStatus(readingStatus: ReadingStatus | undefined): RecordSt
   if (readingStatus === "PAUSED") return "멈춤";
   return "소장중";
 }
-const SOURCE_OPTIONS = ["구매", "선물", "도서관", "대여", "기타"];
+const SOURCE_OPTIONS = ["구매", "선물", "도서관", "대여", "윌라", "밀리의 서재", "기타"];
 const WEATHER_OPTIONS = ["☀️ 맑음", "⛅ 흐림", "🌧️ 비", "❄️ 눈", "🌫️ 안개", "🌙 밤"];
 
 export type BookRecordInitial = Partial<Book> & { title: string; author: string };
@@ -113,6 +111,14 @@ export default function BookRecordModal({
     if (initialGroup) setGroup(initialGroup);
     setTab("basic");
   }, [isOpen, initial, initialGroup]);
+
+  // 시 시리즈(창비시선, 문학과지성사시인선 등)이면 분류를 시집으로
+  useEffect(() => {
+    if (!isOpen) return;
+    if (isPoetrySeriesOrPublisher(publisher) || isPoetrySeriesOrPublisher(initial.series)) {
+      setCategory("시집");
+    }
+  }, [isOpen, publisher, initial.series]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -427,23 +433,6 @@ export default function BookRecordModal({
                       </button>
                     </div>
                   ))}
-                </div>
-                <div>
-                  <label className="block text-[13px] font-bold text-primary mb-2">상태</label>
-                  <div className="flex flex-wrap gap-2">
-                    {RECORD_STATUS_OPTIONS.map((s) => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => setRecordStatus(s)}
-                        className={`px-4 py-2 rounded-lg text-[13px] font-bold ${
-                          recordStatus === s ? "bg-primary text-white" : "bg-secondary/20 text-text-muted"
-                        }`}
-                      >
-                        {RECORD_STATUS_DISPLAY[s]}
-                      </button>
-                    ))}
-                  </div>
                 </div>
                 <div>
                   <label className="block text-[13px] font-bold text-primary mb-2 flex items-center gap-2">

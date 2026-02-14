@@ -146,7 +146,7 @@ export default function GenreTripleSwingsSection({ topGenres }: GenreTripleSwing
 
   return (
     <section
-      className="rounded-2xl p-5 border border-secondary overflow-visible"
+      className="rounded-2xl p-5 border border-secondary overflow-hidden"
       style={{
         background: "linear-gradient(180deg, #F2E6D0 0%, #E8DCC8 100%)",
         boxShadow: "0 4px 24px rgba(58, 49, 40, 0.1)",
@@ -157,14 +157,13 @@ export default function GenreTripleSwingsSection({ topGenres }: GenreTripleSwing
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-5">가장 많이 읽은 장르 TOP 3</p>
 
-      <div className="relative w-full max-w-[440px] mx-auto overflow-visible" style={{ height: 260 }}>
+      <div className="relative w-full max-w-[440px] mx-auto overflow-hidden" style={{ height: 260 }}>
         {/* 꼭대기 가로 봉 (녹슨 금속) */}
         <div
-          className="absolute left-1/2 -translate-x-1/2 rounded-sm"
+          className="absolute left-0 right-0 rounded-sm"
           style={{
             top: 20,
-            width: "110%",
-            minWidth: 420,
+            width: "100%",
             height: 14,
             background: `linear-gradient(180deg, ${FRAME_LIGHT} 0%, ${FRAME_RUST} 40%, ${FRAME_DARK} 100%)`,
             boxShadow:

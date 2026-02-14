@@ -46,9 +46,9 @@ export default function SlideIllustration({ className = "", width = 100, height 
       ))}
       <rect x="38" y="11" width="24" height="2" rx="0.5" fill={COLORS.rust} />
 
-      {/* 지붕 (초록, 좁은 삼각형) */}
+      {/* 지붕 (초록) — 기둥 상단(y=11)에 밑변 맞춤 */}
       <path
-        d="M 36 15 L 50 2 L 64 15 L 36 15 Z"
+        d="M 36 11 L 50 -2 L 64 11 L 36 11 Z"
         fill={COLORS.green}
       />
 

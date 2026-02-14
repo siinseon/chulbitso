@@ -85,17 +85,10 @@ export default function AddBookModal({
       aria-labelledby="add-book-title"
     >
       <div
-<<<<<<< HEAD
-        className="w-full max-w-[480px] max-h-[90vh] bg-chulbit-card rounded-2xl overflow-hidden flex flex-col shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
-=======
         className="w-full max-w-[480px] max-h-[90vh] bg-white rounded-2xl overflow-hidden flex flex-col shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between p-4 border-b border-secondary/30">
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
           <h2 id="add-book-title" className="text-[18px] font-bold text-primary">
             도서 추가
           </h2>
@@ -116,11 +109,7 @@ export default function AddBookModal({
             className={`flex-1 py-3 flex items-center justify-center gap-2 text-[14px] font-bold transition-colors ${
               tab === "search"
                 ? "text-primary border-b-2 border-primary"
-<<<<<<< HEAD
-                : "text-gray-500"
-=======
                 : "text-text-muted"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
             }`}
           >
             <Search size={18} />
@@ -132,11 +121,7 @@ export default function AddBookModal({
             className={`flex-1 py-3 flex items-center justify-center gap-2 text-[14px] font-bold transition-colors ${
               tab === "manual"
                 ? "text-primary border-b-2 border-primary"
-<<<<<<< HEAD
-                : "text-gray-500"
-=======
                 : "text-text-muted"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
             }`}
           >
             <PenLine size={18} />
@@ -163,11 +148,7 @@ export default function AddBookModal({
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="도서 제목"
-<<<<<<< HEAD
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-primary text-[14px]"
-=======
                   className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
                   required
                 />
               </div>
@@ -181,11 +162,7 @@ export default function AddBookModal({
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
                   placeholder="저자명"
-<<<<<<< HEAD
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-primary text-[14px]"
-=======
                   className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
                   required
                 />
               </div>
@@ -199,11 +176,7 @@ export default function AddBookModal({
                   value={publisher}
                   onChange={(e) => setPublisher(e.target.value)}
                   placeholder="출판사명"
-<<<<<<< HEAD
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-primary text-[14px]"
-=======
                   className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
                 />
               </div>
 
@@ -214,11 +187,7 @@ export default function AddBookModal({
                 <select
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
-<<<<<<< HEAD
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-primary text-[14px]"
-=======
                   className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
                 >
                   {FULL_CATEGORY_OPTIONS.map((c) => (
                     <option key={c} value={c}>
@@ -238,21 +207,13 @@ export default function AddBookModal({
                   onChange={(e) => setRetailPrice(e.target.value)}
                   placeholder="15000"
                   min={0}
-<<<<<<< HEAD
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-primary text-[14px]"
-=======
                   className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
                 />
               </div>
 
               <button
                 type="submit"
-<<<<<<< HEAD
-                className="w-full py-4 rounded-xl bg-primary text-white font-bold text-[15px] hover:bg-primary-dark transition-colors"
-=======
                 className="w-full py-4 rounded-xl bg-primary text-white font-bold text-[15px] hover:bg-primary/90 transition-colors"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
               >
                 상세 기록하기
               </button>

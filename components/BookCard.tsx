@@ -30,25 +30,17 @@ export default function BookCard({
   onSetReadingStatus,
 }: BookCardProps) {
   return (
-<<<<<<< HEAD
-    <article className="library-card relative z-0 rounded-tl-md rounded-tr-[6px] rounded-br-md rounded-bl-[5px] p-3 shadow-card border border-ivory-border transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover group">
-=======
     <article className="vintage-ticket relative rounded-xl p-4 sm:p-5 shadow-card hover:shadow-asset-card transition-all overflow-visible">
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
       <button
         type="button"
         onClick={(e) => {
           e.stopPropagation();
           onDelete(book.id);
         }}
-<<<<<<< HEAD
-        className="absolute top-2 right-2 w-8 h-8 min-w-[32px] min-h-[32px] flex items-center justify-center rounded-full text-muted hover:bg-accent/15 hover:text-accent active:bg-accent/25 transition-colors z-10 opacity-0 group-hover:opacity-100"
-=======
         className="absolute top-3 right-3 w-10 h-10 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full text-text-muted hover:bg-red-50 hover:text-red-600 active:bg-red-100 transition-colors z-10"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
         aria-label="삭제"
       >
-        <Trash2 size={14} strokeWidth={2.5} />
+        <Trash2 size={18} strokeWidth={2.5} />
       </button>
 
       <div
@@ -63,43 +55,22 @@ export default function BookCard({
           }
         }}
       >
-        <div className="flex gap-2.5 items-start pr-6">
-          {/* 표지 */}
+        <div className="flex gap-4 mb-3 items-end pr-10">
           {book.cover ? (
             <img
               src={book.cover}
               alt={book.title}
-<<<<<<< HEAD
-              className="w-14 h-[72px] sm:w-16 sm:h-[84px] object-cover rounded-sm flex-shrink-0 shadow-sm border border-ivory-border"
-              referrerPolicy="no-referrer"
-            />
-          ) : (
-            <div className="w-14 h-[72px] sm:w-16 sm:h-[84px] rounded-sm flex-shrink-0 bg-ivory-border/60 flex items-end justify-center pb-1 border border-ivory-border">
-              <span className="text-[9px] text-muted text-center px-0.5 line-clamp-3 leading-tight w-full">
-=======
               className="w-20 h-[112px] object-cover rounded-lg flex-shrink-0 shadow-sm bg-secondary/20"
               referrerPolicy="no-referrer"
             />
           ) : (
             <div className="w-20 h-[112px] rounded-lg flex-shrink-0 bg-secondary/30 flex items-end justify-center pb-2.5">
               <span className="text-[10px] text-text-muted text-center px-1 line-clamp-3 leading-tight w-full">
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
                 {book.title}
               </span>
             </div>
           )}
           <div className="flex-1 min-w-0">
-<<<<<<< HEAD
-            <span className="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold text-primary border border-primary/40 bg-primary/5 mb-1.5">
-              수경 소유
-            </span>
-            <h3 className="text-[13px] sm:text-[14px] font-bold text-text-main leading-snug line-clamp-2">
-              {book.title}
-            </h3>
-            {book.author && (
-              <p className="text-[11px] sm:text-[12px] text-muted mt-0.5 line-clamp-1">
-                {book.author}
-=======
             <h3 className="text-[16px] sm:text-[17px] font-bold text-primary font-serif leading-snug line-clamp-2">
               {book.title}
             </h3>
@@ -118,17 +89,13 @@ export default function BookCard({
             {book.retailPrice && book.retailPrice > 0 && (
               <p className="text-[13px] text-text-muted mt-1">
                 ₩{book.retailPrice.toLocaleString()}
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
               </p>
             )}
           </div>
         </div>
 
         {onSetReadingStatus && (
-          <div
-            className="flex gap-1.5 mt-2.5 flex-wrap justify-center w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className="flex gap-2 mt-3 flex-wrap justify-center w-full" onClick={(e) => e.stopPropagation()}>
             {getReadingOptions(group).map((status) => (
               <button
                 key={status}
@@ -137,17 +104,10 @@ export default function BookCard({
                   e.stopPropagation();
                   onSetReadingStatus(book.id, status);
                 }}
-<<<<<<< HEAD
-                className={`px-2 py-1.5 min-h-[32px] rounded text-[11px] font-bold transition-colors ${
-                  book.readingStatus === status
-                    ? "bg-primary text-white"
-                    : "bg-ivory-border/80 text-muted"
-=======
                 className={`px-3 py-2 min-h-[40px] rounded-lg text-[12px] font-bold transition-colors shadow-sm ${
                   book.readingStatus === status
                     ? "bg-primary text-white shadow-[0_2px_8px_rgba(74,94,66,0.3)]"
                     : "bg-secondary/20 text-text-muted"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
                 }`}
               >
                 {READING_STATUS_LABELS[status]}

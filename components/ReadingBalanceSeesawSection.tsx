@@ -64,7 +64,7 @@ export default function ReadingBalanceSeesawSection({ books }: ReadingBalanceSee
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-4">문학과 비문학, 독서 비율 알아보기</p>
 
-      <div className="relative w-full max-w-[320px] mx-auto overflow-visible" style={{ height: 220 }}>
+      <div className="relative w-full max-w-[320px] mx-auto overflow-hidden" style={{ height: 220 }}>
         {/* 모래/바닥 */}
         <div
           className="absolute bottom-0 left-0 right-0 h-8 rounded-b-xl"
@@ -88,7 +88,7 @@ export default function ReadingBalanceSeesawSection({ books }: ReadingBalanceSee
 
         {/* 시소판: 가로 막대 + 양끝 의자 */}
         <div
-          className={`absolute left-1/2 w-[340px] -translate-x-1/2 transition-transform duration-[1200ms] ease-out ${creaked ? "animate-seesaw-creak" : ""}`}
+          className={`absolute left-1/2 w-[320px] -translate-x-1/2 transition-transform duration-[1200ms] ease-out ${creaked ? "animate-seesaw-creak" : ""}`}
           style={{
             bottom: 78,
             transform: `translateX(-50%) rotate(${-tilt}deg)`,

@@ -69,13 +69,8 @@ export default function ReadingReceipt({ books }: ReadingReceiptProps) {
             boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
           }}
         >
-<<<<<<< HEAD
-          <div className="px-4 pt-5 pb-2 font-mono text-[12px] text-gray-800 space-y-1">
-            <div className="text-center border-b border-dashed border-gray-300 pb-3 mb-3">
-=======
           <div className="px-4 pt-5 pb-2 font-mono text-[12px] text-text-main space-y-1">
             <div className="text-center border-b border-dashed border-secondary pb-3 mb-3">
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
               <p className="font-bold text-[13px] text-primary tracking-wider">
                 ★ 가성비 독서 영수증 ★
               </p>

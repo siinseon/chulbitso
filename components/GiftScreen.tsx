@@ -105,27 +105,6 @@ function Plank({
 
 export default function GiftScreen() {
   return (
-<<<<<<< HEAD
-    <section className="animate-fadeIn">
-      <div className="rounded-2xl p-5 bg-chulbit-card shadow-card border border-ivory-border">
-        <h2 className="text-[17px] sm:text-[18px] font-bold text-primary mb-1">인터넷 서점 사은품</h2>
-        <p className="text-[14px] text-muted mb-4">
-          서점을 누르면 해당 사은품/이벤트 페이지로 이동해요.
-        </p>
-        <ul className="space-y-2">
-          {STORE_LINKS.map(({ name, url }) => (
-            <li key={name}>
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between gap-3 p-4 min-h-[52px] rounded-xl bg-ivory/60 border border-ivory-border/80 hover:bg-primary/10 active:bg-primary/15 text-text-main font-medium text-[15px] transition-colors"
-              >
-                <span>{name}</span>
-                <ExternalLink size={18} className="text-primary flex-shrink-0" />
-              </a>
-            </li>
-=======
     <section className="animate-fadeIn min-h-[420px] relative overflow-hidden">
       {/* 모래사장/놀이터 배경 - 연한 질감 */}
       <div
@@ -184,7 +163,6 @@ export default function GiftScreen() {
                 side={i % 2 === 0 ? "left" : "right"}
               />
             </div>
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
           ))}
         </div>
 

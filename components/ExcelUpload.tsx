@@ -162,9 +162,6 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
   const destinyBoxShadow = "0 4px 20px rgba(58, 49, 40, 0.18), inset 0 0 60px rgba(180, 165, 140, 0.08)";
 
   return (
-<<<<<<< HEAD
-    <div className="bg-chulbit-card rounded-2xl p-5 shadow-card">
-=======
     <div
       className="rounded-2xl p-5"
       style={{
@@ -173,7 +170,6 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
         boxShadow: destinyBoxShadow,
       }}
     >
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
       <input
         ref={inputRef}
         type="file"
@@ -186,14 +182,6 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
         type="button"
         onClick={() => inputRef.current?.click()}
         disabled={uploading}
-<<<<<<< HEAD
-        className="w-full border-2 border-dashed border-primary rounded-xl py-5 min-h-[52px] flex flex-col items-center gap-2 bg-ivory hover:bg-ivory-border/50 active:bg-ivory-border/50 transition-colors disabled:opacity-60"
-      >
-        {uploading ? (
-          <Loader2 size={32} stroke="var(--point-color)" className="animate-spin" />
-        ) : (
-          <Upload size={32} stroke="var(--point-color)" strokeWidth={2} />
-=======
         className="w-full border-2 border-dashed border-primary rounded-xl py-5 min-h-[52px] flex flex-col items-center gap-2 transition-colors hover:opacity-95 active:opacity-90 disabled:opacity-60"
         style={{
           background: destinyBg,
@@ -204,16 +192,11 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
           <Loader2 size={32} stroke="#4A5E42" className="animate-spin" />
         ) : (
           <Upload size={32} stroke="#4A5E42" strokeWidth={2} />
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
         )}
         <span className="text-[15px] font-bold text-primary">
           {uploading ? progress || "업로드 중..." : "알라딘 구매내역 엑셀 업로드"}
         </span>
-<<<<<<< HEAD
-        <span className="text-[13px] text-muted">
-=======
         <span className="text-[13px] text-text-muted">
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
           .xlsx, .xls · ISBN 있으면 표지 자동 조회
         </span>
       </button>

@@ -168,14 +168,10 @@ export default function ReceiptModal({
       aria-labelledby="receipt-modal-title"
     >
       <div
-        className="w-full max-w-[400px] max-h-[90dvh] sm:max-h-[90vh] flex flex-col bg-background rounded-t-2xl sm:rounded-2xl overflow-hidden"
+        className="w-full max-w-[400px] max-h-[90dvh] sm:max-h-[90vh] flex flex-col bg-[#F2F2F2] rounded-t-2xl sm:rounded-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
-<<<<<<< HEAD
-        <div className="flex items-center justify-between p-4 bg-white border-b border-gray-100 min-h-[52px]">
-=======
         <div className="flex items-center justify-between p-4 bg-white border-b border-secondary/30 min-h-[52px]">
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
           <h2 id="receipt-modal-title" className="text-[16px] font-bold text-primary">
             {step === "select" ? "영수증에 넣을 도서 선택" : "가성비 독서 영수증"}
           </h2>
@@ -199,11 +195,7 @@ export default function ReceiptModal({
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="제목 또는 저자로 검색"
-<<<<<<< HEAD
-                  className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-[14px] outline-none focus:border-primary"
-=======
                   className="flex-1 px-3 py-2 rounded-lg border border-secondary text-[14px] outline-none focus:border-primary"
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
                 />
                 <span className="flex items-center px-3 py-2 text-text-muted" aria-hidden>
                   <Search size={18} />

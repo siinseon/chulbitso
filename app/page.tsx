@@ -145,17 +145,12 @@ export default function Home() {
         )}
 
         {activeTab === "analysis" && (
-<<<<<<< HEAD
           <section className="animate-fadeIn overflow-x-hidden min-w-0">
-            <AnalysisScreen books={books} />
-=======
-          <section className="animate-fadeIn">
             <AnalysisScreen
               books={books}
               onOpenReceipt={() => setReceiptOpen(true)}
               onReadBook={() => setActiveTab("category")}
             />
->>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
           </section>
         )}
 
