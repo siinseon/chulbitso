@@ -42,7 +42,7 @@ export default function ReadingReceipt({ books }: ReadingReceiptProps) {
         <h3 className="text-[14px] font-bold text-primary mb-3">
           가성비 독서 영수증
         </h3>
-        <p className="text-[13px] text-gray-500">
+        <p className="text-[13px] text-text-muted">
           정가와 쪽수를 입력한 도서가 있으면, 1페이지당 가격으로 가성비 영수증을 뽑아드려요.
         </p>
       </section>
@@ -58,7 +58,7 @@ export default function ReadingReceipt({ books }: ReadingReceiptProps) {
       <h3 className="text-[14px] font-bold text-primary mb-2">
         가성비 독서 영수증
       </h3>
-      <p className="text-[12px] text-gray-500 mb-4">
+      <p className="text-[12px] text-text-muted mb-4">
         나 이렇게 알뜰하게 지식 쇼핑했다 📄
       </p>
 
@@ -69,22 +69,27 @@ export default function ReadingReceipt({ books }: ReadingReceiptProps) {
             boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
           }}
         >
+<<<<<<< HEAD
           <div className="px-4 pt-5 pb-2 font-mono text-[12px] text-gray-800 space-y-1">
             <div className="text-center border-b border-dashed border-gray-300 pb-3 mb-3">
+=======
+          <div className="px-4 pt-5 pb-2 font-mono text-[12px] text-text-main space-y-1">
+            <div className="text-center border-b border-dashed border-secondary pb-3 mb-3">
+>>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
               <p className="font-bold text-[13px] text-primary tracking-wider">
                 ★ 가성비 독서 영수증 ★
               </p>
-              <p className="text-[10px] text-gray-500 mt-1">
+              <p className="text-[10px] text-text-muted mt-1">
                 (책 가격 ÷ 쪽수 = 1페이지당 원)
               </p>
             </div>
 
             {items.map((item, i) => (
-              <div key={i} className="py-2 border-b border-dashed border-gray-200 last:border-0">
+              <div key={i} className="py-2 border-b border-dashed border-secondary last:border-0">
                 <p className="font-bold truncate" title={item.title}>
                   {item.title}
                 </p>
-                <p className="text-[11px] text-gray-500 truncate">
+                <p className="text-[11px] text-text-muted truncate">
                   {item.author}
                 </p>
                 <p className="text-[11px] mt-1">
@@ -96,8 +101,8 @@ export default function ReadingReceipt({ books }: ReadingReceiptProps) {
               </div>
             ))}
 
-            <div className="border-t-2 border-dashed border-gray-400 pt-3 mt-3 text-center">
-              <p className="text-[11px] text-gray-600">
+            <div className="border-t-2 border-dashed border-secondary pt-3 mt-3 text-center">
+              <p className="text-[11px] text-text-muted">
                 총 {items.length}권 · ₩{totalPrice.toLocaleString()} · {totalPages.toLocaleString()}쪽
               </p>
               <p className="text-[12px] font-bold text-primary mt-1">

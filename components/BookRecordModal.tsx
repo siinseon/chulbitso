@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, BookOpen, BookMarked, Cloud, Package, Plus, Trash2, Star } from "lucide-react";
 import type { Book, BookGroup } from "@/lib/useBooks";
+import { FULL_CATEGORY_OPTIONS } from "@/lib/categories";
 import type { RecordStatus } from "@/lib/supabase/types";
 import type { ReadingStatus } from "@/lib/supabase/types";
 import { OWNERSHIP_LABELS, RECORD_STATUS_DISPLAY } from "@/lib/supabase/types";
@@ -71,8 +72,13 @@ export default function BookRecordModal({
 
   const [source, setSource] = useState(initial.source ?? "");
   const [sourceDetail, setSourceDetail] = useState(initial.sourceDetail ?? "");
+  const [category, setCategory] = useState(
+    initial.category && FULL_CATEGORY_OPTIONS.includes(initial.category as (typeof FULL_CATEGORY_OPTIONS)[number])
+      ? (initial.category as (typeof FULL_CATEGORY_OPTIONS)[number])
+      : "기타"
+  );
   const [resale, setResale] = useState(initial.resale ?? false);
-  const [spineColor, setSpineColor] = useState(initial.spineColor ?? "#11593F");
+  const [spineColor, setSpineColor] = useState(initial.spineColor ?? "#4A5E42");
   const [spineFont, setSpineFont] = useState(initial.spineFont ?? "#FFFFFF");
 
   useEffect(() => {
@@ -96,8 +102,13 @@ export default function BookRecordModal({
     setWeather(initial.weather ?? "");
     setSource(initial.source ?? "");
     setSourceDetail(initial.sourceDetail ?? "");
+    setCategory(
+      initial.category && FULL_CATEGORY_OPTIONS.includes(initial.category as (typeof FULL_CATEGORY_OPTIONS)[number])
+        ? (initial.category as (typeof FULL_CATEGORY_OPTIONS)[number])
+        : "기타"
+    );
     setResale(initial.resale ?? false);
-    setSpineColor(initial.spineColor ?? "#11593F");
+    setSpineColor(initial.spineColor ?? "#4A5E42");
     setSpineFont(initial.spineFont ?? "#FFFFFF");
     if (initialGroup) setGroup(initialGroup);
     setTab("basic");
@@ -157,7 +168,7 @@ export default function BookRecordModal({
       spineColor: spineColor || undefined,
       spineFont: spineFont || undefined,
       country: (initial as Book).country,
-      category: (initial as Book).category,
+      category: category || undefined,
       series: (initial as Book).series,
       description: (initial as Book).description,
       format: (initial as Book).format,
@@ -202,14 +213,14 @@ export default function BookRecordModal({
         className="w-full max-w-[480px] max-h-[90vh] bg-[#FFFFFF] rounded-2xl overflow-hidden flex flex-col shadow-xl"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center justify-between p-4 border-b border-gray-100">
-          <h2 id="book-record-title" className="text-[18px] font-bold text-[#11593F]">
+        <div className="flex items-center justify-between p-4 border-b border-secondary/30">
+          <h2 id="book-record-title" className="text-[18px] font-bold text-primary">
             {mode === "edit" ? "상세 기록 수정" : "상세 기록"}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-100 text-gray-600"
+            className="p-2 rounded-full hover:bg-secondary/20 text-text-muted"
             aria-label="닫기"
           >
             <X size={24} strokeWidth={2} />
@@ -217,8 +228,8 @@ export default function BookRecordModal({
         </div>
 
         {mode === "create" && (
-          <div className="px-4 py-2 border-b border-gray-100">
-            <span className="text-[12px] text-gray-500 font-bold">추가할 그룹</span>
+          <div className="px-4 py-2 border-b border-secondary/30">
+            <span className="text-[12px] text-text-muted font-bold">추가할 그룹</span>
             <div className="flex gap-2 mt-2">
               {(["my", "read", "ebook"] as const).map((g) => (
                 <button
@@ -226,7 +237,7 @@ export default function BookRecordModal({
                   type="button"
                   onClick={() => setGroup(g)}
                   className={`flex-1 py-2 rounded-lg text-[13px] font-bold ${
-                    group === g ? "bg-[#11593F] text-white" : "bg-gray-100 text-gray-600"
+                    group === g ? "bg-primary text-white" : "bg-secondary/20 text-text-muted"
                   }`}
                 >
                   {OWNERSHIP_LABELS[g === "my" ? "OWNED" : g === "read" ? "PASSED" : "EBOOK"]}
@@ -236,18 +247,18 @@ export default function BookRecordModal({
           </div>
         )}
 
-        <div className="flex border-b border-gray-100 overflow-x-auto">
+        <div className="flex border-b border-secondary/30 overflow-x-auto min-h-[44px]">
           {tabs.map(({ id, label, icon: Icon }) => (
             <button
               key={id}
               type="button"
               onClick={() => setTab(id)}
-              className={`flex-1 min-w-0 py-4 px-3 flex items-center justify-center gap-2 text-[14px] font-bold transition-colors whitespace-nowrap ${
-                tab === id ? "text-[#11593F] border-b-2 border-[#11593F]" : "text-gray-500"
+              className={`flex-1 min-w-0 min-h-[44px] px-3 flex items-center justify-center gap-2 text-[14px] font-bold transition-colors whitespace-nowrap border-b-2 ${
+                tab === id ? "text-primary border-primary" : "text-text-muted border-transparent"
               }`}
             >
-              <Icon size={18} />
-              {label}
+              <Icon size={18} className="flex-shrink-0" />
+              <span className="leading-none">{label}</span>
             </button>
           ))}
         </div>
@@ -257,108 +268,122 @@ export default function BookRecordModal({
             {tab === "basic" && (
               <>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">표지 URL</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">표지 URL</label>
                   <input
                     type="text"
                     value={cover}
                     onChange={(e) => setCover(e.target.value)}
                     placeholder="이미지 주소"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                   />
                   {cover && (
                     <img
                       src={cover}
                       alt=""
-                      className="mt-2 w-20 h-[112px] object-cover rounded-lg bg-gray-100"
+                      className="mt-2 w-20 h-[112px] object-cover rounded-lg bg-secondary/20"
                       onError={(e) => (e.currentTarget.style.display = "none")}
                     />
                   )}
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">제목 *</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">제목 *</label>
                   <input
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     placeholder="도서 제목"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">저자 *</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">저자 *</label>
                   <input
                     type="text"
                     value={author}
                     onChange={(e) => setAuthor(e.target.value)}
                     placeholder="저자명"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">번역가</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">번역가</label>
                   <input
                     type="text"
                     value={translator}
                     onChange={(e) => setTranslator(e.target.value)}
                     placeholder="번역가명"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">출판사</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">출판사</label>
                   <input
                     type="text"
                     value={publisher}
                     onChange={(e) => setPublisher(e.target.value)}
                     placeholder="출판사명"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="block text-[13px] font-bold text-[#11593F] mb-2">쪽수</label>
+                    <label className="block text-[13px] font-bold text-primary mb-2">쪽수</label>
                     <input
                       type="number"
                       value={pageCount ?? ""}
                       onChange={(e) => setPageCount(e.target.value ? parseInt(e.target.value, 10) : undefined)}
                       placeholder="320"
                       min={1}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                      className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                     />
                   </div>
                   <div>
-                    <label className="block text-[13px] font-bold text-[#11593F] mb-2">정가 (원)</label>
+                    <label className="block text-[13px] font-bold text-primary mb-2">정가 (원)</label>
                     <input
                       type="number"
                       value={price ?? ""}
                       onChange={(e) => setPrice(e.target.value ? parseInt(e.target.value, 10) : undefined)}
                       placeholder="15000"
                       min={0}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                      className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">ISBN</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">ISBN</label>
                   <input
                     type="text"
                     value={isbn}
                     onChange={(e) => setIsbn(e.target.value)}
                     placeholder="978-89-..."
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">출간일</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">출간일</label>
                   <input
                     type="text"
                     value={pubDate}
                     onChange={(e) => setPubDate(e.target.value)}
                     placeholder="2024-01-01"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                   />
+                </div>
+                <div>
+                  <label className="block text-[13px] font-bold text-primary mb-2">분야</label>
+                  <select
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value as (typeof FULL_CATEGORY_OPTIONS)[number])}
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
+                  >
+                    {FULL_CATEGORY_OPTIONS.map((c) => (
+                      <option key={c} value={c}>
+                        {c}
+                      </option>
+                    ))}
+                  </select>
                 </div>
               </>
             )}
@@ -366,11 +391,11 @@ export default function BookRecordModal({
             {tab === "record" && (
               <>
                 <div className="flex items-center justify-between">
-                  <label className="text-[13px] font-bold text-[#11593F]">독서 기간 (N회차)</label>
+                  <label className="text-[13px] font-bold text-primary">독서 기간 (N회차)</label>
                   <button
                     type="button"
                     onClick={addReadDate}
-                    className="flex items-center gap-1.5 text-[12px] font-bold text-[#11593F]"
+                    className="flex items-center gap-1.5 text-[12px] font-bold text-primary"
                   >
                     <Plus size={16} />
                     회차 추가
@@ -383,19 +408,19 @@ export default function BookRecordModal({
                         type="date"
                         value={d.start}
                         onChange={(e) => setReadDateAt(i, "start", e.target.value)}
-                        className="flex-1 min-w-[120px] px-3 py-2 rounded-lg border border-gray-200 text-[13px]"
+                        className="flex-1 min-w-[120px] px-3 py-2 rounded-lg border border-secondary text-[13px]"
                       />
-                      <span className="text-gray-400">~</span>
+                      <span className="text-text-muted">~</span>
                       <input
                         type="date"
                         value={d.end}
                         onChange={(e) => setReadDateAt(i, "end", e.target.value)}
-                        className="flex-1 min-w-[120px] px-3 py-2 rounded-lg border border-gray-200 text-[13px]"
+                        className="flex-1 min-w-[120px] px-3 py-2 rounded-lg border border-secondary text-[13px]"
                       />
                       <button
                         type="button"
                         onClick={() => removeReadDate(i)}
-                        className="p-2 rounded-lg text-gray-400 hover:bg-red-50 hover:text-red-600"
+                        className="p-2 rounded-lg text-text-muted hover:bg-red-50/80 hover:text-red-600"
                         aria-label="삭제"
                       >
                         <Trash2 size={18} />
@@ -404,7 +429,7 @@ export default function BookRecordModal({
                   ))}
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">상태</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">상태</label>
                   <div className="flex flex-wrap gap-2">
                     {RECORD_STATUS_OPTIONS.map((s) => (
                       <button
@@ -412,7 +437,7 @@ export default function BookRecordModal({
                         type="button"
                         onClick={() => setRecordStatus(s)}
                         className={`px-4 py-2 rounded-lg text-[13px] font-bold ${
-                          recordStatus === s ? "bg-[#11593F] text-white" : "bg-gray-100 text-gray-600"
+                          recordStatus === s ? "bg-primary text-white" : "bg-secondary/20 text-text-muted"
                         }`}
                       >
                         {RECORD_STATUS_DISPLAY[s]}
@@ -421,7 +446,7 @@ export default function BookRecordModal({
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2 flex items-center gap-2">
+                  <label className="block text-[13px] font-bold text-primary mb-2 flex items-center gap-2">
                     <Star size={16} /> 별점 (1~5)
                   </label>
                   <div className="flex gap-2">
@@ -431,7 +456,7 @@ export default function BookRecordModal({
                         type="button"
                         onClick={() => setRating(rating === n ? undefined : n)}
                         className={`w-10 h-10 rounded-full text-[14px] font-bold ${
-                          (rating ?? 0) >= n ? "bg-[#11593F] text-white" : "bg-gray-100 text-gray-400"
+                          (rating ?? 0) >= n ? "bg-primary text-white" : "bg-secondary/20 text-text-muted"
                         }`}
                       >
                         {n}
@@ -445,44 +470,44 @@ export default function BookRecordModal({
             {tab === "mood" && (
               <>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">첫 문장</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">첫 문장</label>
                   <textarea
                     value={sentenceFirst}
                     onChange={(e) => setSentenceFirst(e.target.value)}
                     placeholder="책의 첫 문장을 적어보세요"
                     rows={3}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px] resize-none"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px] resize-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">마지막 문장</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">마지막 문장</label>
                   <textarea
                     value={sentenceLast}
                     onChange={(e) => setSentenceLast(e.target.value)}
                     placeholder="책의 마지막 문장을 적어보세요"
                     rows={3}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px] resize-none"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px] resize-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">BGM (노래 제목 / 가수)</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">BGM (노래 제목 / 가수)</label>
                   <input
                     type="text"
                     value={bgmTitle}
                     onChange={(e) => setBgmTitle(e.target.value)}
                     placeholder="노래 제목"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px] mb-2"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px] mb-2"
                   />
                   <input
                     type="text"
                     value={bgmArtist}
                     onChange={(e) => setBgmArtist(e.target.value)}
                     placeholder="가수"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                   />
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">날씨</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">날씨</label>
                   <div className="flex flex-wrap gap-2">
                     {WEATHER_OPTIONS.map((w) => (
                       <button
@@ -490,7 +515,7 @@ export default function BookRecordModal({
                         type="button"
                         onClick={() => setWeather(weather === w ? "" : w)}
                         className={`px-3 py-2 rounded-lg text-[13px] font-bold ${
-                          weather === w ? "bg-[#11593F] text-white" : "bg-gray-100 text-gray-600"
+                          weather === w ? "bg-primary text-white" : "bg-secondary/20 text-text-muted"
                         }`}
                       >
                         {w}
@@ -504,7 +529,7 @@ export default function BookRecordModal({
             {tab === "own" && (
               <>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">구매처 / 입수 경로</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">구매처 / 입수 경로</label>
                   <div className="flex flex-wrap gap-2 mb-2">
                     {SOURCE_OPTIONS.map((s) => (
                       <button
@@ -512,7 +537,7 @@ export default function BookRecordModal({
                         type="button"
                         onClick={() => setSource(source === s ? "" : s)}
                         className={`px-4 py-2 rounded-lg text-[13px] font-bold ${
-                          source === s ? "bg-[#11593F] text-white" : "bg-gray-100 text-gray-600"
+                          source === s ? "bg-primary text-white" : "bg-secondary/20 text-text-muted"
                         }`}
                       >
                         {s}
@@ -524,7 +549,7 @@ export default function BookRecordModal({
                     value={sourceDetail}
                     onChange={(e) => setSourceDetail(e.target.value)}
                     placeholder="예: 선물 준 사람, 구매한 서점"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 outline-none focus:border-[#11593F] text-[14px]"
+                    className="w-full px-4 py-3 rounded-xl border border-secondary outline-none focus:border-primary text-[14px]"
                   />
                 </div>
                 <label className="flex items-center gap-2 cursor-pointer">
@@ -532,41 +557,41 @@ export default function BookRecordModal({
                     type="checkbox"
                     checked={resale}
                     onChange={(e) => setResale(e.target.checked)}
-                    className="rounded border-gray-300 text-[#11593F] focus:ring-[#11593F]"
+                    className="rounded border-secondary text-primary focus:ring-primary"
                   />
-                  <span className="text-[13px] font-bold text-[#11593F]">중고 판매 여부</span>
+                  <span className="text-[13px] font-bold text-primary">중고 판매 여부</span>
                 </label>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">책등 배경색</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">책등 배경색</label>
                   <div className="flex gap-3 items-center">
                     <input
                       type="color"
                       value={spineColor}
                       onChange={(e) => setSpineColor(e.target.value)}
-                      className="w-12 h-10 rounded border border-gray-200 cursor-pointer"
+                      className="w-12 h-10 rounded border border-secondary cursor-pointer"
                     />
                     <input
                       type="text"
                       value={spineColor}
                       onChange={(e) => setSpineColor(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-[13px] font-mono"
+                      className="flex-1 px-3 py-2 rounded-lg border border-secondary text-[13px] font-mono"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-[13px] font-bold text-[#11593F] mb-2">책등 폰트 색상</label>
+                  <label className="block text-[13px] font-bold text-primary mb-2">책등 폰트 색상</label>
                   <div className="flex gap-3 items-center">
                     <input
                       type="color"
                       value={spineFont}
                       onChange={(e) => setSpineFont(e.target.value)}
-                      className="w-12 h-10 rounded border border-gray-200 cursor-pointer"
+                      className="w-12 h-10 rounded border border-secondary cursor-pointer"
                     />
                     <input
                       type="text"
                       value={spineFont}
                       onChange={(e) => setSpineFont(e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-[13px] font-mono"
+                      className="flex-1 px-3 py-2 rounded-lg border border-secondary text-[13px] font-mono"
                     />
                   </div>
                 </div>
@@ -574,10 +599,10 @@ export default function BookRecordModal({
             )}
           </div>
 
-          <div className="p-4 border-t border-gray-100">
+          <div className="p-4 border-t border-secondary/30">
             <button
               type="submit"
-              className="w-full py-4 rounded-xl bg-[#11593F] text-white font-bold text-[15px] hover:bg-[#0d4630] transition-colors"
+              className="w-full py-4 rounded-xl bg-primary text-white font-bold text-[15px] hover:bg-primary/90 transition-colors"
             >
               {mode === "edit" ? "저장" : "저장하고 담기"}
             </button>

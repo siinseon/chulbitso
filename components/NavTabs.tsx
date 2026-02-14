@@ -31,7 +31,7 @@ export default function NavTabs({ activeTab, onTabChange }: NavTabsProps) {
           className={`flex flex-col items-center gap-1 px-3 py-2 flex-1 text-[11px] transition-colors border-none bg-transparent cursor-pointer font-nanum-myeongjo ${
             activeTab === tab.id
               ? "text-point font-bold"
-              : "text-gray-400"
+              : "text-text-muted"
           }`}
           aria-current={activeTab === tab.id ? "page" : undefined}
         >

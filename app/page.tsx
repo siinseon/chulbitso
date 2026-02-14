@@ -1,18 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { useBooks } from "@/lib/useBooks";
 import Header from "@/components/Header";
 import BottomNav, { type NavTab } from "@/components/BottomNav";
 import StatsCard from "@/components/StatsCard";
+import ReadingJungleGym from "@/components/ReadingJungleGym";
+import PomodoroSpinnerSection from "@/components/PomodoroSpinnerSection";
 import HomeLibrarySearch from "@/components/HomeLibrarySearch";
 import CategoryScreen from "@/components/CategoryScreen";
 import AnalysisScreen from "@/components/AnalysisScreen";
 import AddBookModal from "@/components/AddBookModal";
 import ExcelUpload from "@/components/ExcelUpload";
+import SlideIllustration from "@/components/SlideIllustration";
 import SettingsModal from "@/components/SettingsModal";
 import ReceiptModal from "@/components/ReceiptModal";
 import GiftScreen from "@/components/GiftScreen";
+
+const DestinySlideModal = dynamic(
+  () => import("@/components/DestinySlideModal"),
+  { ssr: false }
+);
 
 export default function Home() {
   const {
@@ -31,6 +40,7 @@ export default function Home() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [addBookOpen, setAddBookOpen] = useState(false);
   const [receiptOpen, setReceiptOpen] = useState(false);
+  const [destinyOpen, setDestinyOpen] = useState(false);
 
   const totalValue =
     books.my.reduce((s, b) => s + (b.retailPrice ?? 0), 0) +
@@ -70,13 +80,13 @@ export default function Home() {
   if (!isHydrated) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <p className="text-[#11593F] font-bold">로딩 중...</p>
+        <p className="text-primary font-bold font-serif">로딩 중...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen min-h-[100dvh] bg-[#F2F2F2] pb-24">
+    <div className="min-h-screen min-h-[100dvh] bg-vintage-bg pb-24">
       <Header onOpenSettings={() => setSettingsOpen(true)} />
 
       <main className="px-4 sm:px-6 py-5 sm:py-6 max-w-[480px] mx-auto pt-[env(safe-area-inset-top,0px)]">
@@ -88,20 +98,32 @@ export default function Home() {
               totalCount={totalCount}
               giftCount={giftCount}
             />
-            <div className="rounded-2xl p-5 sm:p-6 bg-white shadow-card border border-ivory-border">
-              <h3 className="text-[16px] sm:text-[17px] font-bold text-[#11593F] mb-2">
-                가쪽비 계산하기
+            <PomodoroSpinnerSection />
+            <div className="mt-8">
+              <ReadingJungleGym />
+            </div>
+            {/* 운명의 미끄럼틀: 독서습관 정글짐 밑, 배경색 정글짐과 동일 */}
+            <div
+              className="rounded-2xl p-5 sm:p-6 border cursor-pointer active:opacity-95 transition-opacity"
+              style={{
+                background: "linear-gradient(180deg, #e8ddc8 0%, #ddd4bc 100%)",
+                borderColor: "rgba(100, 95, 85, 0.35)",
+                boxShadow: "0 4px 20px rgba(58, 49, 40, 0.18), inset 0 0 60px rgba(180, 165, 140, 0.08)",
+              }}
+              onClick={() => setDestinyOpen(true)}
+              onKeyDown={(e) => e.key === "Enter" && setDestinyOpen(true)}
+              role="button"
+              tabIndex={0}
+            >
+              <h3 className="text-[15px] sm:text-[16px] font-bold text-primary font-serif mb-1 flex items-center gap-2">
+                🎢 운명의 미끄럼틀
               </h3>
-              <p className="text-[14px] sm:text-[15px] text-gray-600">
-                페이지와 가격으로 환산한 지식의 가치
+              <p className="text-[14px] text-text-muted mb-4">
+                읽을 책을 무작위로 골라줘요. 미끄럼틀을 타고 내려온 책이 오늘의 운명이에요.
               </p>
-              <button
-                type="button"
-                onClick={() => setReceiptOpen(true)}
-                className="mt-4 w-full py-3.5 min-h-[48px] rounded-xl bg-[#11593F] text-white font-bold text-[14px] hover:bg-[#0d4630] active:opacity-95 transition-opacity"
-              >
-                가쪽비 영수증 발급기
-              </button>
+              <div className="flex justify-center">
+                <SlideIllustration width={420} height={336} />
+              </div>
             </div>
             <ExcelUpload
               onAddBook={handleAddBook}
@@ -123,8 +145,17 @@ export default function Home() {
         )}
 
         {activeTab === "analysis" && (
+<<<<<<< HEAD
           <section className="animate-fadeIn overflow-x-hidden min-w-0">
             <AnalysisScreen books={books} />
+=======
+          <section className="animate-fadeIn">
+            <AnalysisScreen
+              books={books}
+              onOpenReceipt={() => setReceiptOpen(true)}
+              onReadBook={() => setActiveTab("category")}
+            />
+>>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
           </section>
         )}
 
@@ -148,12 +179,24 @@ export default function Home() {
         isOpen={settingsOpen}
         onClose={() => setSettingsOpen(false)}
         onReset={resetAll}
+        books={books}
+        onUpdateBook={updateBook}
       />
 
       <ReceiptModal
         isOpen={receiptOpen}
         onClose={() => setReceiptOpen(false)}
         books={receiptBooks}
+      />
+
+      <DestinySlideModal
+        isOpen={destinyOpen}
+        onClose={() => setDestinyOpen(false)}
+        books={books}
+        onReadNow={() => {
+          setDestinyOpen(false);
+          setActiveTab("category");
+        }}
       />
     </div>
   );

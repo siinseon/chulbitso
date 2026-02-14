@@ -1,4 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
+import { mapAladdinCategory } from "@/lib/categories";
+import { parseAuthorTranslator } from "@/lib/authorParser";
 
 const ALADIN_API_KEY = "ttbdkdnxoghk1245002";
 const ALADIN_ITEM_LOOKUP = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
@@ -8,19 +10,21 @@ const ALADIN_ITEM_LOOKUP = "http://www.aladin.co.kr/ttb/api/ItemLookUp.aspx";
  */
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const isbn = searchParams.get("isbn")?.trim();
+  const raw = searchParams.get("isbn")?.replace(/\D/g, "") ?? "";
 
-  if (!isbn) {
+  if (!raw) {
     return NextResponse.json(
       { error: "isbn 쿼리가 필요합니다." },
       { status: 400 }
     );
   }
 
+  const itemIdType = raw.length === 13 ? "ISBN13" : raw.length === 10 ? "ISBN" : "ISBN13";
+
   const params = new URLSearchParams({
     ttbkey: ALADIN_API_KEY,
-    ItemIdType: "ISBN13",
-    ItemId: isbn,
+    ItemIdType: itemIdType,
+    ItemId: raw,
     Output: "JS",
     Version: "20131101",
     OptResult: "ebookList,reviewList",
@@ -47,9 +51,13 @@ export async function GET(request: NextRequest) {
           ? parseInt(rawPage, 10) || undefined
           : undefined;
 
+    const rawAuthor = (item.author as string) ?? "";
+    const { author, translator } = parseAuthorTranslator(rawAuthor);
+
     const book = {
       title: (item.title as string) ?? "",
-      author: (item.author as string) ?? "",
+      author: author || rawAuthor,
+      translator: translator ?? undefined,
       publisher: (item.publisher as string) ?? "",
       pubDate: (item.pubDate as string) ?? "",
       cover: (item.cover as string) ?? "",
@@ -61,7 +69,7 @@ export async function GET(request: NextRequest) {
           : parseInt(String(item.priceStandard || "0"), 10) || 0,
       pageCount,
       format: (subInfo.packaging as string) ?? (item.form as string) ?? undefined,
-      category: (item.categoryName as string) ?? undefined,
+      category: mapAladdinCategory(item.categoryName as string) ?? undefined,
       series: (item.seriesInfo as { seriesName?: string } | undefined)?.seriesName ?? (item.seriesName as string) ?? undefined,
     };
 

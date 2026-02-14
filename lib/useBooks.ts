@@ -63,6 +63,8 @@ export interface Book {
   /** 커스텀 디자인 */
   spineColor?: string;
   spineFont?: string;
+  /** 책 리뷰 (종이비행기) */
+  review?: string;
 }
 
 export interface BooksState {
@@ -93,7 +95,7 @@ function rowToBook(row: BookRow): Book {
     retailPrice: row.retail_price,
     ownershipType: row.ownership_type as OwnershipType,
     readingStatus: row.reading_status as ReadingStatus,
-    country: row.country,
+    country: row.country?.trim() ? row.country.trim().toUpperCase().slice(0, 2) : "KR",
     translator: row.translator,
     pageCount: row.page_count,
     source: row.source,
@@ -109,6 +111,7 @@ function rowToBook(row: BookRow): Book {
     sentences: row.sentences,
     spineColor: row.spine_color,
     spineFont: row.spine_font,
+    review: (row as { review?: string }).review,
   };
 }
 
@@ -130,7 +133,7 @@ function bookToRow(
     retail_price: book.retailPrice ?? 0,
     ownership_type: ownershipType,
     reading_status: readingStatus,
-    country: book.country ?? null,
+    country: book.country?.trim() ? book.country.trim().toUpperCase().slice(0, 2) : "KR",
     translator: book.translator ?? null,
     page_count: book.pageCount ?? null,
     source: book.source ?? null,
@@ -146,6 +149,7 @@ function bookToRow(
     sentences: book.sentences ?? null,
     spine_color: book.spineColor ?? null,
     spine_font: book.spineFont ?? null,
+    review: book.review ?? null,
   };
 }
 
@@ -176,7 +180,7 @@ function loadFromStorage(): BooksState {
             readingStatus,
             retailPrice: (b.retailPrice ?? b.retail_price) as number | undefined,
             pubDate: (b.pubDate ?? b.pub_date) as string | undefined,
-            country: (b.country as string) ?? undefined,
+            country: (b.country as string)?.trim() ? String((b.country as string).trim()).toUpperCase().slice(0, 2) : "KR",
             translator: (b.translator as string) ?? undefined,
             pageCount: (b.pageCount ?? (b as Record<string, unknown>).page_count) as number | undefined,
             source: (b.source as string) ?? undefined,
@@ -192,6 +196,7 @@ function loadFromStorage(): BooksState {
             sentences: (b.sentences ?? (b as Record<string, unknown>).sentences) as Book["sentences"],
             spineColor: (b.spineColor ?? (b as Record<string, unknown>).spine_color) as string | undefined,
             spineFont: (b.spineFont ?? (b as Record<string, unknown>).spine_font) as string | undefined,
+            review: (b.review ?? (b as Record<string, unknown>).review) as string | undefined,
           } as Book;
         });
     return {
@@ -312,7 +317,7 @@ export function useBooks() {
           readingStatus,
           retailPrice: book.retailPrice,
           pubDate: book.pubDate,
-          country: book.country,
+          country: book.country?.trim() ? book.country.trim().toUpperCase().slice(0, 2) : "KR",
           translator: book.translator,
           pageCount: book.pageCount,
           source: book.source,
@@ -342,7 +347,7 @@ export function useBooks() {
           readingStatus,
           retailPrice: book.retailPrice,
           pubDate: book.pubDate,
-          country: book.country,
+          country: book.country?.trim() ? book.country.trim().toUpperCase().slice(0, 2) : "KR",
           translator: book.translator,
           pageCount: book.pageCount,
           source: book.source,

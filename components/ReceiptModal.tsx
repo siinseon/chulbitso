@@ -171,14 +171,18 @@ export default function ReceiptModal({
         className="w-full max-w-[400px] max-h-[90dvh] sm:max-h-[90vh] flex flex-col bg-background rounded-t-2xl sm:rounded-2xl overflow-hidden"
         onClick={(e) => e.stopPropagation()}
       >
+<<<<<<< HEAD
         <div className="flex items-center justify-between p-4 bg-white border-b border-gray-100 min-h-[52px]">
+=======
+        <div className="flex items-center justify-between p-4 bg-white border-b border-secondary/30 min-h-[52px]">
+>>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
           <h2 id="receipt-modal-title" className="text-[16px] font-bold text-primary">
             {step === "select" ? "영수증에 넣을 도서 선택" : "가성비 독서 영수증"}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 -m-1 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 text-gray-600"
+            className="p-2 -m-1 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-full hover:bg-secondary/20 active:bg-secondary/30 text-text-muted"
             aria-label="닫기"
           >
             <X size={24} />
@@ -187,17 +191,21 @@ export default function ReceiptModal({
 
         {step === "select" && (
           <>
-            <div className="px-4 py-2 border-b border-gray-100 bg-white">
-              <p className="text-[12px] font-bold text-gray-500 mb-2">내 도서에서 검색</p>
+            <div className="px-4 py-2 border-b border-secondary/30 bg-white">
+              <p className="text-[12px] font-bold text-text-muted mb-2">내 도서에서 검색</p>
               <div className="flex gap-2">
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="제목 또는 저자로 검색"
+<<<<<<< HEAD
                   className="flex-1 px-3 py-2 rounded-lg border border-gray-200 text-[14px] outline-none focus:border-primary"
+=======
+                  className="flex-1 px-3 py-2 rounded-lg border border-secondary text-[14px] outline-none focus:border-primary"
+>>>>>>> 01f716a799330e89d4c3ea3e94713e7f97297ac1
                 />
-                <span className="flex items-center px-3 py-2 text-gray-400" aria-hidden>
+                <span className="flex items-center px-3 py-2 text-text-muted" aria-hidden>
                   <Search size={18} />
                 </span>
               </div>
@@ -213,18 +221,18 @@ export default function ReceiptModal({
               <button
                 type="button"
                 onClick={selectNone}
-                className="text-[12px] font-bold text-gray-500"
+                className="text-[12px] font-bold text-text-muted"
               >
                 선택 해제
               </button>
             </div>
             <div className="flex-1 overflow-y-auto px-4 pb-4 max-h-[45dvh] sm:max-h-[40vh]">
               {availableBooks.length === 0 ? (
-                <p className="text-[13px] text-gray-500 py-6 text-center">
+                <p className="text-[13px] text-text-muted py-6 text-center">
                   담긴 도서가 없습니다.
                 </p>
               ) : filteredBooks.length === 0 ? (
-                <p className="text-[13px] text-gray-500 py-6 text-center">
+                <p className="text-[13px] text-text-muted py-6 text-center">
                   검색 결과가 없어요. 다른 단어로 검색해 보세요.
                 </p>
               ) : (
@@ -240,18 +248,18 @@ export default function ReceiptModal({
                         <button
                           type="button"
                           onClick={() => toggle(b.id)}
-                          className="w-full flex items-center gap-3 p-3 min-h-[52px] rounded-xl bg-white shadow-card text-left hover:bg-gray-50 active:bg-gray-50"
+                          className="w-full flex items-center gap-3 p-3 min-h-[52px] rounded-xl bg-white shadow-card text-left hover:bg-secondary/10 active:bg-secondary/10"
                         >
                           {checked ? (
                             <CheckSquare size={22} className="text-primary flex-shrink-0" />
                           ) : (
-                            <Square size={22} className="text-gray-300 flex-shrink-0" />
+                            <Square size={22} className="text-secondary flex-shrink-0" />
                           )}
                           <div className="flex-1 min-w-0">
-                            <p className="text-[14px] font-bold text-gray-800 truncate">
+                            <p className="text-[14px] font-bold text-text-main truncate">
                               {b.title}
                             </p>
-                            <p className="text-[12px] text-gray-500">
+                            <p className="text-[12px] text-text-muted">
                               {measurable
                                 ? `₩${price.toLocaleString()} / ${pages}쪽 → ${pricePerPage}원/p`
                                 : "측정불가 (정가·쪽수 입력 시 표시)"}
@@ -264,7 +272,7 @@ export default function ReceiptModal({
                 </ul>
               )}
             </div>
-            <div className="p-4 bg-white border-t border-gray-100">
+            <div className="p-4 bg-white border-t border-secondary/30">
               <button
                 type="button"
                 onClick={() => setStep("receipt")}
@@ -295,21 +303,21 @@ export default function ReceiptModal({
 
                 <div
                   ref={receiptRef}
-                  className="w-full max-w-full bg-white font-mono text-[11px] text-black px-4 py-3 receipt-content box-border"
+                  className="w-full max-w-full bg-white font-mono text-[11px] text-text-main px-4 py-3 receipt-content box-border"
                 >
-                  <div className="text-center border-b border-dashed border-gray-400 pb-2 mb-2">
+                  <div className="text-center border-b border-dashed border-secondary pb-2 mb-2">
                     <p className="font-bold text-[13px] tracking-widest">
                       CU (Chulbitso Universe)
                     </p>
                     <p className="font-bold text-[12px]">문학점</p>
-                    <p className="text-[9px] text-gray-500 mt-1">
+                    <p className="text-[9px] text-text-muted mt-1">
                       가성비 독서 영수증 (정가 ÷ 쪽수 = 원/p)
                     </p>
                   </div>
 
-                  <div className="border-b border-dashed border-gray-400 pb-2 mb-2">
+                  <div className="border-b border-dashed border-secondary pb-2 mb-2">
                     {!hasData ? (
-                      <p className="text-gray-500 py-2">선택한 도서 중 측정 가능한 항목 없음</p>
+                      <p className="text-text-muted py-2">선택한 도서 중 측정 가능한 항목 없음</p>
                     ) : (
                       items.map((item, i) => (
                         <div key={item.id} className="flex items-baseline gap-1 py-0.5">
@@ -319,7 +327,7 @@ export default function ReceiptModal({
                           >
                             {item.title}
                           </span>
-                          <span className="flex-1 min-w-2 border-b border-dotted border-gray-400 self-end mb-0.5" />
+                          <span className="flex-1 min-w-2 border-b border-dotted border-secondary self-end mb-0.5" />
                           <span className="flex-shrink-0">
                             {item.measurable
                               ? `${item.pricePerPage}원/p`
@@ -331,7 +339,7 @@ export default function ReceiptModal({
                   </div>
 
                   {hasData && (
-                    <div className="border-b border-dashed border-gray-400 pb-2 mb-2 text-[10px]">
+                    <div className="border-b border-dashed border-secondary pb-2 mb-2 text-[10px]">
                       <div className="flex justify-between">
                         <span>총 페이지 수</span>
                         <span>{totalPages.toLocaleString()}쪽</span>
@@ -347,7 +355,7 @@ export default function ReceiptModal({
                     </div>
                   )}
 
-                  <p className="text-center text-[10px] text-gray-600 py-2 italic">
+                  <p className="text-center text-[10px] text-text-muted py-2 italic">
                     {witty}
                   </p>
 
@@ -367,11 +375,11 @@ export default function ReceiptModal({
               </div>
             </div>
 
-            <div className="p-4 flex gap-2 bg-white border-t border-gray-100">
+            <div className="p-4 flex gap-2 bg-white border-t border-secondary/30">
               <button
                 type="button"
                 onClick={() => setStep("select")}
-                className="flex-1 py-3 rounded-xl bg-gray-200 text-gray-800 font-bold text-[14px]"
+                className="flex-1 py-3 rounded-xl bg-secondary/30 text-text-main font-bold text-[14px]"
               >
                 다시 선택
               </button>

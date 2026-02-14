@@ -67,4 +67,6 @@ export interface BookRow {
   sentences?: BookSentences;
   spine_color?: string;
   spine_font?: string;
+  /** 책 리뷰 (종이비행기) */
+  review?: string;
 }

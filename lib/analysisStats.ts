@@ -1,6 +1,7 @@
 import type { Book } from "@/lib/useBooks";
 import type { OwnershipType, ReadingStatus } from "@/lib/supabase/types";
 import { OWNERSHIP_LABELS, READING_STATUS_LABELS } from "@/lib/supabase/types";
+import { FULL_CATEGORY_OPTIONS, normalizeToKdcCategory } from "@/lib/categories";
 
 export interface BooksSnapshot {
   my: Book[];
@@ -8,13 +9,10 @@ export interface BooksSnapshot {
   ebook: Book[];
 }
 
-const CATEGORY_ORDER = ["시집", "소설", "에세이", "인문"] as const;
-const CATEGORY_LABEL: Record<string, string> = {
-  시집: "시집",
-  소설: "소설",
-  에세이: "에세이",
-  인문: "인문",
-};
+const CATEGORY_ORDER = [...FULL_CATEGORY_OPTIONS] as const;
+const CATEGORY_LABEL: Record<string, string> = Object.fromEntries(
+  FULL_CATEGORY_OPTIONS.map((c) => [c, c])
+);
 
 function allBooks(books: BooksSnapshot): Book[] {
   return [...books.my, ...books.read, ...books.ebook];
@@ -57,6 +55,43 @@ export interface KnowledgeThickness {
   icon: string;
 }
 
+/** 문학(감성) vs 비문학(이성) */
+export interface LiteratureBalance {
+  literature: number;
+  nonLiterature: number;
+}
+
+/** Hall of Fame: Top 장르/작가 */
+export interface HallOfFameItem {
+  label: string;
+  value: string;
+}
+
+export interface TranslatorStat {
+  name: string;
+  count: number;
+}
+
+export interface AuthorStat {
+  name: string;
+  count: number;
+}
+
+export interface SeriesStat {
+  name: string;
+  count: number;
+}
+
+export interface GenreStat {
+  name: string;
+  count: number;
+}
+
+export interface PublisherStat {
+  name: string;
+  count: number;
+}
+
 export interface AnalysisSummary {
   totalCount: number;
   totalValue: number;
@@ -67,6 +102,13 @@ export interface AnalysisSummary {
   byCountry: CountryStat[];
   countWithCountry: number;
   knowledgeThickness: KnowledgeThickness;
+  literatureBalance: LiteratureBalance;
+  avgPubYear: number | null;
+  topTranslators: TranslatorStat[];
+  topAuthors: AuthorStat[];
+  topSeries: SeriesStat[];
+  topGenres: GenreStat[];
+  topPublishers: PublisherStat[];
 }
 
 export function computeAnalysisSummary(books: BooksSnapshot): AnalysisSummary {
@@ -96,8 +138,7 @@ export function computeAnalysisSummary(books: BooksSnapshot): AnalysisSummary {
 
   const categoryCount: Record<string, number> = {};
   all.forEach((b) => {
-    const raw = b.category?.trim();
-    const cat = raw && CATEGORY_ORDER.includes(raw as (typeof CATEGORY_ORDER)[number]) ? raw : "기타";
+    const cat = normalizeToKdcCategory(b.category);
     categoryCount[cat] = (categoryCount[cat] ?? 0) + 1;
   });
   const orderedCats = [...CATEGORY_ORDER];
@@ -130,6 +171,88 @@ export function computeAnalysisSummary(books: BooksSnapshot): AnalysisSummary {
   const heightCm = heightMm / 10;
   const knowledgeThickness = getKnowledgeThickness(totalPages, heightCm);
 
+  // 문학(감성): 시집, 소설, 문학(KDC 800). 비문학(이성): 그 외 (분류 기준 통일)
+  const LITERATURE_CATEGORIES = ["시집", "소설", "문학"];
+  let literature = 0;
+  let nonLiterature = 0;
+  all.forEach((b) => {
+    const cat = normalizeToKdcCategory(b.category);
+    if (LITERATURE_CATEGORIES.includes(cat)) literature += 1;
+    else nonLiterature += 1;
+  });
+  const literatureBalance: LiteratureBalance = { literature, nonLiterature };
+
+  const years: number[] = [];
+  all.forEach((b) => {
+    const d = b.pubDate?.trim();
+    if (!d) return;
+    const y = parseInt(d.slice(0, 4), 10);
+    if (y >= 1000 && y <= 2100) years.push(y);
+  });
+  const avgPubYear = years.length > 0
+    ? Math.round(years.reduce((a, b) => a + b, 0) / years.length)
+    : null;
+
+  /** 시리즈명 정규화: trim, 연속 공백 하나로, 끝 권수 제거 (민음사 세계문학전집 476 → 민음사 세계문학전집) */
+  const normalizeSeries = (raw: string): string => {
+    let s = raw.replace(/\s+/g, " ").trim();
+    if (!s) return "";
+    s = s.replace(/\s*[-·(\s]*\d+[\s권)]*$/g, "").trim();
+    return s || raw.replace(/\s+/g, " ").trim();
+  };
+  /** series 비었을 때 제목에서 시리즈 추출: "파우스트 (민음사 세계문학전집 123)" → "민음사 세계문학전집" */
+  const extractSeriesFromTitle = (title: string): string => {
+    const m = title.match(/[(\[（【]([^)\]}】]+)\s*\d*\s*[)\]）】]?$/);
+    if (!m) return "";
+    return normalizeSeries(m[1]);
+  };
+  const seriesCount: Record<string, number> = {};
+  all.forEach((b) => {
+    let s = normalizeSeries(b.series ?? "");
+    if (!s && b.title) s = extractSeriesFromTitle(b.title);
+    if (!s) return;
+    seriesCount[s] = (seriesCount[s] ?? 0) + 1;
+  });
+  const topSeries: SeriesStat[] = Object.entries(seriesCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([name, count]) => ({ name, count }));
+  const authorCount: Record<string, number> = {};
+  all.forEach((b) => {
+    const a = (b.author ?? "").trim() || "(미상)";
+    authorCount[a] = (authorCount[a] ?? 0) + 1;
+  });
+  const topAuthors: AuthorStat[] = Object.entries(authorCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([name, count]) => ({ name, count }));
+  const topGenres: GenreStat[] = [...category]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3)
+    .map((c) => ({ name: c.label, count: c.count }));
+
+  // Top 3 Translators: 번역가가 있는 모든 책에서 집계 (완독 여부 무관)
+  const translatorCount: Record<string, number> = {};
+  all.forEach((b) => {
+    const t = (b.translator ?? "").trim();
+    if (!t) return;
+    translatorCount[t] = (translatorCount[t] ?? 0) + 1;
+  });
+  const topTranslators: TranslatorStat[] = Object.entries(translatorCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([name, count]) => ({ name, count }));
+
+  const publisherCount: Record<string, number> = {};
+  all.forEach((b) => {
+    const p = (b.publisher ?? "").trim() || "(미상)";
+    publisherCount[p] = (publisherCount[p] ?? 0) + 1;
+  });
+  const topPublishers: PublisherStat[] = Object.entries(publisherCount)
+    .sort(([, a], [, b]) => b - a)
+    .slice(0, 3)
+    .map(([name, count]) => ({ name, count }));
+
   return {
     totalCount,
     totalValue,
@@ -140,6 +263,13 @@ export function computeAnalysisSummary(books: BooksSnapshot): AnalysisSummary {
     byCountry,
     countWithCountry,
     knowledgeThickness,
+    literatureBalance,
+    avgPubYear,
+    topTranslators,
+    topAuthors,
+    topSeries,
+    topGenres,
+    topPublishers,
   };
 }
 
