@@ -6,7 +6,7 @@ import { X, Sun, Cloud, CloudRain, CloudSnow, CloudFog, Moon, Search, Loader2 } 
 import PaperAirplaneReviewModal from "./PaperAirplaneReviewModal";
 import type { Book } from "@/lib/useBooks";
 import { OWNERSHIP_LABELS, READING_STATUS_LABELS } from "@/lib/supabase/types";
-import { isPreservedCategory, KDC_OPTIONS } from "@/lib/categories";
+import { FULL_CATEGORY_OPTIONS } from "@/lib/categories";
 
 const COUNTRY_OPTIONS: { code: string; name: string }[] = [
   { code: "", name: "미입력 / 선택" },
@@ -361,16 +361,16 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
               <div className="flex items-baseline min-h-[2.25rem] border-b border-[#8a7a6a]/40 font-serif text-[13px] sm:text-[14px]">
                 <span className="w-20 flex-shrink-0 text-text-muted/90">분야</span>
                 <div className="flex-1 min-w-0 pb-0.5">
-                  {onUpdateBook && !isPreservedCategory(book.category) ? (
+                  {onUpdateBook ? (
                     <select
-                      value={KDC_OPTIONS.includes(book.category as (typeof KDC_OPTIONS)[number]) ? book.category : "기타"}
+                      value={FULL_CATEGORY_OPTIONS.includes(book.category as (typeof FULL_CATEGORY_OPTIONS)[number]) ? book.category : "기타"}
                       onChange={(e) => {
-                        const v = e.target.value as (typeof KDC_OPTIONS)[number];
+                        const v = e.target.value as (typeof FULL_CATEGORY_OPTIONS)[number];
                         onUpdateBook({ ...book, category: v });
                       }}
                       className="w-full max-w-[140px] text-[13px] text-text-main border-0 bg-transparent p-0 font-serif focus:ring-0"
                     >
-                      {KDC_OPTIONS.map((c) => (
+                      {FULL_CATEGORY_OPTIONS.map((c) => (
                         <option key={c} value={c}>
                           {c}
                         </option>

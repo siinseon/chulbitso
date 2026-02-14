@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { BooksSnapshot } from "@/lib/analysisStats";
 
 const WOOD_LIGHT = "#c4a574";
@@ -39,6 +39,19 @@ export default function ReadingBalanceSeesawSection({ books }: ReadingBalanceSee
 
   const [tilt, setTilt] = useState(0);
   const [creaked, setCreaked] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const w = entry.contentRect.width;
+      setScale(w > 0 && w < 320 ? w / 320 : 1);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     const t = setTimeout(() => setTilt(targetTilt), 100);
@@ -64,7 +77,19 @@ export default function ReadingBalanceSeesawSection({ books }: ReadingBalanceSee
       </h3>
       <p className="text-[12px] text-text-muted font-serif mb-4">문학과 비문학, 독서 비율 알아보기</p>
 
-      <div className="relative w-full max-w-[320px] mx-auto overflow-hidden" style={{ height: 220 }}>
+      <div
+        ref={containerRef}
+        className="relative w-full max-w-[320px] mx-auto overflow-hidden min-w-0"
+        style={{ height: 220 }}
+      >
+        {/* 시소를 컨테이너 너비에 맞춰 스케일 (모바일에서 넘침 방지) */}
+        <div
+          className="absolute left-1/2 top-0 h-full w-[320px]"
+          style={{
+            transform: `translateX(-50%) scale(${scale})`,
+            transformOrigin: "center bottom",
+          }}
+        >
         {/* 모래/바닥 */}
         <div
           className="absolute bottom-0 left-0 right-0 h-8 rounded-b-xl"
@@ -168,6 +193,7 @@ export default function ReadingBalanceSeesawSection({ books }: ReadingBalanceSee
             }}
           />
 
+        </div>
         </div>
       </div>
     </section>

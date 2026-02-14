@@ -33,19 +33,30 @@ export type PreservedCategory = (typeof PRESERVED_CATEGORIES)[number];
 export type KdcCategory = (typeof KDC_OPTIONS)[number];
 export type FullCategory = (typeof FULL_CATEGORY_OPTIONS)[number];
 
-/** 시 시리즈/출판사 키워드 — 이 중 하나만 있어도 시집으로 분류 */
-export const POETRY_SERIES_OR_PUBLISHERS = [
-  "창비시선",
-  "문학과지성사시인선",
+/** 시 시리즈/출판사/키워드 — 이 중 하나만 있어도 시집으로 분류 */
+export const POETRY_KEYWORDS = [
+  "민음의시",
   "민음시의 시",
+  "문학과지성사 시인선",
+  "문학과지성사시인선",
+  "창비시선",
   "문학동네 시인선",
+  "시집",
 ] as const;
+
+/** 시리즈 또는 출판사 문자열이 시 시리즈면 true (레거시 호환용) */
+export const POETRY_SERIES_OR_PUBLISHERS = POETRY_KEYWORDS;
+
+/** 제목·시리즈·출판사·분야 등에 시집 키워드가 있으면 true */
+export function shouldClassifyAsPoetry(text: string | undefined): boolean {
+  if (!text?.trim()) return false;
+  const s = text.trim();
+  return POETRY_KEYWORDS.some((key) => s.includes(key));
+}
 
 /** 시리즈 또는 출판사 문자열이 시 시리즈면 true */
 export function isPoetrySeriesOrPublisher(seriesOrPublisher: string | undefined): boolean {
-  if (!seriesOrPublisher?.trim()) return false;
-  const s = seriesOrPublisher.trim();
-  return POETRY_SERIES_OR_PUBLISHERS.some((key) => s.includes(key));
+  return shouldClassifyAsPoetry(seriesOrPublisher);
 }
 
 /** 시집·소설이면 true (변경 불가) */

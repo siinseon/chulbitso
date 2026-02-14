@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, BookOpen, BookMarked, Cloud, Package, Plus, Trash2, Star } from "lucide-react";
 import type { Book, BookGroup } from "@/lib/useBooks";
-import { FULL_CATEGORY_OPTIONS, isPoetrySeriesOrPublisher } from "@/lib/categories";
+import { FULL_CATEGORY_OPTIONS, shouldClassifyAsPoetry } from "@/lib/categories";
 import type { RecordStatus } from "@/lib/supabase/types";
 import type { ReadingStatus } from "@/lib/supabase/types";
 import { OWNERSHIP_LABELS } from "@/lib/supabase/types";
@@ -112,13 +112,17 @@ export default function BookRecordModal({
     setTab("basic");
   }, [isOpen, initial, initialGroup]);
 
-  // 시 시리즈(창비시선, 문학과지성사시인선 등)이면 분류를 시집으로
+  // 시 시리즈·출판사·제목 등에 시집 키워드가 있으면 분류를 시집으로
   useEffect(() => {
     if (!isOpen) return;
-    if (isPoetrySeriesOrPublisher(publisher) || isPoetrySeriesOrPublisher(initial.series)) {
+    if (
+      shouldClassifyAsPoetry(title) ||
+      shouldClassifyAsPoetry(publisher) ||
+      shouldClassifyAsPoetry(initial.series)
+    ) {
       setCategory("시집");
     }
-  }, [isOpen, publisher, initial.series]);
+  }, [isOpen, title, publisher, initial.series]);
 
   useEffect(() => {
     if (!isOpen) return;

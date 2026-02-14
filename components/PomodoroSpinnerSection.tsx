@@ -147,8 +147,10 @@ export default function PomodoroSpinnerSection() {
       <h3 className="text-[15px] sm:text-[16px] font-bold text-primary font-serif mb-4 flex items-center gap-2">
         🎠 놀이터 회전무대
       </h3>
-      <p className="text-[11px] text-text-muted font-sans mb-4">
-        가운데 빨간 버튼을 누르면 25분 타이머 시작, 한 번 더 누르면 멈춤
+      <p className="text-[12px] text-text-muted font-serif mb-4">
+        가운데 빨간 버튼을 누르면 25분 타이머 시작,
+        <br />
+        여기서 즐비꾸고 한 번 더 누르면 멈춰요.
       </p>
 
       {/* 회전무대 컨테이너 (시작/멈춤은 빨간 버튼으로) */}

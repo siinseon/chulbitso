@@ -1,6 +1,6 @@
 import * as XLSX from "xlsx";
 import { parseAuthorTranslator } from "@/lib/authorParser";
-import { normalizeToKdcCategory } from "@/lib/categories";
+import { normalizeToKdcCategory, shouldClassifyAsPoetry } from "@/lib/categories";
 
 export type OwnershipFromExcel = "my" | "ebook";
 
@@ -50,8 +50,9 @@ function findHeaderRow(sheet: XLSX.WorkSheet): number {
   return -1;
 }
 
-/** 엑셀 분야/카테고리/장르 → KDC 분류 기준으로 정규화 */
+/** 엑셀 분야/카테고리/장르 → KDC 분류 기준으로 정규화 (시집 키워드 있으면 시집) */
 function parseCategory(field: string): string {
+  if (shouldClassifyAsPoetry(field)) return "시집";
   return normalizeToKdcCategory(field);
 }
 
@@ -121,9 +122,12 @@ export function parseAladdinExcel(arrayBuffer: ArrayBuffer): ParsedBookRow[] {
       pick<string>(row, "출간일", "출판일", "발행일", "pubDate", "출판년월일")
     );
     const field = pick<string>(row, "분야", "카테고리", "장르", "category");
-    const category = parseCategory(field);
+    let category = parseCategory(field);
     const publisher = pick<string>(row, "출판사/제작사", "출판사", "제작사", "publisher");
     const series = pick<string>(row, "시리즈명", "시리즈", "series");
+    if (shouldClassifyAsPoetry(title) || shouldClassifyAsPoetry(publisher) || shouldClassifyAsPoetry(series)) {
+      category = "시집";
+    }
     const retailPrice = parsePrice(
       pick<string>(row, "정가", "가격", "판매가", "price", "정가격") || "15000"
     );

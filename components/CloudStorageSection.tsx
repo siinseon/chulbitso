@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import type { Book } from "@/lib/useBooks";
 import ReviewUnfoldModal from "./ReviewUnfoldModal";
 
@@ -55,6 +55,19 @@ const PLANE_SLOTS = [
 export default function CloudStorageSection({ books }: CloudStorageSectionProps) {
   const reviews = useMemo(() => allBooksWithReview(books), [books]);
   const [selected, setSelected] = useState<{ bookTitle: string; reviewText: string } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(([entry]) => {
+      const w = entry.contentRect.width;
+      setScale(w > 0 && w < 380 ? Math.min(1, w / 380) : 1);
+    });
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const cloudFill = "radial-gradient(ellipse 75% 70% at 50% 35%, #ffffff, #f8fcfa 35%, #eef5f2 60%, #e0ebe8 85%, #d6e5e2)";
   const cloudShadow = "inset 0 4px 24px rgba(255,255,255,0.95), inset 0 -2px 12px rgba(180,200,195,0.35), 0 2px 12px rgba(100,120,115,0.08)";
@@ -90,14 +103,23 @@ export default function CloudStorageSection({ books }: CloudStorageSectionProps)
         {reviews.length === 0 ? "종이비행기로 날린 리뷰가 여기 쌓여요" : `종이비행기로 날린 리뷰 ${reviews.length}개`}
       </p>
       <div
-        className="relative rounded-xl w-full min-h-[200px] sm:min-h-[220px] flex items-center justify-center py-4 px-3 sm:px-2 overflow-visible"
+        ref={containerRef}
+        className="relative rounded-xl w-full min-h-[200px] sm:min-h-[220px] flex items-center justify-center py-4 px-3 sm:px-2 overflow-hidden min-w-0"
         style={{
           background: "linear-gradient(180deg, #E8DCC8 0%, #ddd4bc 100%)",
           boxShadow: "inset 0 2px 12px rgba(0,0,0,0.04)",
         }}
       >
-        <div className="relative w-full max-w-[380px] min-h-[180px] h-[200px] flex items-center justify-center mx-auto overflow-visible rounded-lg">
-          {/* 뭉게뭉게 뭉게구름 - 여러 puffs가 겹쳐 fluffy한 형태 (overflow로 잘리지 않게) */}
+        <div className="relative w-full max-w-[380px] min-h-[180px] h-[200px] flex items-center justify-center mx-auto rounded-lg min-w-0">
+          {/* 구름+비행기 전체를 컨테이너에 맞춰 스케일 (모바일에서 잘리지 않게) */}
+          <div
+            className="absolute left-1/2 top-1/2 w-[380px] h-[200px] -translate-x-1/2 -translate-y-1/2 origin-center pointer-events-none"
+            style={{
+              transform: `translate(-50%, -50%) scale(${scale})`,
+              transformOrigin: "center center",
+            }}
+          >
+          {/* 뭉게뭉게 뭉게구름 - 여러 puffs가 겹쳐 fluffy한 형태 */}
           <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
           {CLOUD_PUFFS.map((p, i) => (
             <div
@@ -116,7 +138,8 @@ export default function CloudStorageSection({ books }: CloudStorageSectionProps)
             />
           ))}
           </div>
-          {/* 종이비행기: 구름에 꽂힌 모양 — 모바일에서 잘 보이게 크기·대비 확대 */}
+          </div>
+          {/* 종이비행기: 구름에 꽂힌 모양 — 구름 스케일과 별도로 절대 위치 (pointer-events 복원) */}
           {reviews.slice(0, 8).map(({ book, review }, i) => {
             const slot = PLANE_SLOTS[i];
             if (!slot) return null;

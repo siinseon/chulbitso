@@ -196,7 +196,7 @@ export default function ExcelUpload({ onAddBook, existingBooks }: ExcelUploadPro
         <span className="text-[15px] font-bold text-primary">
           {uploading ? progress || "업로드 중..." : "알라딘 구매내역 엑셀 업로드"}
         </span>
-        <span className="text-[13px] text-text-muted">
+        <span className="text-[12px] text-text-muted font-serif">
           .xlsx, .xls · ISBN 있으면 표지 자동 조회
         </span>
       </button>

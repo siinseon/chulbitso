@@ -111,7 +111,7 @@ export default function ReadingJungleGym() {
       <h3 className="text-[15px] sm:text-[16px] font-bold text-primary font-serif mb-1 flex items-center gap-2 relative z-10">
         🧗 독서 습관 정글짐
       </h3>
-      <p className="text-[12px] font-serif mb-4 relative z-10" style={{ color: "#6a6355" }}>
+      <p className="text-[12px] text-text-muted font-serif mb-4 relative z-10">
         읽은 날 클릭해서 칸을 채워요
       </p>
 
@@ -149,8 +149,8 @@ export default function ReadingJungleGym() {
           </div>
         ))}
       </div>
-      <p className="text-[12px] font-medium font-serif mt-3 text-center relative z-10" style={{ color: "#5a5348" }}>
-        이번 달 <span className="font-bold" style={{ color: "#4a4538" }}>{filled.size}</span>칸 채웠어요
+      <p className="text-[12px] text-text-muted font-serif mt-3 text-center relative z-10">
+        이번 달 <span className="font-bold text-primary">{filled.size}</span>칸 채웠어요
       </p>
     </div>
   );
