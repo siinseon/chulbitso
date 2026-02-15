@@ -191,23 +191,6 @@ function getStamp(book: Book): React.ReactNode {
     );
   }
 
-  if (status === "완독") {
-    return (
-      <span
-        className="inline-block px-2.5 py-0.5 rounded text-[11px] font-bold italic"
-        style={{
-          background: "rgba(200, 80, 80, 0.2)",
-          color: "#8a2020",
-          border: "1px solid rgba(180, 60, 60, 0.5)",
-          transform: "rotate(2deg)",
-          fontFamily: "serif",
-        }}
-      >
-        참 잘했어요
-      </span>
-    );
-  }
-
   if (status === "멈춤" || status === "소장중") {
     return (
       <span

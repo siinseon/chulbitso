@@ -22,9 +22,10 @@ export const KDC_OPTIONS = [
   "기타",
 ] as const;
 
-/** 도서 추가/기록 시 선택 가능한 전체 분야 (시집·소설 + KDC) */
+/** 도서 추가/기록 시 선택 가능한 전체 분야 (시집·소설 + 에세이 + KDC) */
 export const FULL_CATEGORY_OPTIONS = [
   ...PRESERVED_CATEGORIES,
+  "에세이",
   ...KDC_OPTIONS.filter((c) => c !== "기타"),
   "기타",
 ] as const;
@@ -71,7 +72,8 @@ export function mapAladdinCategory(categoryName: string | undefined): FullCatego
   const s = categoryName;
   if (s.includes("소설")) return "소설";
   if (s.includes("시집") || /시\s*\/\s*시/.test(s) || /^시\b/.test(s)) return "시집";
-  if (s.includes("에세이") || s.includes("만화") || s.includes("소설/시/희곡")) return "문학";
+  if (s.includes("에세이")) return "에세이";
+  if (s.includes("만화") || s.includes("소설/시/희곡")) return "문학";
   if (s.includes("경제") || s.includes("경영")) return "사회과학";
   if (s.includes("총류")) return "총류";
   if (s.includes("철학")) return "철학";
