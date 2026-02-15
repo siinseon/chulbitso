@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mapAladdinCategory } from "@/lib/categories";
+import { mapAladdinCategory, shouldClassifyAsPoetry } from "@/lib/categories";
 import { parseAuthorTranslator } from "@/lib/authorParser";
 
 const ALADIN_API_KEY = "ttbdkdnxoghk1245002";
@@ -51,18 +51,26 @@ export async function GET(request: NextRequest) {
       const seriesInfo = item.seriesInfo as { seriesName?: string } | undefined;
       const series = seriesInfo?.seriesName ?? (item.seriesName as string) ?? undefined;
 
+      const title = (item.title as string) ?? "";
+      const publisher = (item.publisher as string) ?? "";
+      const categoryFromAladdin = mapAladdinCategory(categoryName) ?? undefined;
+      const category =
+        shouldClassifyAsPoetry(title) || shouldClassifyAsPoetry(publisher) || shouldClassifyAsPoetry(series)
+          ? "시집"
+          : categoryFromAladdin;
+
       return {
-        title: item.title ?? "",
+        title,
         author: author || rawAuthor,
         translator: translator ?? undefined,
-        publisher: item.publisher ?? "",
+        publisher,
         pubDate: item.pubDate ?? "",
         cover: item.cover ?? "",
         description: item.description ?? "",
         isbn: item.isbn13 ?? item.isbn ?? "",
         retailPrice,
         pageCount: pageCount > 0 ? pageCount : undefined,
-        category: mapAladdinCategory(categoryName) ?? undefined,
+        category,
         series: series || undefined,
       };
     });

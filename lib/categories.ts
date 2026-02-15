@@ -34,13 +34,13 @@ export type PreservedCategory = (typeof PRESERVED_CATEGORIES)[number];
 export type KdcCategory = (typeof KDC_OPTIONS)[number];
 export type FullCategory = (typeof FULL_CATEGORY_OPTIONS)[number];
 
-/** 시 시리즈/출판사/키워드 — 이 중 하나만 있어도 시집으로 분류 */
+/** 시 시리즈/출판사/키워드 — 제목·출판사·시리즈 등에 이 중 하나만 있어도 무조건 시집으로 분류 */
 export const POETRY_KEYWORDS = [
+  "창비시선",
   "민음의시",
   "민음시의 시",
-  "문학과지성사 시인선",
   "문학과지성사시인선",
-  "창비시선",
+  "문학과지성사 시인선",
   "문학동네 시인선",
   "시집",
 ] as const;
@@ -70,6 +70,7 @@ export function isPreservedCategory(cat: string | undefined): boolean {
 export function mapAladdinCategory(categoryName: string | undefined): FullCategory | undefined {
   if (!categoryName?.trim()) return undefined;
   const s = categoryName;
+  if (shouldClassifyAsPoetry(s)) return "시집";
   if (s.includes("소설")) return "소설";
   if (s.includes("시집") || /시\s*\/\s*시/.test(s) || /^시\b/.test(s)) return "시집";
   if (s.includes("에세이")) return "에세이";

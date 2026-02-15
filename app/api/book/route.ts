@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { mapAladdinCategory } from "@/lib/categories";
+import { mapAladdinCategory, shouldClassifyAsPoetry } from "@/lib/categories";
 import { parseAuthorTranslator } from "@/lib/authorParser";
 
 const ALADIN_API_KEY = "ttbdkdnxoghk1245002";
@@ -54,11 +54,21 @@ export async function GET(request: NextRequest) {
     const rawAuthor = (item.author as string) ?? "";
     const { author, translator } = parseAuthorTranslator(rawAuthor);
 
+    const title = (item.title as string) ?? "";
+    const publisher = (item.publisher as string) ?? "";
+    const series =
+      (item.seriesInfo as { seriesName?: string } | undefined)?.seriesName ?? (item.seriesName as string) ?? undefined;
+    const categoryFromAladdin = mapAladdinCategory(item.categoryName as string) ?? undefined;
+    const category =
+      shouldClassifyAsPoetry(title) || shouldClassifyAsPoetry(publisher) || shouldClassifyAsPoetry(series)
+        ? "시집"
+        : categoryFromAladdin;
+
     const book = {
-      title: (item.title as string) ?? "",
+      title,
       author: author || rawAuthor,
       translator: translator ?? undefined,
-      publisher: (item.publisher as string) ?? "",
+      publisher,
       pubDate: (item.pubDate as string) ?? "",
       cover: (item.cover as string) ?? "",
       description: (item.description as string) ?? "",
@@ -69,8 +79,8 @@ export async function GET(request: NextRequest) {
           : parseInt(String(item.priceStandard || "0"), 10) || 0,
       pageCount,
       format: (subInfo.packaging as string) ?? (item.form as string) ?? undefined,
-      category: mapAladdinCategory(item.categoryName as string) ?? undefined,
-      series: (item.seriesInfo as { seriesName?: string } | undefined)?.seriesName ?? (item.seriesName as string) ?? undefined,
+      category,
+      series,
     };
 
     return NextResponse.json(book);
