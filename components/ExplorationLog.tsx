@@ -174,7 +174,7 @@ function getStamp(book: Book): React.ReactNode {
     );
   }
 
-  if (status === "읽는 중" || status === "펼침") {
+  if (status === "읽는 중") {
     return (
       <span
         className="inline-block px-2 py-0.5 rounded text-[11px] font-bold italic"
