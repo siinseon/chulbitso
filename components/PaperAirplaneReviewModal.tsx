@@ -80,6 +80,25 @@ export default function PaperAirplaneReviewModal({
       aria-modal="true"
       aria-label="책 리뷰 종이비행기"
     >
+      {/* 종이비행기 아이콘 — overflow 바깥에 두어 잘리지 않게 (전체 화면 기준) */}
+      {phase === "flying" && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-[3502]">
+          <div className="animate-paper-plane-fly">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#f5f2eb"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="w-20 h-20 sm:w-24 sm:h-24 drop-shadow-[0_4px_16px_rgba(0,0,0,0.3)]"
+              aria-hidden
+            >
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
+            </svg>
+          </div>
+        </div>
+      )}
       <div
         ref={containerRef}
         onClick={(e) => e.stopPropagation()}
@@ -146,27 +165,30 @@ export default function PaperAirplaneReviewModal({
         )}
 
         {phase === "flying" && (
-          <div
-            className="absolute inset-4 flex flex-col rounded-xl overflow-hidden pointer-events-none animate-paper-fold-and-fly"
-            style={{
-              background: "linear-gradient(180deg, #e8e4dc 0%, #ddd8d0 100%)",
-              boxShadow: "inset 0 0 0 1px rgba(120,110,95,0.25), 0 8px 24px rgba(0,0,0,0.15)",
-              transformOrigin: "center bottom",
-            }}
-          >
-            <div className="p-4 flex-1 overflow-hidden">
-              <p className="text-[11px] text-[#8a7f72] font-serif mb-1 truncate">{bookTitle}</p>
-              <p
-                className="text-[14px] font-handwriting leading-relaxed whitespace-pre-wrap break-words line-clamp-6"
-                style={{ color: "#3A3128" }}
-              >
-                {[parts.purchase, parts.make, parts.review].filter(Boolean).join("\n\n") || "(빈 종이)"}
-              </p>
+          <>
+            {/* 리뷰 카드 접히며 날아감 (배경) */}
+            <div
+              className="absolute inset-4 flex flex-col rounded-xl overflow-hidden pointer-events-none animate-paper-fold-and-fly opacity-60"
+              style={{
+                background: "linear-gradient(180deg, #e8e4dc 0%, #ddd8d0 100%)",
+                boxShadow: "inset 0 0 0 1px rgba(120,110,95,0.25), 0 8px 24px rgba(0,0,0,0.15)",
+                transformOrigin: "center bottom",
+              }}
+            >
+              <div className="p-4 flex-1 overflow-hidden">
+                <p className="text-[11px] text-[#8a7f72] font-serif mb-1 truncate">{bookTitle}</p>
+                <p
+                  className="text-[14px] font-handwriting leading-relaxed whitespace-pre-wrap break-words line-clamp-6"
+                  style={{ color: "#3A3128" }}
+                >
+                  {[parts.purchase, parts.make, parts.review].filter(Boolean).join("\n\n") || "(빈 종이)"}
+                </p>
+              </div>
             </div>
-            <p className="absolute bottom-1/2 left-1/2 -translate-x-1/2 translate-y-4 text-[#3A3128]/25 text-[12px] font-serif">
+            <p className="absolute bottom-1/3 left-1/2 -translate-x-1/2 translate-y-4 text-[#3A3128]/40 text-[14px] font-serif pointer-events-none z-20 animate-pulse">
               슈우웅—
             </p>
-          </div>
+          </>
         )}
       </div>
     </div>

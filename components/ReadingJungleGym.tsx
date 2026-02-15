@@ -55,12 +55,17 @@ export default function ReadingJungleGym() {
     setFilled(loadFilledCells(year, month));
   }, [year, month, mounted]);
 
+  const [flagBounceKey, setFlagBounceKey] = useState(0);
+
   const toggleCell = useCallback(
     (key: number) => {
       setFilled((prev) => {
         const next = new Set(prev);
         if (next.has(key)) next.delete(key);
-        else next.add(key);
+        else {
+          next.add(key);
+          setFlagBounceKey((k) => k + 1);
+        }
         saveFilledCells(year, month, next);
         return next;
       });
@@ -115,7 +120,45 @@ export default function ReadingJungleGym() {
         읽은 날 클릭해서 칸을 채워요
       </p>
 
-      <div className="flex flex-col items-center gap-[4px] relative z-10" style={{ gap: GYM_GAP }}>
+      <div className="relative flex flex-col items-center gap-[4px] relative z-10" style={{ gap: GYM_GAP }}>
+        {/* 꼭대기 깃발 - 칸 채울 때마다 점프 */}
+        <div
+          className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-full"
+          style={{ marginTop: -GYM_GAP }}
+        >
+          <div key={flagBounceKey} className="animate-flag-bounce">
+            <div
+              className="relative flex items-end justify-center"
+              style={{ width: GYM_SQUARE_SIZE, height: GYM_SQUARE_SIZE + 24 }}
+            >
+            {/* 깃대 */}
+            <div
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 rounded-sm"
+              style={{
+                width: 3,
+                height: 24,
+                background: "linear-gradient(90deg, #5a4a3a 0%, #6b5a4a 50%, #5a4a3a 100%)",
+                boxShadow: "0 1px 2px rgba(0,0,0,0.2)",
+              }}
+            />
+            {/* 깃발 삼각형 - 막대기 왼쪽 끝에 맞춤 (막대 3px, 중심 기준 -1.5px) */}
+            <div
+              className="absolute"
+              style={{
+                left: "50%",
+                bottom: 18,
+                marginLeft: -1.5,
+                width: 0,
+                height: 0,
+                borderTop: "8px solid transparent",
+                borderBottom: "8px solid transparent",
+                borderLeft: "14px solid #c94a4a",
+                filter: "drop-shadow(1px 1px 1px rgba(0,0,0,0.25))",
+              }}
+            />
+            </div>
+          </div>
+        </div>
         {PYRAMID_ROW_COUNTS.map((count, rowIndex) => (
           <div
             key={rowIndex}

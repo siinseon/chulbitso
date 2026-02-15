@@ -30,7 +30,7 @@ const config: Config = {
         serif: ["var(--font-noto-serif-kr)", "Noto Serif KR", "serif"],
         "nanum-myeongjo": ["var(--font-noto-serif-kr)", "Noto Serif KR", "serif"],
         mono: ["var(--font-jetbrains-mono)", "JetBrains Mono", "monospace"],
-        handwriting: ["var(--font-nanum-pen)", "Nanum Pen Script", "cursive"],
+        handwriting: ["var(--font-handwriting)", "Gaegu", "cursive"],
       },
       boxShadow: {
         card: "0 2px 8px rgba(58, 49, 40, 0.08)",

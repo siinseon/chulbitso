@@ -2,13 +2,8 @@
 
 import { useState, useMemo, useEffect, useRef } from "react";
 import type { Book } from "@/lib/useBooks";
+import type { BooksSnapshot } from "@/lib/analysisStats";
 import ReviewUnfoldModal from "./ReviewUnfoldModal";
-
-interface BooksSnapshot {
-  my: Book[];
-  read: Book[];
-  ebook: Book[];
-}
 
 function allBooksWithReview(books: BooksSnapshot): { book: Book; review: string }[] {
   const list: { book: Book; review: string }[] = [];

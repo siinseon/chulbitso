@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import BookList from "./BookList";
 import BookDetailModal from "./BookDetailModal";
 import BookRecordModal from "./BookRecordModal";
+import ExplorationLog from "./ExplorationLog";
 import type { Book } from "@/lib/useBooks";
 
 type BookGroup = "my" | "read" | "ebook";
@@ -16,10 +17,13 @@ interface CategoryScreenProps {
   onUpdateBook?: (book: Book) => void;
 }
 
-const TABS: { id: BookGroup; label: string }[] = [
+type TabId = BookGroup | "exploration";
+
+const TABS: { id: TabId; label: string }[] = [
   { id: "my", label: "쌓인 책" },
   { id: "read", label: "스친 책" },
   { id: "ebook", label: "빛으로 쓴 책" },
+  { id: "exploration", label: "탐구일지" },
 ];
 
 function findBookById(
@@ -31,6 +35,13 @@ function findBookById(
   return b ?? null;
 }
 
+function findBookGroup(books: { my: Book[]; read: Book[]; ebook: Book[] }, id: string): BookGroup | null {
+  if (books.my.some((x) => x.id === id)) return "my";
+  if (books.read.some((x) => x.id === id)) return "read";
+  if (books.ebook.some((x) => x.id === id)) return "ebook";
+  return null;
+}
+
 export default function CategoryScreen({
   books,
   onDelete,
@@ -38,10 +49,12 @@ export default function CategoryScreen({
   onSetBookCountry,
   onUpdateBook,
 }: CategoryScreenProps) {
-  const [activeTab, setActiveTab] = useState<BookGroup>("my");
+  const [activeTab, setActiveTab] = useState<TabId>("my");
   const [selectedBookId, setSelectedBookId] = useState<string | null>(null);
   const [editingBook, setEditingBook] = useState<Book | null>(null);
   const selectedBook = findBookById(books, selectedBookId);
+
+  const allBooks = useMemo(() => [...books.my, ...books.read, ...books.ebook], [books]);
 
   return (
     <div className="space-y-4 animate-fadeIn">
@@ -66,13 +79,20 @@ export default function CategoryScreen({
         {TABS.find((t) => t.id === activeTab)?.label}
       </h2>
 
+      {activeTab === "exploration" ? (
+        <ExplorationLog
+          books={allBooks}
+          onBookClick={(book) => setSelectedBookId(book.id)}
+        />
+      ) : (
       <BookList
-        books={books[activeTab]}
-        group={activeTab}
-        onDelete={(id) => onDelete(activeTab, id)}
+        books={books[activeTab as BookGroup]}
+        group={activeTab as BookGroup}
+        onDelete={(id) => onDelete(activeTab as BookGroup, id)}
         onCardClick={(book) => setSelectedBookId(book.id)}
-        onSetReadingStatus={(id, status) => onSetReadingStatus(activeTab, id, status)}
+        onSetReadingStatus={(id, status) => onSetReadingStatus(activeTab as BookGroup, id, status)}
       />
+      )}
 
       <BookDetailModal
         book={selectedBook}
@@ -82,7 +102,10 @@ export default function CategoryScreen({
         onUpdateBook={onUpdateBook}
         onSetReadingStatus={
           selectedBookId
-            ? (id, status) => onSetReadingStatus(activeTab, id, status)
+            ? (id, status) => {
+                const g = findBookGroup(books, id);
+                if (g) onSetReadingStatus(g, id, status);
+              }
             : undefined
         }
       />

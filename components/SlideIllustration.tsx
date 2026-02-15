@@ -8,6 +8,9 @@ const COLORS = {
   green: "#6a7c5a",
 } as const;
 
+const GROUND_Y = 82.4; // 땅 표면 y
+const PLATFORM_TOP_Y = 27; // 1층·미끄럼틀 최상단 y (맨 위 계단 시작점과 같아야 함)
+
 interface SlideIllustrationProps {
   className?: string;
   width?: number;
@@ -18,59 +21,73 @@ interface SlideIllustrationProps {
 export default function SlideIllustration({ className = "", width = 100, height = 80 }: SlideIllustrationProps) {
   return (
     <svg
-      viewBox="0 0 130 90"
+      viewBox="-18 0 148 95"
       width={width}
       height={height}
       className={className}
       role="img"
       aria-hidden
     >
-      {/* 땅 (초록) */}
-      <rect x="0" y="78" width="130" height="14" fill={COLORS.green} />
+      <g transform="translate(-18, 0)">
+      <defs>
+        <clipPath id="aboveGroundClip">
+          <rect x="-50" y="-10" width="250" height={GROUND_Y + 10} />
+        </clipPath>
+      </defs>
+      {/* 땅 (초록) — 맨 마지막에 그려서 땅 뚫고 나가는 부분 덮음 */}
 
-      {/* 중앙 탑 - 기둥 (1층~2층 연결) */}
-      <rect x="40" y="11" width="6" height="69" rx="1" fill={COLORS.rust} />
-      <rect x="54" y="11" width="6" height="69" rx="1" fill={COLORS.rust} />
+      {/* 구조물·계단 (땅 아래로 나가는 부분 클리핑) */}
+      <g clipPath="url(#aboveGroundClip)">
+      {/* 가운데 집 모양 - 살짝 그림자 */}
+      <g filter="url(#houseShadow)">
+        {/* 중앙 탑 - 기둥 (1층~2층 연결, 땅에 닿게) */}
+        <rect x="40" y="11" width="6" height="71.4" rx="1" fill={COLORS.rust} />
+        <rect x="54" y="11" width="6" height="71.4" rx="1" fill={COLORS.rust} />
 
-      {/* 1층 (중간층) - 건물 높이(2~78) 3등분 시 상단 1/3 지점 */}
-      <rect x="28" y="27" width="36" height="8" rx="1" fill={COLORS.rust} />
-      <rect x="30" y="29" width="32" height="5" rx="0.5" fill={COLORS.gold} />
+        {/* 1층 (중간층) - 계단·미끄럼틀 시작, 양쪽 기둥에서 튀어나오지 않게 */}
+        <rect x="40" y="27" width="20" height="8" rx="1" fill={COLORS.rust} />
+        <rect x="42" y="29" width="16" height="5" rx="0.5" fill={COLORS.gold} />
 
-      {/* 2층 가로 플랫폼 (지붕쪽으로 더 올림) */}
-      <rect x="38" y="11" width="24" height="6" rx="1" fill={COLORS.rust} />
-      <rect x="40" y="13" width="20" height="3" rx="0.5" fill={COLORS.gold} />
+        {/* 2층 가로 플랫폼 (지붕쪽으로 더 올림) */}
+        <rect x="38" y="11" width="24" height="6" rx="1" fill={COLORS.rust} />
+        <rect x="40" y="13" width="20" height="3" rx="0.5" fill={COLORS.gold} />
 
-      {/* 2층 난간 */}
-      {[0, 1, 2, 3, 4].map((i) => (
-        <rect key={i} x={40 + i * 4} y="9" width="1.5" height="5" rx="0.5" fill={COLORS.rust} />
-      ))}
-      <rect x="38" y="11" width="24" height="2" rx="0.5" fill={COLORS.rust} />
+        {/* 2층 난간 */}
+        {[0, 1, 2, 3, 4].map((i) => (
+          <rect key={i} x={40 + i * 4} y="9" width="1.5" height="5" rx="0.5" fill={COLORS.rust} />
+        ))}
+        <rect x="38" y="11" width="24" height="2" rx="0.5" fill={COLORS.rust} />
 
-      {/* 지붕 (초록) — 기둥 상단(y=11)에 밑변 맞춤 */}
-      <path
-        d="M 36 11 L 50 -2 L 64 11 L 36 11 Z"
-        fill={COLORS.green}
-      />
+        {/* 지붕 (초록) — 기둥 상단(y=11)에 밑변 맞춤 */}
+        <path
+          d="M 36 11 L 50 -2 L 64 11 L 36 11 Z"
+          fill={COLORS.green}
+        />
+      </g>
 
-      {/* 왼쪽 계단 (8단) - 땅(78)에서 1층 중간층(27)까지, 완만한 층계 */}
-      {[0, 1, 2, 3, 4, 5, 6, 7].map((i) => {
-        const run = 5; // 계단 깊이
-        const treadThick = 2;
-        const rise = 5; // 계단 높이 (rise:run 비율로 자연스러운 층계)
-        const bottomY = 78 - i * (rise + treadThick);
-        const treadTopY = bottomY - treadThick;
-        const riserHeight = i === 0 ? treadThick : rise + treadThick;
+      {/* 왼쪽 계단 (5단) - 살짝 그림자 */}
+      <g filter="url(#stepShadow)">
+      {[0, 1, 2, 3, 4].map((i) => {
+        const run = 7; // 계단 깊이 (두꺼워 보이게)
+        const treadThick = 3.5; // 발판 두께
+        const treadOverhang = 4; // 발판 앞쪽 돌출
+        const totalClimb = GROUND_Y - (PLATFORM_TOP_Y + treadThick); // 맨위 발판 윗면(27)~땅
+        const stepHeight = totalClimb / 5; // 5단 균등
+        const rise = stepHeight - treadThick;
+        const treadTopY = PLATFORM_TOP_Y + treadThick + (4 - i) * stepHeight; // i=4: 윗면=27, i=0: 맨 아래
+        const riserHeight = rise + treadThick;
+        const stepX = 40 - (4 - i) * run - (run + treadOverhang); // 맨 위 단이 x=40에서 끝나도록
         return (
           <g key={i}>
-            {/* 발받이 (세로면) */}
-            <rect x={8 + i * run} y={treadTopY} width={run} height={riserHeight} fill={COLORS.rust} />
-            {/* 발판 (가로면, 앞으로 약간 돌출) */}
-            <rect x={8 + i * run} y={treadTopY - treadThick} width={run + 3} height={treadThick} fill={COLORS.gold} />
+            {/* 발받이 (세로면) - 모서리 살짝 둥글게 */}
+            <rect x={stepX} y={treadTopY} width={run} height={riserHeight} rx="0.8" fill={COLORS.rust} />
+            {/* 발판 (가로면, 앞으로 약간 돌출) - 모서리 살짝 둥글게 */}
+            <rect x={stepX} y={treadTopY - treadThick} width={run + treadOverhang} height={treadThick} rx="0.6" fill={COLORS.gold} />
             {/* 발판 앞쪽 그림자 (두께감) */}
             <line
-              x1={8 + i * run}
+              x1={stepX}
               y1={treadTopY}
-              x2={8 + i * run + run + 3}
+              x2={stepX + run + treadOverhang}
               y2={treadTopY}
               stroke="rgba(0,0,0,0.15)"
               strokeWidth="0.8"
@@ -78,6 +95,7 @@ export default function SlideIllustration({ className = "", width = 100, height 
           </g>
         );
       })}
+      </g>
 
       {/* 앞쪽 그물망 (1층 바닥~땅 사이, 두 기둥 안쪽) */}
       <g stroke={COLORS.blueGray} strokeWidth="1" fill="none">
@@ -89,8 +107,17 @@ export default function SlideIllustration({ className = "", width = 100, height 
         ))}
       </g>
 
-      {/* 미끄럼틀 - 중간층에서 땅까지, 그림자·디테일 추가 */}
+      {/* 미끄럼틀 - 살짝 그림자 추가 */}
       <defs>
+        <filter id="slideShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="2" dy="3" stdDeviation="2" floodColor="#000" floodOpacity="0.2" />
+        </filter>
+        <filter id="stepShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="2" dy="3" stdDeviation="2" floodColor="#000" floodOpacity="0.18" />
+        </filter>
+        <filter id="houseShadow" x="-20%" y="-20%" width="140%" height="140%">
+          <feDropShadow dx="2" dy="3" stdDeviation="2" floodColor="#000" floodOpacity="0.18" />
+        </filter>
         <linearGradient id="slideGrad" x1="0%" y1="0%" x2="100%" y2="100%">
           <stop offset="0%" stopColor="#7a8e6c" />
           <stop offset="50%" stopColor={COLORS.green} />
@@ -108,56 +135,21 @@ export default function SlideIllustration({ className = "", width = 100, height 
           <stop offset="100%" stopColor="rgba(0,0,0,0.12)" />
         </radialGradient>
       </defs>
-      {/* 바닥 그림자 - 부드러운 타원 (바닥에 닿는 느낌) */}
-      <ellipse cx="105" cy="80" rx="16" ry="3" fill="rgba(0,0,0,0.2)" />
-      <path
-        d="M 62 35 Q 88 58, 108 79 Q 116 78, 118 76 Q 100 54, 72 34 Q 66 32, 62 35 Z"
-        fill="rgba(0,0,0,0.2)"
-      />
-      {/* 미끄럼틀 본체 (그라데이션) - 길게 쭉 뻗음 */}
-      <path
-        d="M 54 27 L 66 27 Q 92 52, 118 78 L 102 76 Q 76 50, 54 28 Z"
-        fill="url(#slideGrad)"
-      />
-      {/* 미끄럼틀 내부 그림자 (오목한 곡면 느낌) */}
-      <path
-        d="M 54 27 L 66 27 Q 92 52, 118 78 L 102 76 Q 76 50, 54 28 Z"
-        fill="url(#slideShadowGrad)"
-      />
-      {/* 왼쪽 가장자리 림 (두께감) */}
-      <path
-        d="M 54 27 Q 76 50, 102 76"
-        stroke="rgba(0,0,0,0.2)"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* 오른쪽 가장자리 림 */}
-      <path
-        d="M 66 27 Q 92 52, 118 78"
-        stroke="rgba(255,255,255,0.2)"
-        strokeWidth="0.8"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* 상단 가장자리 림 (러스트) */}
-      <path d="M 54 27 L 66 27" stroke={COLORS.rust} strokeWidth="1.2" strokeLinecap="round" fill="none" opacity={0.8} />
-      {/* 슬라이드 표면 하이라이트 (빛 반사) */}
-      <path
-        d="M 57 29 Q 80 48, 105 72"
-        stroke="url(#slideHighlight)"
-        strokeWidth="3.5"
-        strokeLinecap="round"
-        fill="none"
-      />
-      {/* 슬라이드 홈 라인 (미끄러지는 골 부분) */}
-      <path
-        d="M 60 32 Q 82 52, 108 74"
-        stroke="rgba(0,0,0,0.06)"
-        strokeWidth="0.8"
-        strokeLinecap="round"
-        fill="none"
-      />
+      <g filter="url(#slideShadow)">
+        {/* 미끄럼틀과 같은 색 네모 - 오른쪽 기둥 끝(x=60)에서 시작, 미끄럼틀 최상단(y=27)에 맞춤 */}
+        <rect x="60" y="27" width="12" height="8" fill={COLORS.blueGray} />
+        {/* 미끄럼틀 끝·땅 닿은 곳 - 같은 모양(12x8) 네모 */}
+        <rect x="118" y="74.4" width="12" height="8" fill={COLORS.blueGray} />
+        {/* 미끄럼틀 본체 */}
+        <path
+          d="M 60 27 L 72 27 Q 104 55, 130 80 L 118 78 Q 92 53, 60 28 Z"
+          fill={COLORS.blueGray}
+        />
+      </g>
+      </g>
+      {/* 땅 (초록 네모) — 맨 마지막에 그려서 구조물이 땅을 침범하는 부분만 덮음 */}
+      <rect x="-5" y={GROUND_Y} width="135" height="10" fill={COLORS.green} />
+      </g>
     </svg>
   );
 }

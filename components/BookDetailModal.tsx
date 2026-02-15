@@ -207,7 +207,7 @@ export default function BookDetailModal({ book, onClose, onUpdateCountry, onEdit
       setSearchResults([]);
       setSearchError(null);
     }
-  }, [book?.id]);
+  }, [book]);
 
   useEffect(() => {
     if (!book) return;

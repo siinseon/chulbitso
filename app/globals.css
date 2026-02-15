@@ -260,6 +260,19 @@ button:not([class*="rounded-"]) {
   animation: paper-fold-and-fly 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
 }
 
+/* 종이비행기 아이콘 날아가는 모션 — 버튼 클릭 시 */
+@keyframes paper-plane-fly {
+  0% { transform: scale(1) rotate(-45deg); opacity: 1; }
+  15% { transform: translateY(-8vh) scale(1.15) rotate(-38deg); opacity: 1; }
+  40% { transform: translateY(-40vh) translateX(12vw) scale(0.95) rotate(-15deg); opacity: 1; }
+  65% { transform: translateY(-70vh) translateX(24vw) scale(0.75) rotate(5deg); opacity: 0.95; }
+  90% { transform: translateY(-105vh) translateX(38vw) scale(0.55) rotate(18deg); opacity: 0.5; }
+  100% { transform: translateY(-125vh) translateX(50vw) scale(0.45) rotate(25deg); opacity: 0; }
+}
+.animate-paper-plane-fly {
+  animation: paper-plane-fly 2.2s cubic-bezier(0.25, 0.46, 0.35, 0.98) forwards;
+}
+
 /* 취향의 모래성 - 터치 시 모래 살짝 흘러내림 + 깃발 팔락 */
 @keyframes sand-touch {
   0%, 100% { transform: translateY(0) scale(1); }
@@ -280,6 +293,27 @@ button:not([class*="rounded-"]) {
   animation: flag-flutter 0.6s ease-in-out infinite;
 }
 
+/* 운명의 미끄럼틀: 금색 요술가루 기둥 감싸며 상승 (시계방향 나선) */
+@keyframes magic-dust-spiral-cw {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  8% { opacity: 1; }
+  25% { transform: translate(18px, -22vh) scale(1); }
+  50% { transform: translate(-15px, -44vh) scale(0.95); }
+  75% { transform: translate(12px, -66vh) scale(0.65); }
+  92% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(-8px, -85vh) scale(0.35); }
+}
+/* 기둥 감싸며 반시계 나선 */
+@keyframes magic-dust-spiral-ccw {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  8% { opacity: 1; }
+  25% { transform: translate(-16px, -22vh) scale(1); }
+  50% { transform: translate(14px, -44vh) scale(0.95); }
+  75% { transform: translate(-10px, -66vh) scale(0.65); }
+  92% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(6px, -85vh) scale(0.35); }
+}
+
 /* 운명의 미끄럼틀: 낙하 → 착지 후 앞으로 짠 */
 @keyframes destiny-slide-down {
   0% { transform: translate(0, 0); }
@@ -289,4 +323,15 @@ button:not([class*="rounded-"]) {
   0% { transform: translate(58vw, 68vh) scale(1); }
   60% { transform: translate(58vw, 68vh) scale(1.35); }
   100% { transform: translate(58vw, 68vh) scale(1.2); }
+}
+
+/* 독서 습관 정글짐 - 꼭대기 깃발 점프 (칸 채울 때마다) */
+@keyframes flag-bounce {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-12px); }
+  70% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
+.animate-flag-bounce {
+  animation: flag-bounce 0.5s ease-out;
 }
