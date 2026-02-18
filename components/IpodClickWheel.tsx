@@ -3,7 +3,7 @@
 import { useRef, useState, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-/** 휠에서 한 칸에 해당하는 아이템 (책 또는 기간 등) */
+/** 휠에서 한 칸에 해당하는 아이템 */
 export interface IpodWheelItem {
   id: string;
   title: string;
@@ -16,13 +16,13 @@ const WHEEL_RING_HIGHLIGHT = "#F8F8F8";
 const WHEEL_RING_SHADOW = "#D0D0D0";
 const CENTER_BG = "#D0D0D0";
 const LABEL_COLOR = "#606060";
-const DEG_PER_TICK = 36; // 한 칸당 필요한 각도 (감도)
-const TICK_MS = 80; // 연속 틱 최소 간격
+const DEG_PER_TICK = 36;
+const TICK_MS = 80;
 
 function playTickSound(): void {
   if (typeof window === "undefined") return;
   try {
-    const ctx = new (window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext)();
+    const ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
     osc.connect(gain);
@@ -48,7 +48,6 @@ export interface IpodClickWheelProps {
   onSelectIndex: (index: number) => void;
   onCenterPress?: () => void;
   onMenuPress?: () => void;
-  /** true면 휠 위쪽의 표지/타이틀 블록 숨김 (LCD 등 상단에서 표시할 때) */
   hideCenterDisplay?: boolean;
   className?: string;
 }
@@ -106,21 +105,21 @@ export default function IpodClickWheel({
     }
   }, [items.length, selectedIndex, clampIndex, onSelectIndex]);
 
-  const getCenter = useCallback((): { cx: number; cy: number } | null => {
+  const getCenter = useCallback(() => {
     const el = wheelRef.current;
     if (!el) return null;
     const rect = el.getBoundingClientRect();
     return { cx: rect.left + rect.width / 2, cy: rect.top + rect.height / 2 };
   }, []);
 
-  const getAngle = useCallback((clientX: number, clientY: number): number => {
+  const getAngle = useCallback((clientX: number, clientY: number) => {
     const c = getCenter();
     if (!c) return 0;
     return Math.atan2(clientY - c.cy, clientX - c.cx) * (180 / Math.PI);
   }, [getCenter]);
 
   const isInCenter = useCallback(
-    (clientX: number, clientY: number): boolean => {
+    (clientX: number, clientY: number) => {
       const c = getCenter();
       if (!c) return false;
       const r = 58 * (wheelRef.current?.getBoundingClientRect().width ?? 280) / 280;
@@ -169,10 +168,6 @@ export default function IpodClickWheel({
     lastAngleRef.current = null;
   }, []);
 
-  const handleCenterClick = useCallback(() => {
-    onCenterPress?.();
-  }, [onCenterPress]);
-
   const currentItem = items[clampIndex(selectedIndex)];
 
   return (
@@ -218,7 +213,6 @@ export default function IpodClickWheel({
         </>
       )}
 
-      {/* 아이팟 휠: 도넛 형태 + 4방향 아이콘 + 중앙 버튼 */}
       <div
         ref={wheelRef}
         className="relative select-none touch-none"
@@ -237,21 +231,18 @@ export default function IpodClickWheel({
           style={{ filter: "drop-shadow(0 6px 14px rgba(0,0,0,0.25)) drop-shadow(0 2px 4px rgba(0,0,0,0.15))" }}
         >
           <defs>
-            {/* 휠 링: 플라스틱 비스듬한 빛 — 왼쪽 위 하이라이트, 오른쪽 아래 그림자 */}
             <linearGradient id="ipod-ring" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor={WHEEL_RING_HIGHLIGHT} />
               <stop offset="35%" stopColor={WHEEL_RING} />
               <stop offset="70%" stopColor={WHEEL_RING_SHADOW} />
               <stop offset="100%" stopColor="#C8C8C8" />
             </linearGradient>
-            {/* 중앙 버튼: 살짝 볼록한 플라스틱 */}
             <linearGradient id="ipod-center" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#ececec" />
               <stop offset="30%" stopColor="#e0e0e0" />
               <stop offset="100%" stopColor={CENTER_BG} />
             </linearGradient>
           </defs>
-          {/* 바깥 링 (도넛) — 플라스틱 비스듬한 빛, 위쪽 하이라이트 스트로크 */}
           <circle
             cx="140"
             cy="140"
@@ -262,7 +253,6 @@ export default function IpodClickWheel({
             style={{ paintOrder: "stroke fill" }}
           />
           <circle cx="140" cy="140" r="72" fill="#1a1a1a" stroke="rgba(0,0,0,0.2)" strokeWidth="0.5" />
-          {/* 중앙 버튼: 볼록한 느낌 — 위쪽 하이라이트 스트로크 */}
           <circle
             cx="140"
             cy="140"
@@ -275,11 +265,7 @@ export default function IpodClickWheel({
           <circle cx="140" cy="140" r="58" fill="none" stroke="rgba(0,0,0,0.12)" strokeWidth="0.8" />
         </svg>
 
-        {/* 4방향 라벨 (MENU는 onMenuPress 시 버튼으로 동작) */}
-        <div
-          className="absolute inset-0 flex items-center justify-center pointer-events-none"
-          style={{ width: 280, height: 280 }}
-        >
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ width: 280, height: 280 }}>
           {onMenuPress ? (
             <button
               type="button"
@@ -295,21 +281,14 @@ export default function IpodClickWheel({
               MENU
             </span>
           )}
-          <span className="absolute bottom-6 left-1/2 -translate-x-1/2 text-lg" style={{ color: LABEL_COLOR }}>
-            ⏯️
-          </span>
-          <span className="absolute left-6 top-1/2 -translate-y-1/2 text-lg" style={{ color: LABEL_COLOR }}>
-            ⏮️
-          </span>
-          <span className="absolute right-6 top-1/2 -translate-y-1/2 text-lg" style={{ color: LABEL_COLOR }}>
-            ⏭️
-          </span>
+          <span className="absolute bottom-6 left-1/2 -translate-x-1/2 text-lg" style={{ color: LABEL_COLOR }}>⏯️</span>
+          <span className="absolute left-6 top-1/2 -translate-y-1/2 text-lg" style={{ color: LABEL_COLOR }}>⏮️</span>
+          <span className="absolute right-6 top-1/2 -translate-y-1/2 text-lg" style={{ color: LABEL_COLOR }}>⏭️</span>
         </div>
 
-        {/* 중앙 버튼 클릭 영역 (휠 제스처와 분리) */}
         <button
           type="button"
-          onClick={handleCenterClick}
+          onClick={onCenterPress}
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[116px] h-[116px] rounded-full cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary/30 active:scale-[0.98]"
           aria-label="선택"
         />
