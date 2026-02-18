@@ -26,7 +26,6 @@ function isValidCoverUrl(url: string | undefined): boolean {
   return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/");
 }
 
-/** 정글짐 색상만 (#a89268 골드, #6a7a8a 블루그레이, #9a6b58 러스트, #6a7c5a 그린) */
 const CAPSULE_TWO_TONE: { c1: string; c2: string }[] = [
   { c1: "#a89268", c2: "#f0e8d8" },
   { c1: "#6a7a8a", c2: "#d8dcde" },
@@ -97,7 +96,7 @@ export default function DestinyGashaponModal({
 
   useEffect(() => {
     if (phase !== "opening") return;
-    const delays = [400, 500, 600, 800]; // zoom 0.4s, shake 0.5s, crack 0.6s, reveal 0.8s
+    const delays = [400, 500, 600, 800];
     const t1 = setTimeout(() => setOpeningStep("shake"), delays[0]);
     const t2 = setTimeout(() => setOpeningStep("crack"), delays[0] + delays[1]);
     const t3 = setTimeout(() => setOpeningStep("reveal"), delays[0] + delays[1] + delays[2]);
@@ -147,9 +146,13 @@ export default function DestinyGashaponModal({
       <button
         type="button"
         onClick={onClose}
-        className="absolute top-4 right-4 z-20 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center hover:opacity-90 active:opacity-80 touch-manipulation"
-        style={{ background: "#2a2520", color: "#e8e0d8" }}
-        style={{ top: "max(1rem, env(safe-area-inset-top))", right: "max(1rem, env(safe-area-inset-right))" }}
+        className="absolute z-20 w-11 h-11 min-w-[44px] min-h-[44px] rounded-full flex items-center justify-center hover:opacity-90 active:opacity-80 touch-manipulation"
+        style={{ 
+          background: "#2a2520", 
+          color: "#e8e0d8",
+          top: "max(1rem, env(safe-area-inset-top))", 
+          right: "max(1rem, env(safe-area-inset-right))" 
+        }}
         aria-label="닫기"
       >
         <span className="text-xl leading-none">×</span>
@@ -163,13 +166,11 @@ export default function DestinyGashaponModal({
             initial={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
-            {/* 플로팅 — 대기 시 살짝 둥둥 */}
             <motion.div
               className="relative flex flex-col items-center"
               animate={phase === "idle" ? { y: [0, -4, 0] } : {}}
               transition={phase === "idle" ? { duration: 2.5, repeat: Infinity, ease: "easeInOut" } : {}}
             >
-              {/* 뚜껑 — 우체국 빨강 */}
               <div
                 className="relative w-[146px] h-4 rounded-t-xl flex-shrink-0 overflow-hidden"
                 style={{
@@ -182,7 +183,6 @@ export default function DestinyGashaponModal({
                 <div className="absolute top-0.5 right-3 w-2.5 h-2.5 rounded-full opacity-40" style={{ background: "#8a1020" }} />
               </div>
 
-              {/* 투명 컨테이너 — 누렇게 변색된 아크릴, 긁힘·먼지·때 */}
               <div
                 className="relative h-[180px] overflow-hidden flex-shrink-0"
                 style={{
@@ -205,7 +205,6 @@ export default function DestinyGashaponModal({
                   `,
                 }}
               >
-                {/* 때·먼지·빗물 자국 오버레이 */}
                 <div
                   className="absolute inset-0 pointer-events-none z-[1]"
                   style={{
@@ -216,14 +215,12 @@ export default function DestinyGashaponModal({
                     `,
                   }}
                 />
-                {/* 바닥 그림자 — 쌓인 캡슐 무게감 */}
                 <div
                   className="absolute bottom-0 left-0 right-0 h-12 pointer-events-none"
                   style={{
                     backgroundImage: "radial-gradient(ellipse 120% 50% at 50% 100%, rgba(0,0,0,0.22) 0%, transparent 65%)",
                   }}
                 />
-                {/* 두 톤 캡슐들 — 무질서하게 쌓인 디테일: 겹침, z순서, 눌린 그림자 */}
                 <motion.div
                   className="absolute inset-0"
                   animate={phase === "spinning" ? { x: [0, -5, 5, -4, 4, 0], rotate: [0, 4, -4, 3, -3, 0] } : {}}
@@ -277,7 +274,6 @@ export default function DestinyGashaponModal({
                 </motion.div>
               </div>
 
-              {/* 베이스 — 테이퍼 + 녹·칠 벗겨짐 + 아래 모서리 둥글게 */}
               <div className="relative w-[160px] flex-shrink-0 flex flex-col items-stretch">
                 <div
                   className="h-1 flex-shrink-0 mx-auto"
@@ -297,10 +293,8 @@ export default function DestinyGashaponModal({
                     borderTop: "none",
                   }}
                 >
-                  {/* 우체통 빨강 — 은은한 음영 */}
                   <div className="absolute top-1.5 left-3 w-4 h-1.5 rounded-full opacity-40" style={{ background: "#8a1020" }} />
                   <div className="absolute top-3 right-6 w-2.5 h-1 rounded-full opacity-35" style={{ background: "#6a0c18" }} />
-                  {/* 낡고 기름때 낀 금속 손잡이 + 테두리 녹 */}
                   <motion.button
                     key={spinKey}
                     type="button"
@@ -320,7 +314,6 @@ export default function DestinyGashaponModal({
                   >
                     <div className="w-7 h-2.5 rounded-full" style={{ background: "#4a4540", boxShadow: "0 1px 4px rgba(0,0,0,0.5)" }} />
                   </motion.button>
-                  {/* 500원 / 캡슐 토이 스티커 */}
                   <div
                     className="absolute top-1.5 -left-1 px-2 py-0.5 rounded-sm text-[8px] font-bold whitespace-nowrap"
                     style={{
@@ -343,7 +336,6 @@ export default function DestinyGashaponModal({
                   >
                     캡슐 토이
                   </div>
-                  {/* 배출구 — 우체통 빨강 계열 다크 */}
                   <div
                     className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-14 h-4 rounded-b-md"
                     style={{
@@ -356,7 +348,6 @@ export default function DestinyGashaponModal({
               </div>
             </motion.div>
 
-            {/* 캡슐 중앙 등장 → Zoom → Shake → Crack+Flash → Reveal 책 */}
             <AnimatePresence>
               {(phase === "dropping" || phase === "opening") && selectedBook && (
                 <motion.div
@@ -367,7 +358,6 @@ export default function DestinyGashaponModal({
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.2 }}
                 >
-                  {/* Step 4: 강렬한 빛(Flash) — crack 시 등장, reveal 시 사라짐 */}
                   <AnimatePresence>
                     {phase === "opening" && (openingStep === "crack" || openingStep === "reveal") && (
                       <motion.div
@@ -391,7 +381,6 @@ export default function DestinyGashaponModal({
                     )}
                   </AnimatePresence>
 
-                  {/* 캡슐 컨테이너 — Step 1 Zoom, Step 2 Shake, Step 3 Crack 시 상하 분리 */}
                   <motion.div
                     className="relative w-24 h-24 flex items-center justify-center"
                     initial={{ scale: 0, opacity: 0 }}
@@ -417,7 +406,6 @@ export default function DestinyGashaponModal({
                     }
                     onAnimationComplete={phase === "dropping" ? handleDropComplete : undefined}
                   >
-                    {/* 상단 반쪽 — Step 3 Crack 시 위로 쪼개짐 (translate + rotate) */}
                     <motion.div
                       className="absolute inset-x-0 top-0 h-1/2 rounded-t-full overflow-hidden z-10"
                       style={{
@@ -433,7 +421,6 @@ export default function DestinyGashaponModal({
                       }
                       transition={{ duration: 0.5, ease: "easeOut" }}
                     />
-                    {/* 하단 반쪽 — Step 3 Crack 시 아래로 쪼개짐 */}
                     <motion.div
                       className="absolute inset-x-0 bottom-0 h-1/2 rounded-b-full overflow-hidden z-10"
                       style={{
@@ -449,14 +436,12 @@ export default function DestinyGashaponModal({
                       }
                       transition={{ duration: 0.5, ease: "easeOut" }}
                     />
-                    {/* 가운데 이음선 — dropping, zoom, shake 시에만 */}
                     {(phase === "dropping" || (phase === "opening" && openingStep !== "crack" && openingStep !== "reveal")) && (
                       <div
                         className="absolute left-0 right-0 top-1/2 h-1 -translate-y-1/2 bg-black/20 z-10"
                         style={{ width: "70%", margin: "0 auto" }}
                       />
                     )}
-                    {/* Step 4 Reveal: 책 표지 짠! 등장 */}
                     <motion.div
                       className="absolute w-14 aspect-[2/3] rounded-lg overflow-hidden shadow-xl border-2 border-amber-200/60 bg-amber-50 flex items-center justify-center z-0"
                       initial={{ scale: 0, opacity: 0 }}
@@ -479,7 +464,6 @@ export default function DestinyGashaponModal({
                           height={84}
                           className="w-full h-full object-cover"
                           unoptimized
-                          sizes="56px"
                         />
                       ) : (
                         <span className="text-[10px] font-bold text-amber-900/70 text-center px-1 line-clamp-3">
@@ -497,7 +481,6 @@ export default function DestinyGashaponModal({
             )}
           </motion.div>
         ) : (
-          /* 결과 화면 — 당첨 카드 모달 */
           <motion.div
             key="result"
             className="w-full max-w-[320px] px-4"
@@ -523,7 +506,6 @@ export default function DestinyGashaponModal({
                         height={144}
                         className="w-full h-full object-cover"
                         unoptimized
-                        sizes="96px"
                       />
                     ) : (
                       <div className="w-full h-full bg-amber-100 flex items-center justify-center text-amber-900/70 text-xs font-bold p-2 text-center">
