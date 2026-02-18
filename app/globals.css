@@ -1,0 +1,432 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --vintage-bg: #F2E6D0;
+  --primary: #4A5E42;
+  --secondary: #8C9E83;
+  --accent-warm: #C98C6E;
+  --accent-cool: #6A8B9A;
+  --text-main: #3A3128;
+  --text-muted: #8C7B6B;
+  font-size: 16px;
+}
+
+/* 모바일에서 가독 개선 (최소 14px) */
+@media (max-width: 480px) {
+  :root {
+    font-size: clamp(14px, 4.5vw, 16px);
+  }
+}
+
+body {
+  font-family: var(--font-serif-myeongjo), "Noto Serif KR", serif;
+  font-weight: 400;
+  background: var(--vintage-bg);
+  color: var(--text-main);
+  padding-bottom: calc(90px + env(safe-area-inset-bottom, 0px));
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+/* 노이즈 질감 - 낡은 종이 느낌 */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.045;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* 버튼 - 살짝 둥글게(rounded-md), 종이 위에 얹혀진 그림자 */
+button:not([class*="rounded-"]) {
+  border-radius: 0.375rem;
+  box-shadow: 0 1px 2px rgba(58, 49, 40, 0.08);
+}
+
+@media (min-width: 768px) {
+  body {
+    padding-bottom: calc(100px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@media (min-width: 1024px) {
+  body {
+    padding-bottom: calc(110px + env(safe-area-inset-bottom, 0px));
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* CRT 노이즈 — 지지직 */
+@keyframes static-noise {
+  0% { transform: translate(0, 0); }
+  10% { transform: translate(-2%, -2%); }
+  20% { transform: translate(2%, 2%); }
+  30% { transform: translate(-1%, 1%); }
+  40% { transform: translate(1%, -1%); }
+  50% { transform: translate(-2%, 2%); }
+  60% { transform: translate(2%, -2%); }
+  70% { transform: translate(-1%, -1%); }
+  80% { transform: translate(1%, 1%); }
+  90% { transform: translate(-2%, 0); }
+  100% { transform: translate(0, 0); }
+}
+.static-noise {
+  animation: static-noise 0.12s steps(1) infinite;
+}
+
+/* 영수증 지그재그 */
+.receipt-zigzag-top,
+.receipt-zigzag-bottom {
+  flex-shrink: 0;
+}
+.receipt-modal-paper {
+  box-shadow: 0 10px 40px rgba(58, 49, 40, 0.1);
+}
+
+/* LP / CD 느린 회전 */
+@keyframes spin-slow {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 8s linear infinite;
+}
+
+.scrollbar-hide {
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* 빈티지 티켓 - 절취선 & 펀치 구멍 (아이보리) */
+.vintage-ticket {
+  position: relative;
+  background: #FFF8F0;
+  border: 1px solid #8C9E83;
+  border-right-style: dashed;
+  border-right-width: 2px;
+}
+.vintage-ticket::before,
+.vintage-ticket::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--vintage-bg);
+  border: 1px solid #8C9E83;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+.vintage-ticket::before {
+  left: -6px;
+}
+.vintage-ticket::after {
+  right: -6px;
+}
+
+/* 도서 대출 카드 - 갈색 주머니(겉) */
+.checkout-pocket {
+  background: linear-gradient(90deg, #b8a898 0%, #a89888 30%, #988870 100%);
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.06);
+  border: 1px solid #8a7a6a;
+}
+
+/* 대출 카드 - 누렇고 낡은 종이(카드 본문) */
+.checkout-card-bg {
+  background: linear-gradient(180deg, #F5EEDE 0%, #E8DCC8 40%, #DFD0B8 100%);
+  box-shadow: inset 0 0 80px rgba(139, 123, 107, 0.06);
+}
+
+/* 대출 카드 - 선 하나만 (스크롤해도 배경 고정 이슈 없음) */
+.checkout-card-line {
+  border-bottom: 1px solid rgba(120, 100, 80, 0.2);
+}
+
+/* 완독 도장 애니메이션 */
+@keyframes stamp-in {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5) rotate(-12deg);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15) rotate(-8deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(-8deg);
+  }
+}
+.animate-stamp-in {
+  animation: stamp-in 0.4s ease-out forwards;
+}
+
+/* 하늘 닿는 사다리 - 리본 흔들림 */
+@keyframes ribbon-sway {
+  0%, 100% { transform: translateX(-50%) translateY(50%) rotate(-2deg); }
+  50% { transform: translateX(-50%) translateY(50%) rotate(2deg); }
+}
+.animate-ribbon-sway {
+  animation: ribbon-sway 3s ease-in-out infinite;
+}
+@keyframes ribbon-sway-simple {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+.animate-ribbon-sway-simple {
+  animation: ribbon-sway-simple 3s ease-in-out infinite;
+}
+
+/* 시대 주파수 라디오 - 바늘 찾기 */
+@keyframes needle-tune {
+  0% { transform: rotate(-60deg); }
+  30% { transform: rotate(20deg); }
+  60% { transform: rotate(-10deg); }
+  100% { transform: var(--needle-final); }
+}
+
+/* 명예의 전당 그네 - 흔들림 */
+@keyframes swing-1 { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(4deg); } }
+@keyframes swing-2 { 0%, 100% { transform: rotate(-5deg); } 50% { transform: rotate(5deg); } }
+@keyframes swing-3 { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+.animate-swing-1 { animation: swing-1 2.5s ease-in-out infinite; }
+.animate-swing-2 { animation: swing-2 3s ease-in-out infinite; }
+.animate-swing-3 { animation: swing-3 2.2s ease-in-out infinite; }
+@keyframes swing-push {
+  0% { transform: rotate(0deg); }
+  25% { transform: rotate(-28deg); }
+  75% { transform: rotate(28deg); }
+  100% { transform: rotate(0deg); }
+}
+.animate-swing-push {
+  animation: swing-push 0.9s ease-in-out;
+}
+
+/* 보물찾기 이정표 - 판자 흔들림 (끼이익-) */
+@keyframes signpost-wobble {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(-3deg); }
+  30% { transform: rotate(2deg); }
+  45% { transform: rotate(-2deg); }
+  60% { transform: rotate(1.5deg); }
+  75% { transform: rotate(-1deg); }
+}
+.animate-signpost-wobble {
+  animation: signpost-wobble 0.5s ease-in-out;
+}
+
+/* 언어의 울림통 - 파이프 웅- 진동 */
+@keyframes pipe-whisper {
+  0%, 100% { transform: translateX(0) scale(1); }
+  15% { transform: translateX(-1px) scale(1.02); }
+  30% { transform: translateX(1px) scale(1); }
+  45% { transform: translateX(-1px) scale(1.01); }
+  60% { transform: translateX(1px) scale(1); }
+  75% { transform: translateX(-0.5px) scale(1.01); }
+}
+.animate-pipe-whisper {
+  animation: pipe-whisper 0.4s ease-in-out;
+}
+
+/* 독서 밸런스 시소 - 끼이익- 기울기 */
+@keyframes seesaw-creak {
+  0% { filter: none; }
+  20% { filter: drop-shadow(0 0 1px rgba(0,0,0,0.1)); }
+  40% { filter: none; }
+  60% { filter: drop-shadow(0 0 1px rgba(0,0,0,0.05)); }
+  100% { filter: none; }
+}
+.animate-seesaw-creak {
+  animation: seesaw-creak 0.8s ease-out;
+}
+
+/* 종이비행기 리뷰 - 접기 → 날기 → 페이드아웃 (모바일에서도 잘 보이게 scale 조정) */
+@keyframes paper-fold-and-fly {
+  0% { transform: translateY(0) translateX(0) scale(1) rotate(-5deg); opacity: 1; }
+  25% { transform: translateY(0) translateX(0) scale(0.8) rotate(-25deg); opacity: 1; }
+  35% { transform: translateY(0) translateX(0) scale(0.65) rotate(-35deg); opacity: 1; }
+  50% { transform: translateY(-35vh) translateX(6px) scale(0.55) rotate(-20deg); opacity: 1; }
+  70% { transform: translateY(-65vh) translateX(-6px) scale(0.48) rotate(0deg); opacity: 0.9; }
+  85% { transform: translateY(-95vh) translateX(4px) scale(0.42) rotate(5deg); opacity: 0.4; }
+  100% { transform: translateY(-130vh) translateX(-8px) scale(0.38) rotate(8deg); opacity: 0; }
+}
+.animate-paper-fold-and-fly {
+  animation: paper-fold-and-fly 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* 종이비행기 아이콘 날아가는 모션 — 버튼 클릭 시 */
+@keyframes paper-plane-fly {
+  0% { transform: scale(1) rotate(-45deg); opacity: 1; }
+  15% { transform: translateY(-8vh) scale(1.15) rotate(-38deg); opacity: 1; }
+  40% { transform: translateY(-40vh) translateX(12vw) scale(0.95) rotate(-15deg); opacity: 1; }
+  65% { transform: translateY(-70vh) translateX(24vw) scale(0.75) rotate(5deg); opacity: 0.95; }
+  90% { transform: translateY(-105vh) translateX(38vw) scale(0.55) rotate(18deg); opacity: 0.5; }
+  100% { transform: translateY(-125vh) translateX(50vw) scale(0.45) rotate(25deg); opacity: 0; }
+}
+.animate-paper-plane-fly {
+  animation: paper-plane-fly 2.2s cubic-bezier(0.25, 0.46, 0.35, 0.98) forwards;
+}
+
+/* 플로피 디스크 리뷰 - 디스크 삽입 애니메이션 */
+/* 3단 변신: 뚝-뚝-뚝 3번 축소 후 슬롯에 정확히 들어감 */
+/* 슬롯 구멍 120×28px, 디스크 300px → 최종 scale 0.1 */
+@keyframes disk-insert {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  25% {
+    transform: translate(-50%, calc(-50% + 10vh)) scale(0.55);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, calc(-50% + 26vh)) scale(0.22);
+    opacity: 1;
+  }
+  75% {
+    transform: translate(-50%, calc(-50% + 50vh - 46px)) scale(0.1);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, calc(-50% + 50vh - 46px)) scale(0.1);
+    opacity: 0;
+  }
+}
+.animate-disk-insert {
+  animation: disk-insert 1.8s steps(4, end) forwards;
+}
+
+@keyframes drive-slot-appear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, 16px);
+  }
+  35% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+.animate-drive-slot-appear {
+  animation: drive-slot-appear 0.5s ease-out forwards;
+}
+
+@keyframes led-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+.animate-led-blink {
+  animation: led-blink 0.4s ease-in-out infinite;
+}
+
+/* 플로피 디스크 모달 — 💾 이모티콘처럼 톡 하고 등장 */
+@keyframes floppy-disk-pop-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) translateY(-30px);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.08) translateY(4px);
+  }
+  75% {
+    transform: scale(0.96) translateY(-2px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+.animate-floppy-pop-in {
+  animation: floppy-disk-pop-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* 취향의 모래성 - 터치 시 모래 살짝 흘러내림 + 깃발 팔락 */
+@keyframes sand-touch {
+  0%, 100% { transform: translateY(0) scale(1); }
+  30% { transform: translateY(2px) scale(1.02); }
+  60% { transform: translateY(1px) scale(1.01); }
+}
+.animate-sand-touch {
+  animation: sand-touch 0.5s ease-out;
+}
+
+@keyframes flag-flutter {
+  0%, 100% { transform: rotate(-2deg); }
+  25% { transform: rotate(3deg); }
+  50% { transform: rotate(-1deg); }
+  75% { transform: rotate(2deg); }
+}
+.animate-flag-flutter {
+  animation: flag-flutter 0.6s ease-in-out infinite;
+}
+
+/* 운명의 미끄럼틀: 금색 요술가루 기둥 감싸며 상승 (시계방향 나선) */
+@keyframes magic-dust-spiral-cw {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  8% { opacity: 1; }
+  25% { transform: translate(18px, -22vh) scale(1); }
+  50% { transform: translate(-15px, -44vh) scale(0.95); }
+  75% { transform: translate(12px, -66vh) scale(0.65); }
+  92% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(-8px, -85vh) scale(0.35); }
+}
+/* 기둥 감싸며 반시계 나선 */
+@keyframes magic-dust-spiral-ccw {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  8% { opacity: 1; }
+  25% { transform: translate(-16px, -22vh) scale(1); }
+  50% { transform: translate(14px, -44vh) scale(0.95); }
+  75% { transform: translate(-10px, -66vh) scale(0.65); }
+  92% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(6px, -85vh) scale(0.35); }
+}
+
+/* 운명의 미끄럼틀: 낙하 → 착지 후 앞으로 짠 */
+@keyframes destiny-slide-down {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(58vw, 68vh); }
+}
+@keyframes destiny-pop-forward {
+  0% { transform: translate(58vw, 68vh) scale(1); }
+  60% { transform: translate(58vw, 68vh) scale(1.35); }
+  100% { transform: translate(58vw, 68vh) scale(1.2); }
+}
+
+/* 독서 습관 정글짐 - 꼭대기 깃발 점프 (칸 채울 때마다) */
+@keyframes flag-bounce {
+  0% { transform: translateY(0); }
+  40% { transform: translateY(-12px); }
+  70% { transform: translateY(-4px); }
+  100% { transform: translateY(0); }
+}
+.animate-flag-bounce {
+  animation: flag-bounce 0.5s ease-out;
+}
